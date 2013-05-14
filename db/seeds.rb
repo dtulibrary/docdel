@@ -5,3 +5,11 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+[
+  { code: 'new', },
+  { code: 'deliver' },
+  { code: 'request' },
+  { code: 'failed', },
+].each do |o|
+  OrderStatus.find_or_create_by_code(o)
+end

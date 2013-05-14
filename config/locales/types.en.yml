@@ -1,0 +1,9 @@
+en:
+  haitatsu:
+    code:
+      order_status:
+        'new': 'New'
+        'pending': 'Pending'
+        'request': 'Requested'
+        'deliver': 'Delivered'
+        'fail': 'Failed'
