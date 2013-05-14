@@ -2,6 +2,8 @@ source 'https://rubygems.org'
 
 gem 'rails'
 gem 'jquery-rails'
+gem 'activeadmin'
+gem 'devise_cas_authenticatable'
 
 # Gems used only for assets.
 group :assets do
