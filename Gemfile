@@ -10,9 +10,14 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
+group :development do
+  gem 'rails_best_practices'
+end
+
 group :development, :test do
   gem 'sqlite3'
   gem 'rspec-rails'
+  gem 'brakeman'
   gem 'debugger'
 end
 
