@@ -13,3 +13,10 @@
 ].each do |o|
   OrderStatus.find_or_create_by_code(o)
 end
+
+[
+  { code: 'reprintsdesk' },
+  { code: 'local_scan' },
+].each do |e|
+  ExternalSystem.find_or_create_by_code(e)
+end
