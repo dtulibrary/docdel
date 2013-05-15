@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130515133944) do
+ActiveRecord::Schema.define(:version => 20130515134056) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -35,6 +35,24 @@ ActiveRecord::Schema.define(:version => 20130515133944) do
   end
 
   add_index "external_systems", ["code"], :name => "index_external_systems_on_code", :unique => true
+
+  create_table "order_requests", :force => true do |t|
+    t.integer  "order_id",                  :null => false
+    t.integer  "order_status_id",           :null => false
+    t.integer  "external_system_id",        :null => false
+    t.float    "external_copyright_charge"
+    t.string   "external_currency"
+    t.integer  "external_id"
+    t.float    "external_service_charge"
+    t.string   "external_url"
+    t.string   "shelfmark"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "order_requests", ["external_system_id"], :name => "index_order_requests_on_external_system_id"
+  add_index "order_requests", ["order_id"], :name => "index_order_requests_on_order_id"
+  add_index "order_requests", ["order_status_id"], :name => "index_order_requests_on_order_status_id"
 
   create_table "order_statuses", :force => true do |t|
     t.string   "code",       :null => false
