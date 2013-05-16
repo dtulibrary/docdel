@@ -13,6 +13,6 @@ FactoryGirl.define do
     f.issue "1"
     f.spage "491"
     f.title "Journal of Testing"
-    f.volume 1
+    f.volume "1"
   end
 end

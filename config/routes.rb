@@ -2,6 +2,10 @@ Haitatsu::Application.routes.draw do
   devise_for :users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 
+  namespace :rest do
+    resources :orders, :only => [:show, :create]
+  end
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
