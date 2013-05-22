@@ -5,6 +5,8 @@ gem 'jquery-rails'
 gem 'activeadmin'
 gem 'devise_cas_authenticatable'
 gem 'openurl'
+gem 'savon'
+gem 'httparty'
 
 # Gems used only for assets.
 group :assets do
