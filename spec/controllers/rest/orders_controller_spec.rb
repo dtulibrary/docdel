@@ -1,5 +1,8 @@
 require 'spec_helper'
 
+# require the savon helper module
+require "savon/mock/spec_helper"
+
 describe Rest::OrdersController do
   render_views
 
@@ -36,6 +39,58 @@ describe Rest::OrdersController do
       Order.count.should eq 0
     end
 
+  end
+
+  describe "ReprintsDesk" do
+    include Savon::SpecHelper
+
+    before(:all) do
+      savon.mock!
+      Rails.application.config.reprintsdesk.wsdl = "spec/fixtures/reprints.wsdl"
+      Rails.application.config.reprintsdesk.user = "Test"
+      Rails.application.config.reprintsdesk.password = "Pass"
+      Rails.application.config.reprintsdesk.username = "Test"
+      Rails.application.config.reprintsdesk.firstname = "Test"
+      Rails.application.config.reprintsdesk.lastname = "Test"
+      Rails.application.config.reprintsdesk.companyname = "Test"
+      Rails.application.config.reprintsdesk.address1 = "Test"
+      Rails.application.config.reprintsdesk.address2 = ""
+      Rails.application.config.reprintsdesk.city = "Test"
+      Rails.application.config.reprintsdesk.zipcode = "9999"
+      Rails.application.config.reprintsdesk.statecode = "*"
+      Rails.application.config.reprintsdesk.statename = "*"
+      Rails.application.config.reprintsdesk.countrycode = "XX"
+      Rails.application.config.reprintsdesk.phone = "*"
+      Rails.application.config.reprintsdesk.fax = "*"
+      Rails.application.config.reprintsdesk.systemmail = "test@dom.ain"
+    end
+    after(:all) { 
+      savon.unmock!
+    }
+
+    before :each do
+      FactoryGirl.create(:external_system, code: 'reprintsdesk')
+      FactoryGirl.create(:order_status, code: 'new')
+      FactoryGirl.create(:order_status, code: 'requested')
+    end
+
+    it "create order for reprintsdesk" do
+      price_request = {:issn=>"21504091", :year=>"2010", :totalpages=>1}
+      price_response = File.read("spec/fixtures/reprints_price_response.xml")
+      order_request = {:xmlNode=>{:order=>{:orderdetail=>{:ordertypeid=>"4", :deliverymethodid=>"5", :comment=> "", :aulast=>"Lokhande", :aufirst=>"Ram", :issn=>"21504091", :eissn=>nil, :isbn=>nil, :title=>"Natural Science", :atitle=>"Study of some Indian medicinal plants by application of INAA and AAS techniques", :volume=>"02", :issue=>"01", :spage=>nil, :epage=>nil, :pages=>"26-32", :date=>"2010"}, :user=>{:username=>"Test", :email=>"test@dom.ain", :firstname=>"Test", :lastname=>"Test", :billingreference=>1}, :deliveryprofile=>{:firstname=>"Test", :lastname=>"Test", :companyname=>"Test", :address1=>"Test", :address2=>"", :city=>"Test", :statecode=>"*", :statename=>"*", :zip=>"9999", :countrycode=>"XX", :email=>"test@dom.ain", :phone=>"*", :fax=>"*"}, :processinginstructions=>{:processinginstruction=>["", ""], :attributes! => {:processinginstruction=>{"id"=>["1", "2"], "valueid"=>["1", "0"]}}}, :customerreferences=>{:customerreference=>["1", "OTHER"], :attributes! =>{:customerreference=>{"id"=>["1", "2"]}}}}, :attributes! =>{:order=>{'xmlns'=>''}}}}
+      order_response = File.read("spec/fixtures/reprints_order_response.xml")
+      savon.expects(:order_get_price_estimate).with(message: price_request).returns(price_response)
+      savon.expects(:order_place_order2).with(message: order_request).returns(order_response)
+      post :create,
+        :email => 'test@dom.ain', :supplier => 'reprintsdesk',
+        :callback_url => 'http://testhost/',
+        :open_url => 'url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&ctx_enc=info%3Aofi%2Fenc%3AUTF-8&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.au=Lokhande%2C+Ram&rft.atitle=Study+of+some+Indian+medicinal+plants+by+application+of+INAA+and+AAS+techniques&rft.jtitle=Natural+Science&rft.issn=21504091&rft.issn=21504105&rft.date=2010&rft.volume=02&rft.issue=01&rft.pages=26-32&rft_id=info:doi%2F10.4236%2Fns.2010.21004'
+      Order.count.should eq 1
+      # Check that order/request matches what we want.
+      order = Order.first
+      order.current_request.external_service_charge.should eq 10.0
+      order.current_request.external_copyright_charge.should eq -1.0
+    end
   end
 
   describe "GET #show" do
