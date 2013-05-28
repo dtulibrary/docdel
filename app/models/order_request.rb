@@ -8,4 +8,6 @@ class OrderRequest < ActiveRecord::Base
   validates :order, :presence => true
   validates :order_status, :presence => true
   validates :external_system, :presence => true
+
+  scope :current, :limit => 1, :order => 'created_at DESC'
 end

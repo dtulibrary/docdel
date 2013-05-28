@@ -89,4 +89,8 @@ class Order < ActiveRecord::Base
     Rails.application.config
   end
 
+  def current_request
+    order_requests.current.first
+  end
+
 end
