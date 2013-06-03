@@ -12,7 +12,7 @@ class OrderRequest < ActiveRecord::Base
   scope :current, :limit => 1, :order => 'created_at DESC'
 
   def deliver(url)
-    external_url = url
+    self.external_url = url
     set_status('deliver')
     order.mark_delivery
   end

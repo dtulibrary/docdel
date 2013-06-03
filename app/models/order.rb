@@ -16,11 +16,12 @@ class Order < ActiveRecord::Base
   scope :recent, :limit => 10, :order => 'created_at DESC'
   scope :recent_delivered, where("delivered_at IS NOT NULL").limit(10).order('delivered_at DESC')
 
-  def self.create_from_param(params)
+  def self.create_from_param(params, controller)
     # Convert param to openurl data
 
     self.transaction do
       begin
+
         # Fix errors in the current open_url
         params[:open_url].gsub 'rft.year=', 'rft.date='
         params[:open_url].gsub 'rft.doi=', 'rft_id=info:/doi'
@@ -68,6 +69,7 @@ class Order < ActiveRecord::Base
           o.customer_order_number = params[:dibs_order_id]
           o.email = params[:email]
           o.save or raise "Order not valid"
+          o.path_controller = controller
         end
 
         system = params[:supplier]
@@ -121,12 +123,17 @@ class Order < ActiveRecord::Base
         (/\?/.match(callback_url) ? '&' : '?') +
         "status=#{response_code}")
       if !response.success?
-        raise "Callback request unsuccessfull"
+        raise StandardError, "Callback request unsuccessfull"
       end
     rescue StandardError => e
-      raise "Callback failed for #{callback_url} - " + e.message
+      raise StandardError, "Callback failed for #{callback_url} - #{e.message}"
     end
     true
+  end
+
+  def path_controller=(value)
+    logger.info "Setting path_controller "+ (value ? "true" : "nil")
+    @path_controller = value
   end
 
 end

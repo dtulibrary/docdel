@@ -7,6 +7,20 @@ require "savon/mock/spec_helper"
 describe Rest::OrdersController do
   render_views
 
+  before :all do
+    @open_request = 'url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&ctx_enc=info%3A'+
+      'ofi%2Fenc%3AUTF-8&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx&'+
+      'rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.au=Lokhande%2C+'+
+      'Ram&rft.atitle=Study+of+some+Indian+medicinal+plants+by+application+of'+
+      '+INAA+and+AAS+techniques&rft.jtitle=Natural+Science&rft.issn=21504091&'+
+      'rft.issn=21504105&rft.date=2010&rft.volume=02&rft.issue=01&rft.pages='+
+      '26-32&rft_id=info:doi%2F10.4236%2Fns.2010.21004'
+  end
+
+  after :all do
+    WebMock.reset!
+  end
+
   describe "POST #create" do
     before :each do
       # Expand Order with bogus handler
@@ -86,13 +100,44 @@ describe Rest::OrdersController do
       post :create,
         :email => 'test@dom.ain', :supplier => 'reprintsdesk',
         :callback_url => 'http://testhost/',
-        :open_url => 'url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&ctx_enc=info%3Aofi%2Fenc%3AUTF-8&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.au=Lokhande%2C+Ram&rft.atitle=Study+of+some+Indian+medicinal+plants+by+application+of+INAA+and+AAS+techniques&rft.jtitle=Natural+Science&rft.issn=21504091&rft.issn=21504105&rft.date=2010&rft.volume=02&rft.issue=01&rft.pages=26-32&rft_id=info:doi%2F10.4236%2Fns.2010.21004'
+        :open_url => @open_request
+#'url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&ctx_enc=info%3Aofi%2Fenc%3AUTF-8&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.au=Lokhande%2C+Ram&rft.atitle=Study+of+some+Indian+medicinal+plants+by+application+of+INAA+and+AAS+techniques&rft.jtitle=Natural+Science&rft.issn=21504091&rft.issn=21504105&rft.date=2010&rft.volume=02&rft.issue=01&rft.pages=26-32&rft_id=info:doi%2F10.4236%2Fns.2010.21004'
       Order.count.should eq 1
       # Check that order/request matches what we want.
       order = Order.first
       order.current_request.external_service_charge.should eq 10.0
       order.current_request.external_copyright_charge.should eq -1.0
       order.current_request.external_number.should eq 123456
+    end
+  end
+
+  describe "Local Scan" do
+    before :each do
+      FactoryGirl.create(:external_system, code: 'local_scan')
+      FactoryGirl.create(:order_status, code: 'new')
+      FactoryGirl.create(:order_status, code: 'request')
+    end
+
+    it "create order" do
+      Rails.application.config.sendit_url = 'http://localhost'
+      stub_request(:post, "http://localhost/send/haitatsu_scan_request").
+        to_return(:status => 200, :body => "", :headers => {})
+      post :create,
+        :email => 'test@dom.ain', :supplier => 'local_scan',
+        :callback_url => 'http://localhost/',
+        :open_url => @open_request
+      Order.count.should eq 1
+    end
+
+    it "fails to create order" do
+      Rails.application.config.sendit_url = 'http://localhost'
+      stub_request(:post, "http://localhost/send/haitatsu_scan_request").
+        to_return(:status => 406, :body => "", :headers => {})
+      post :create,
+        :email => 'test@dom.ain', :supplier => 'local_scan',
+        :callback_url => 'http://localhost/',
+        :open_url => @open_request
+      Order.count.should eq 0
     end
   end
 

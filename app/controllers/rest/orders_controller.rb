@@ -9,7 +9,7 @@ class Rest::OrdersController < ApplicationController
   end
 
   def create
-    @order = Order.create_from_param(params)
+    @order = Order.create_from_param(params, self)
 
     respond_to do |format|
       format.json { render :json => @order, :status => @order ? 200 : 404 }
@@ -23,7 +23,7 @@ class Rest::OrdersController < ApplicationController
         params[k] = v
       end
 
-      @order = Order.create_from_param(params)
+      @order = Order.create_from_param(params, self)
       respond_to do |format|
         format.json { render :json => @order, :status => @order ? 200 : 404 }
       end

@@ -22,7 +22,7 @@ describe OrderRequest do
   it "callback fails" do
     FactoryGirl.create(:order_status, code: 'cancel')
     order_request = FactoryGirl.build(:order_request)
-    assert_raise RuntimeError do
+    assert_raise StandardError do
       order_request.cancel
     end
   end
@@ -32,7 +32,7 @@ describe OrderRequest do
       to_return(:status => 404, :body => "", :headers => {})
     FactoryGirl.create(:order_status, code: 'confirm')
     order_request = FactoryGirl.build(:order_request)
-    assert_raise RuntimeError do
+    assert_raise StandardError do
       order_request.confirm
     end
   end

@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'mail'
 require "suppliers/reprintsdesk"
+require "suppliers/local_scan"
 
 describe IncomingMailController do
   include WebMock::API
@@ -31,7 +32,7 @@ describe IncomingMailController do
       end
 
       it "handles New Order" do
-        mail_should_set_status('new_order', 'confirm')
+        rd_mail_should_set_status('new_order', 'confirm')
       end
 
       it "handles Confirmation" do
@@ -40,19 +41,19 @@ describe IncomingMailController do
       end
 
       it "handles Information cancel" do
-        mail_should_set_status('cancel', 'cancel')
+        rd_mail_should_set_status('cancel', 'cancel')
       end
 
       it "handles Machine cancel" do
-        mail_should_set_status('cancel_machine', 'cancel')
+        rd_mail_should_set_status('cancel_machine', 'cancel')
       end
 
       it "handles Download" do
-        mail_should_set_status('download', 'deliver')
+        rd_mail_should_set_status('download', 'deliver')
       end
 
       it "handles Download - html only" do
-        mail_should_set_status('download_html_only', 'deliver')
+        rd_mail_should_set_status('download_html_only', 'deliver')
       end
 
       it "doesn't handle unknown subject" do
@@ -73,23 +74,23 @@ describe IncomingMailController do
       end
 
       it "doesn't handle unknown order number" do
-        mail_should_not_be_handled('new_order')
+        rd_mail_should_not_be_handled('new_order')
       end
 
       it "doesn't handle Information cancel" do
-        mail_should_not_be_handled('cancel')
+        rd_mail_should_not_be_handled('cancel')
       end
 
       it "doesn't handle Machine cancel" do
-        mail_should_not_be_handled('cancel_machine')
+        rd_mail_should_not_be_handled('cancel_machine')
       end
 
       it "doesn't handle Download" do
-        mail_should_not_be_handled('download')
+        rd_mail_should_not_be_handled('download')
       end
 
       it "doesn't handle Download - html only" do
-        mail_should_not_be_handled('download_html_only')
+        rd_mail_should_not_be_handled('download_html_only')
       end
 
     end
@@ -100,23 +101,23 @@ describe IncomingMailController do
       end
 
       it "doesn't handle unknown order number" do
-        mail_should_not_be_handled('new_order')
+        rd_mail_should_not_be_handled('new_order')
       end
 
       it "doesn't handle Information cancel" do
-        mail_should_not_be_handled('cancel')
+        rd_mail_should_not_be_handled('cancel')
       end
 
       it "doesn't handle Machine cancel" do
-        mail_should_not_be_handled('cancel_machine')
+        rd_mail_should_not_be_handled('cancel_machine')
       end
 
       it "doesn't handle Download" do
-        mail_should_not_be_handled('download')
+        rd_mail_should_not_be_handled('download')
       end
 
       it "doesn't handle Download - html only" do
-        mail_should_not_be_handled('download_html_only')
+        rd_mail_should_not_be_handled('download_html_only')
       end
 
     end
@@ -126,54 +127,159 @@ describe IncomingMailController do
         setup_reprintsdesk(5000, 123457, 'TEST')
       end
 
-      it "doesn't handle unknown order number" do
-        mail_should_not_be_handled('new_order')
+      it "doesn't handle order" do
+        rd_mail_should_not_be_handled('new_order')
       end
 
       it "doesn't handle Information cancel" do
-        mail_should_not_be_handled('cancel')
+        rd_mail_should_not_be_handled('cancel')
       end
 
       it "doesn't handle Machine cancel" do
-        mail_should_not_be_handled('cancel_machine')
+        rd_mail_should_not_be_handled('cancel_machine')
       end
 
       it "doesn't handle Download" do
-        mail_should_not_be_handled('download')
+        rd_mail_should_not_be_handled('download')
       end
 
       it "doesn't handle Download - html only" do
-        mail_should_not_be_handled('download_html_only')
+        rd_mail_should_not_be_handled('download_html_only')
       end
 
     end
 
     def setup_reprintsdesk(order_id, external_number, prefix)
-      ext = FactoryGirl.create(:external_system, code: 'reprintsdesk')
-      # Create order we can test with that means fixed id
-      @order = FactoryGirl.create(:order, id: order_id)
-      @request = FactoryGirl.create(:order_request, :order => @order,
-        :external_system => ext, :external_number => external_number)
+      setup_supplier(order_id, external_number, 'reprintsdesk')
       Rails.application.config.reprintsdesk.order_prefix = prefix
     end
 
-    def mail_should_set_status(mail_file, status)
-      stub_request(:get, "http://localhost/callback?status=#{status}").
-        to_return(:status => 200, :body => "", :headers => {})
-      FactoryGirl.create(:order_status, code: status)
-      mail = Mail.new(
-        File.read("spec/fixtures/reprintsdesk/#{mail_file}.eml"))
-      IncomingMailController.receive(mail).should eq true
-      order = Order.find(@order.id)
-      order.current_request.order_status.code.should eq status
+    def rd_mail_should_set_status(mail_file, status)
+      mail_should_set_status(mail_file, status, 'reprintsdesk')
     end
 
-    def mail_should_not_be_handled(mail_file)
+    def rd_mail_should_not_be_handled(mail_file)
       mail = Mail.new(
         File.read("spec/fixtures/reprintsdesk/#{mail_file}.eml"))
       IncomingMailController.receive(mail).should eq false
     end
 
+  end
+
+  context "Local Scan" do
+    before :each do
+      Rails.application.config.local_scan.handle_mails_from = /dom.ain/
+      Rails.application.config.storeit_url = "http://localhost"
+    end
+
+    describe "correct order" do
+      before :each do
+        setup_local_scan(234, 234, 'T')
+      end
+
+      it "handles delivery from subject" do
+        ls_mail_should_set_status('order_subject', 'deliver')
+      end
+
+      it "handles delivery from body" do
+        ls_mail_should_set_status('order_body', 'deliver')
+      end
+
+      it "doesn't handle with StoreIt error" do
+        assert_raise StandardError do
+          ls_mail_should_not_be_handled('order_subject')
+        end
+      end
+
+    end
+
+    describe "wrong order-id" do
+      before :each do
+        setup_local_scan(233, 234, 'T')
+      end
+
+      it "doesn't handle delivery from subject" do
+        ls_mail_should_not_be_handled('order_subject')
+      end
+
+      it "doesn't handle delivery from body" do
+        ls_mail_should_not_be_handled('order_body')
+      end
+
+    end
+
+    describe "wrong external-id" do
+      before :each do
+        setup_local_scan(4000, 235, 'T')
+      end
+
+      it "doesn't handle delivery from subject" do
+        ls_mail_should_not_be_handled('order_subject')
+      end
+
+      it "doesn't handle delivery from body" do
+        ls_mail_should_not_be_handled('order_body')
+      end
+    end
+
+    describe "wrong prefix" do
+      before :each do
+        setup_local_scan(234, 234, 'F')
+      end
+
+      it "doesn't handle delivery from subject" do
+        ls_mail_should_not_be_handled('order_subject')
+      end
+
+      it "doesn't handle delivery from body" do
+        ls_mail_should_not_be_handled('order_body')
+      end
+    end
+
+    def setup_local_scan(order_id, external_number, prefix)
+      setup_supplier(order_id, external_number, 'local_scan')
+      Rails.application.config.local_scan.order_prefix = prefix
+    end
+
+    def ls_mail_should_set_status(mail_form, status)
+     stub_request(:post, "http://localhost/rest/documents.text?drm=false").
+       with(:headers => {'Content-Type'=>'application/pdf'}).
+       to_return(:status => 200, :body => "http://localhost/local.pdf",
+         :headers => {})
+      mail_should_set_status(mail_form, status, 'local_scan')
+    end
+
+    def ls_mail_should_not_be_handled(mail_file)
+     stub_request(:post, "http://localhost/rest/documents.text?drm=false").
+       with(:headers => {'Content-Type'=>'application/pdf'}).
+       to_return(:status => 404, :body => "", :headers => {})
+      mail = Mail.new(
+        File.read("spec/fixtures/local_scan/#{mail_file}.eml"))
+      IncomingMailController.receive(mail).should eq false
+    end
+
+  end
+
+  def setup_supplier(order_id, external_number, supplier)
+    ext = FactoryGirl.create(:external_system, code: supplier)
+    # Create order we can test with that means fixed id
+    @order = FactoryGirl.create(:order, id: order_id)
+    @request = FactoryGirl.create(:order_request, :order => @order,
+      :external_system => ext, :external_number => external_number)
+  end
+
+  def mail_should_set_status(mail_file, status, supplier)
+    stub_request(:get, "http://localhost/callback?status=#{status}").
+      to_return(:status => 200, :body => "", :headers => {})
+    FactoryGirl.create(:order_status, code: status)
+    mail = Mail.new(
+      File.read("spec/fixtures/#{supplier}/#{mail_file}.eml"))
+    IncomingMailController.receive(mail).should eq true
+    order = Order.find(@order.id)
+    order.current_request.order_status.code.should eq status
+    if status == 'deliver'
+      order.current_request.external_url.should_not eq 'http://external.test.com/external_reference.html'
+    end
   end
 
 end
