@@ -7,4 +7,12 @@ class IncomingMailController < ActionMailer::Base
     end
     false
   end
+
+  def config
+    Rails.application.config
+  end
+
+  def logger
+    Rails.logger
+  end
 end

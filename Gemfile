@@ -8,6 +8,7 @@ gem 'openurl'
 gem 'savon'
 gem 'httparty'
 gem 'capistrano'
+gem 'incoming_mail', :git => 'https://github.com/dtulibrary/incoming_mail'
 
 # Gems used only for assets.
 group :assets do

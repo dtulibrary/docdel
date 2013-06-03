@@ -1,0 +1,76 @@
+From: Reprints Desk Customer Support <nobody@reprintsdesk.com>
+To: "test@dom.ain" <Testing>
+Subject: Reprints Desk message: Important Information about
+ your Order #123456 / Ref: TEST-5000.
+Content-Class: urn:content-classes:message
+Date: Fri, 7 Jun 2013 12:44:40 +0000
+Message-ID: <test-02>
+x-originalarrivaltime: 07 Jun 2013 12:44:40.0300 (UTC)
+ FILETIME=[C6D0F2C0:01CE637C]
+Content-Type: multipart/alternative;
+	boundary="_BOUNDARY_MARKER_"
+MIME-Version: 1.0
+
+--_BOUNDARY_MARKER_
+Content-Type: text/plain; charset="utf-8"
+
+Dear Requestor,
+
+This order has failed.
+
+Request details are below:
+
+Article Title   Study of some Indian medicinal plants by application of INAA and AAS techniques
+Author  Ram Lokhande
+Publication     Natural Science
+2010 02(01):26-32
+Your Reference Number   TEST-5000
+
+Your OrderID is 123456.
+
+________________________________
+
+The Reprints Desk - One Stop Reprint Solutions
+
+--_BOUNDARY_MARKER_
+Content-Type: text/html; charset="utf-8"
+Content-ID: <f6941042-f8f2-4371-a622-36130ba94013>
+
+<html xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>
+<style>     body {font-family:verdana;font-size:10pt}     .disclaimer {font-size:7pt;font-weight:bold}     td {font-size:10pt;color=black}     .left {font-weight:bold}    </style>
+  <body>
+    <p>Dear Requestor,</p>
+    <p>This order has failed.</p>
+    <p>Request details are below:</p>
+    <p>
+      <table border="1">
+        <tr>
+          <td class="left">Article Title</td>
+          <td>Study of some Indian medicinal plants by application of INAA and AAS techniques</td>
+        </tr>
+        <tr>
+          <td class="left">Author</td>
+          <td>Ram Lokhande</td>
+        </tr>
+        <tr>
+          <td class="left" rowspan="2">Publication</td>
+          <td>Natural Science</td>
+        </tr>
+        <tr>
+          <td>2010 02(01):26-32</td>
+        </tr>
+        <tr>
+          <td class="left">Your Reference Number</td>
+          <td>TEST-5000</td>
+        </tr>
+      </table>
+    </p>
+    <p>Your OrderID is 123456. </p>
+    <hr>
+    <p>The Reprints Desk - One Stop Reprint Solutions</p>
+  </body>
+</html>
+
+--_BOUNDARY_MARKER_

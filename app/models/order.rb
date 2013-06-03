@@ -99,17 +99,24 @@ class Order < ActiveRecord::Base
     order_requests.current.first
   end
 
-  def deliver(url)
-    self.delivered_at = Time.new
-    request = current_request
-    request.external_url = url
-    request.order_status = OrderStatus.find_by_code('deliver')
-    #response = HTTParty.get(self.callback_url)
-    #if !response.is_succes?
+  def request(system, external_id)
+    OrderRequest.where(:order_id => id,
+      :external_system_id => ExternalSystem.find_by_code(system),
+      :external_id => external_id).first
+  end
+
+  def mark_delivery
+    delivered_at = Time.new
+    do_callback('deliver')
+  end
+
+  def do_callback(response_code)
+    response = HTTParty.get(callback_url +
+      (/\?/.match(callback_url) ? '&' : '?') +
+      "status=#{response_code}")
+    if !response.success?
       # Put the request on the delay queue.
-    #end
-    request.save!
-    save!
+    end
   end
 
 end

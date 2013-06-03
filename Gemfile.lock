@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/dtulibrary/incoming_mail
+  revision: e1575d9c3764f896d6a5d605c1f551925dd8ba93
+  specs:
+    incoming_mail (1.0.0)
+      mail
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -48,7 +55,7 @@ GEM
     arel (3.0.2)
     awesome_print (1.1.0)
     bcrypt-ruby (3.0.1)
-    bourbon (3.1.7)
+    bourbon (3.1.8)
       sass (>= 3.2.0)
       thor
     brakeman (2.0.0)
@@ -285,6 +292,7 @@ DEPENDENCIES
   devise_cas_authenticatable
   factory_girl_rails
   httparty
+  incoming_mail!
   jquery-rails (~> 2.3.0)
   mocha
   openurl

@@ -10,4 +10,28 @@ class OrderRequest < ActiveRecord::Base
   validates :external_system, :presence => true
 
   scope :current, :limit => 1, :order => 'created_at DESC'
+
+  def deliver(url)
+    external_url = url
+    set_status('deliver')
+    order.mark_delivery
+  end
+
+  def confirm
+    set_status('confirm')
+    order.do_callback('confirm')
+  end
+
+  def cancel
+    set_status('cancel')
+    order.do_callback('cancel')
+  end
+
+  private
+
+  def set_status(code)
+    self.order_status_id = OrderStatus.find_by_code(code).id
+    save!
+  end
+
 end
