@@ -1,6 +1,9 @@
 require 'openurl'
+require 'httparty'
 
 class Order < ActiveRecord::Base
+  include HTTParty
+
   attr_accessible :atitle, :aufirst, :aulast, :callback_url, :date,
     :delivered_at, :doi, :eissn, :email, :epage, :isbn, :issn, :issue, :pages,
     :spage, :title, :volume
@@ -91,6 +94,14 @@ class Order < ActiveRecord::Base
 
   def current_request
     order_requests.current.first
+  end
+
+  def deliver
+    order.delivered_at = Time.new
+    response = HTTParty.get(order.callbackurl)
+    if !response.is_succes?
+      # Put the request on the delay queue.
+    end
   end
 
 end
