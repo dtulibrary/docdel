@@ -1,7 +1,7 @@
 Haitatsu::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
-  # In the unstable environment your application's code is cached 
+  # In the unstable environment your application's code is cached
   config.cache_classes = true
 
   # Configure static asset server for unstable with Cache-Control for performance
