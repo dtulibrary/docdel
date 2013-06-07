@@ -63,13 +63,13 @@ ActiveRecord::Schema.define(:version => 20130515134056) do
   add_index "order_statuses", ["code"], :name => "index_order_statuses_on_code", :unique => true
 
   create_table "orders", :force => true do |t|
-    t.string   "email",         :null => false
-    t.string   "callback_url",  :null => false
+    t.string   "email",        :null => false
+    t.string   "callback_url", :null => false
     t.string   "atitle"
     t.string   "aufirst"
     t.string   "aulast"
     t.string   "date"
-    t.datetime "delivered_art"
+    t.datetime "delivered_at"
     t.string   "doi"
     t.string   "eissn"
     t.string   "epage"
@@ -80,8 +80,8 @@ ActiveRecord::Schema.define(:version => 20130515134056) do
     t.string   "spage"
     t.string   "title"
     t.string   "volume"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   add_index "orders", ["email"], :name => "index_orders_on_email"

@@ -96,12 +96,17 @@ class Order < ActiveRecord::Base
     order_requests.current.first
   end
 
-  def deliver
-    order.delivered_at = Time.new
-    response = HTTParty.get(order.callbackurl)
-    if !response.is_succes?
+  def deliver(url)
+    self.delivered_at = Time.new
+    request = current_request
+    request.external_url = url
+    request.order_status = OrderStatus.find_by_code('deliver')
+    #response = HTTParty.get(self.callback_url)
+    #if !response.is_succes?
       # Put the request on the delay queue.
-    end
+    #end
+    request.save!
+    save!
   end
 
 end

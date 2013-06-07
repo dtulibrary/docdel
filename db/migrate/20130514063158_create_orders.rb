@@ -7,7 +7,7 @@ class CreateOrders < ActiveRecord::Migration
       t.string :aufirst
       t.string :aulast
       t.string :date
-      t.timestamp :delivered_art
+      t.timestamp :delivered_at
       t.string :doi
       t.string :eissn
       t.string :epage
