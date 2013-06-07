@@ -84,7 +84,7 @@ class Order
       attributes: { "xmlns" => "http://reprintsdesk.com/webservices/" })
     if response.body[:order_place_order2_response][:order_place_order2_result] == "1"
       request.external_id = response.body[:order_place_order2_response][:order_id]
-      request.order_status = OrderStatus.find_by_code("requested")
+      request.order_status = OrderStatus.find_by_code("request")
     end
     request.save!
     save!

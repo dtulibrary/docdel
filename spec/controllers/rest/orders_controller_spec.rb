@@ -73,7 +73,7 @@ describe Rest::OrdersController do
     before :each do
       FactoryGirl.create(:external_system, code: 'reprintsdesk')
       FactoryGirl.create(:order_status, code: 'new')
-      FactoryGirl.create(:order_status, code: 'requested')
+      FactoryGirl.create(:order_status, code: 'request')
     end
 
     it "create order for reprintsdesk" do
