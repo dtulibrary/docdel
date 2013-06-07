@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'nokogiri'
 
 # require the savon helper module
 require "savon/mock/spec_helper"
@@ -63,6 +64,7 @@ describe Rest::OrdersController do
       Rails.application.config.reprintsdesk.phone = "*"
       Rails.application.config.reprintsdesk.fax = "*"
       Rails.application.config.reprintsdesk.systemmail = "test@dom.ain"
+      Rails.application.config.reprintsdesk.order_prefix = 'TEST'
     end
     after(:all) { 
       savon.unmock!
@@ -77,7 +79,7 @@ describe Rest::OrdersController do
     it "create order for reprintsdesk" do
       price_request = {:issn=>"21504091", :year=>"2010", :totalpages=>1}
       price_response = File.read("spec/fixtures/reprints_price_response.xml")
-      order_request = {:xmlNode=>{:order=>{:orderdetail=>{:ordertypeid=>"4", :deliverymethodid=>"5", :comment=> "", :aulast=>"Lokhande", :aufirst=>"Ram", :issn=>"21504091", :eissn=>nil, :isbn=>nil, :title=>"Natural Science", :atitle=>"Study of some Indian medicinal plants by application of INAA and AAS techniques", :volume=>"02", :issue=>"01", :spage=>nil, :epage=>nil, :pages=>"26-32", :date=>"2010"}, :user=>{:username=>"Test", :email=>"test@dom.ain", :firstname=>"Test", :lastname=>"Test", :billingreference=>1}, :deliveryprofile=>{:firstname=>"Test", :lastname=>"Test", :companyname=>"Test", :address1=>"Test", :address2=>"", :city=>"Test", :statecode=>"*", :statename=>"*", :zip=>"9999", :countrycode=>"XX", :email=>"test@dom.ain", :phone=>"*", :fax=>"*"}, :processinginstructions=>{:processinginstruction=>["", ""], :attributes! => {:processinginstruction=>{"id"=>["1", "2"], "valueid"=>["1", "0"]}}}, :customerreferences=>{:customerreference=>["1", "OTHER"], :attributes! =>{:customerreference=>{"id"=>["1", "2"]}}}}, :attributes! =>{:order=>{'xmlns'=>''}}}}
+      order_request = File.read("spec/fixtures/reprints_order_request.xml")
       order_response = File.read("spec/fixtures/reprints_order_response.xml")
       savon.expects(:order_get_price_estimate).with(message: price_request).returns(price_response)
       savon.expects(:order_place_order2).with(message: order_request).returns(order_response)
@@ -90,6 +92,7 @@ describe Rest::OrdersController do
       order = Order.first
       order.current_request.external_service_charge.should eq 10.0
       order.current_request.external_copyright_charge.should eq -1.0
+      order.current_request.external_id.should eq 123456
     end
   end
 

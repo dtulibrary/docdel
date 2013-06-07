@@ -1,3 +1,1 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<soap>
-</soap>
+<?xml version="1.0" encoding="utf-8"?><soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><soap:Body><Order_PlaceOrder2Response xmlns="http://reprintsdesk.com/webservices/"><Order_PlaceOrder2Result>1</Order_PlaceOrder2Result><order_id>123456</order_id><rnd_id>3452345678</rnd_id></Order_PlaceOrder2Response></soap:Body></soap:Envelope>
