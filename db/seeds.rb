@@ -9,7 +9,7 @@
   { code: 'new', },
   { code: 'deliver' },
   { code: 'request' },
-  { code: 'failed', },
+  { code: 'fail', },
 ].each do |o|
   OrderStatus.find_or_create_by_code(o)
 end
