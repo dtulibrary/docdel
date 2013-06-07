@@ -1,0 +1,12 @@
+en:
+  active_admin:
+    sidebars:
+      orders:
+        requests: 'Requests'
+  haitatsu:
+    admin:
+      order:
+        deliver: "Deliver"
+      request:
+        more: "More"
+
