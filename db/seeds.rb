@@ -10,6 +10,8 @@
   { code: 'deliver' },
   { code: 'request' },
   { code: 'fail', },
+  { code: 'cancel' },
+  { code: 'confirm' },
 ].each do |o|
   OrderStatus.find_or_create_by_code(o)
 end
