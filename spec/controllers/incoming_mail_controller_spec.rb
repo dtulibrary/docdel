@@ -3,7 +3,7 @@ require 'mail'
 
 describe IncomingMailController do
   it "fails to handle incoming email" do
-    mail = Mail.new(File.read("spec/fixtures/incoming_test_email"))
+    mail = Mail.new(File.read("spec/fixtures/incoming_mail/error.eml"))
     IncomingMailController.receive(mail).should eq false
   end
 
@@ -13,7 +13,7 @@ describe IncomingMailController do
         (mail.subject == "Test mail") ? true : false
       end
     end
-    mail = Mail.new(File.read("spec/fixtures/incoming_test_email"))
+    mail = Mail.new(File.read("spec/fixtures/incoming_mail/ok.eml"))
     IncomingMailController.receive(mail).should eq true
   end
 
