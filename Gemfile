@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails'
-gem 'jquery-rails'
+gem 'jquery-rails', '~> 2.3.0'
 gem 'activeadmin'
 gem 'devise_cas_authenticatable'
 gem 'openurl'
@@ -40,4 +40,3 @@ end
 group :production do
   gem 'pg'
 end
-
