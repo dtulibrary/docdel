@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'mail'
+require "suppliers/reprintsdesk"
 
 describe IncomingMailController do
   it "fails to handle incoming email" do
