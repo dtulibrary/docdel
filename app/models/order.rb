@@ -14,7 +14,7 @@ class Order < ActiveRecord::Base
   validates :callback_url, :presence => true
 
   scope :recent, :limit => 10, :order => 'created_at DESC'
-  scope :recent_delivered, where("delivered_at <> ''").limit(10).order('delivered_at DESC')
+  scope :recent_delivered, where("delivered_at IS NOT NULL").limit(10).order('delivered_at DESC')
 
   def self.create_from_param(params)
     # Convert param to openurl data
