@@ -34,14 +34,18 @@ class Order < ActiveRecord::Base
         doi = $1 if /^info:doi\/(.+)/.match id
 
         # Make aulast, aufirst if not present in data
-        aufirst = data.referent.aufirst
-        aulast = data.referent.aulast
+        aufirst = nil
+        aulast = nil
+        aufirst = data.referent.aufirst if data.referent.respond_to?("aufirst")
+        aulast = data.referent.aulast if data.referent.respond_to?("aulast")
         if !aufirst and !aulast
-          if /^([^,]*), (.+)/.match data.referent.au
-            aulast = $1
-            aufirst = $2
-          else
-            aulast = data.referent.au
+          if data.referent.respond_to?("au")
+            if /^([^,]*), (.+)/.match data.referent.au
+              aulast = $1
+              aufirst = $2
+            else
+              aulast = data.referent.au
+            end
           end
         end
 
