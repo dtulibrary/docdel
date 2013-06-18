@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/dtulibrary/incoming_mail
-  revision: e1575d9c3764f896d6a5d605c1f551925dd8ba93
+  revision: af689063fa96fd6bbcb18cf387b9f905bc7016a1
   specs:
-    incoming_mail (1.0.0)
+    incoming_mail (1.0.1)
       mail
 
 GEM
@@ -76,7 +76,7 @@ GEM
       net-sftp (>= 2.0.0)
       net-ssh (>= 2.0.14)
       net-ssh-gateway (>= 1.1.0)
-    code_analyzer (0.3.1)
+    code_analyzer (0.3.2)
       sexp_processor
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
@@ -153,7 +153,7 @@ GEM
     mini_portile (0.5.0)
     mocha (0.14.0)
       metaclass (~> 0.0.1)
-    multi_json (1.7.6)
+    multi_json (1.7.7)
     multi_xml (0.5.4)
     net-scp (1.1.1)
       net-ssh (>= 2.6.5)
@@ -188,7 +188,7 @@ GEM
       activesupport (= 3.2.13)
       bundler (~> 1.0)
       railties (= 3.2.13)
-    rails_best_practices (1.13.5)
+    rails_best_practices (1.13.7)
       activesupport
       awesome_print
       code_analyzer
