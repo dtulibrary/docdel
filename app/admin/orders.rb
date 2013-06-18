@@ -24,8 +24,18 @@ ActiveAdmin.register Order do
     redirect_to admin_order_path
   end
 
-  action_item :only => :show do
+  member_action :cancel, :method => :get do
+    order = Order.find_by_id(params[:id])
+    order.current_request.cancel
+    redirect_to admin_order_path
+  end
+
+  action_item :only => :show, :if => proc { !Rails.env.production? } do
     link_to I18n.t('haitatsu.admin.order.deliver'), deliver_admin_order_path
+  end
+
+  action_item :only => :show, :if => proc { !Rails.env.production? } do
+    link_to I18n.t('haitatsu.admin.order.cancel'), cancel_admin_order_path
   end
 
   sidebar 'orders.requests', :only => [ :show ] do

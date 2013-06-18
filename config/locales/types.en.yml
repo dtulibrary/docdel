@@ -7,5 +7,6 @@ en:
         'request': 'Requested'
         'deliver': 'Delivered'
         'fail': 'Failed'
+        'cancel': 'Cancelled'
       external_system:
         reprintsdesk: 'ReprintsDesk'

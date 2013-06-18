@@ -7,6 +7,7 @@ en:
     admin:
       order:
         deliver: "Deliver"
+        cancel: "Cancel"
         recent_ordered: "Recently ordered"
         recent_delivered: "Recently delivered"
       request:

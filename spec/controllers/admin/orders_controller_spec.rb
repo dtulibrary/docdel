@@ -37,6 +37,17 @@ describe Admin::OrdersController do
       request = FactoryGirl.create(:order_request)
       get :deliver, id: request.order
       response.status.should be(302)
+      OrderRequest.find_by_id(request.id).order_status.code.should eq 'deliver'
+    end
+  end
+
+  describe "GET #cancel" do
+    it "renders the order" do
+      FactoryGirl.create(:order_status, code: 'cancel')
+      request = FactoryGirl.create(:order_request)
+      get :cancel, id: request.order
+      response.status.should be(302)
+      OrderRequest.find_by_id(request.id).order_status.code.should eq 'cancel'
     end
   end
 
