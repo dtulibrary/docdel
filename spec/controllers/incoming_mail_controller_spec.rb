@@ -67,6 +67,16 @@ describe IncomingMailController do
       IncomingMailController.receive(mail).should eq false
     end
 
+    it "doesn't handle unknown prefix" do
+      mail = Mail.new(File.read("spec/fixtures/reprintsdesk/wrong_prefix.eml"))
+      IncomingMailController.receive(mail).should eq false
+    end
+
+    it "doesn't handle unknown order number" do
+      mail = Mail.new(File.read("spec/fixtures/reprintsdesk/wrong_number.eml"))
+      IncomingMailController.receive(mail).should eq false
+    end
+
   end
 
 end

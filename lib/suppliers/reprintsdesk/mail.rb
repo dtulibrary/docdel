@@ -98,9 +98,16 @@ class IncomingMailController
   end
 
   def reprintsdesk_handle_mail?
-    return false unless @prefix_code == config.reprintsdesk.order_prefix
+    unless @prefix_code == config.reprintsdesk.order_prefix
+      logger.info "Rejecting mail on prefix #{@prefix_code} != "+
+        "#{config.reprintsdesk.order_prefix}"
+      return false 
+    end
     @order = Order.find_by_id(@order_number)
-    return false unless @order
+    unless @order
+      logger.info "Rejecting mail on not found #{@order_number}"
+      return false
+    end
     true
   end
 
