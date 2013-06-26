@@ -1,0 +1,117 @@
+From: Reprints Desk Customer Support <nobody@reprintsdesk.com>
+To: "test@dom.ain" <Testing>
+Subject: New Order #123457
+Content-Class: urn:content-classes:message
+Date: Fri, 7 Jun 2013 12:24:36 +0000
+Message-ID: <test-01>
+x-originalarrivaltime: 07 Jun 2013 12:24:36.0174 (UTC)
+ FILETIME=[F919E6E0:01CE6379]
+Content-Type: multipart/alternative;
+	boundary="_BOUNDARY_MARKER_"
+MIME-Version: 1.0
+
+--_BOUNDARY_MARKER_
+Content-Type: text/plain; charset="utf-8"
+
+-RPDESK_BEGIN_BLOCK-
+ companyid: test
+ accountid: 1
+ orderid: 123457
+ rndID: 654321
+ order_date: 2013-06-07 05:25:00
+ issn: 21504091
+ journal: Natural Science article: Study of some Indian medicinal plants by application of INAA and AAS techniques
+ volume: 02
+ issue: 01
+ pages: 26-32
+ date: 2010
+ author: Ram Lokhande
+ user_firstname: Requestor
+ user_lastname:
+ user_username: test
+ delivery_firstname: Requestor
+ delivery_lastname:
+ delivery_email: test@dom.ain
+ CustomerReference1: TEST-5000
+ CustomerReference2: OTHER
+ CustomerReference3:
+ CustomerReference4:
+ CustomerReference5:
+ CustomerReference6:
+ CustomerReference7:
+ CustomerReference8:
+ CustomerReference9:
+ CustomerReference10:
+ CustomerReference11:
+ CustomerReference12:
+ CustomerReference13:
+ CustomerReference14:
+ CustomerReference15:
+ CustomerReference16:
+ CustomerReference17:
+ CustomerReference18:
+ CustomerReference19:
+ CustomerReference20:
+ -RPDESK_END_BLOCK-
+
+--_BOUNDARY_MARKER_
+Content-Type: text/html; charset="utf-8"
+Content-ID: <080292d9-b25e-4ad8-b662-684737fb9326>
+
+<html xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>
+<style>     body {font-family:verdana;font-size:10pt}     .disclaimer {font-size:7pt;font-weight:bold}     td {font-size:10pt;color=black}     .left {font-weight:bold}    </style>
+  <body>
+    <p>-RPDESK_BEGIN_BLOCK-
+
+ companyid: test
+ accountid: 1
+
+ orderid: 123457
+ rndID: 654321
+ order_date: 2013-06-07 05:25:00
+
+ issn: 21504091
+ journal: Natural Science
+ article: Study of some Indian medicinal plants by application of INAA and AAS techniques
+ volume: 02
+ issue: 01
+ pages: 26-32
+ date: 2010
+ author: Ram Lokhande
+
+ user_firstname: Requestor
+ user_lastname:
+ user_username: test
+
+ delivery_firstname: Requestor
+ delivery_lastname:
+ delivery_email: test@dom.ain
+
+ CustomerReference1: TEST-5000
+ CustomerReference2: OTHER
+ CustomerReference3:
+ CustomerReference4:
+ CustomerReference5:
+ CustomerReference6:
+ CustomerReference7:
+ CustomerReference8:
+ CustomerReference9:
+ CustomerReference10:
+ CustomerReference11:
+ CustomerReference12:
+ CustomerReference13:
+ CustomerReference14:
+ CustomerReference15:
+ CustomerReference16:
+ CustomerReference17:
+ CustomerReference18:
+ CustomerReference19:
+ CustomerReference20:
+
+ -RPDESK_END_BLOCK-</p>
+  </body>
+</html>
+
+--_BOUNDARY_MARKER_

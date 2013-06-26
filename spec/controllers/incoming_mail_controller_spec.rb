@@ -77,6 +77,16 @@ describe IncomingMailController do
       IncomingMailController.receive(mail).should eq false
     end
 
+    it "doesn't handle wrong request on new order" do
+      mail = Mail.new(File.read("spec/fixtures/reprintsdesk/wrong_order_req.eml"))
+      IncomingMailController.receive(mail).should eq false
+    end
+
+    it "doesn't handle wrong request on download order" do
+      mail = Mail.new(File.read("spec/fixtures/reprintsdesk/wrong_download_req.eml"))
+      IncomingMailController.receive(mail).should eq false
+    end
+
   end
 
 end

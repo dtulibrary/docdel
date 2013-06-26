@@ -27,8 +27,14 @@ class IncomingMailController
   def reprintsdesk_new_order(mail)
     reprintsdesk_extract_from_body(mail)
     return false unless reprintsdesk_handle_mail?
-    @order.request('reprintsdesk', @external_id).confirm
-    true
+    request = @order.request('reprintsdesk', @external_id)
+    if request
+      request.confirm
+      true
+    else
+      logger.info "Request #{@external_id} not found on order #{@order_number}"
+      false
+    end
   end
 
   # Handle confirmation mail (human mail)
@@ -58,8 +64,14 @@ class IncomingMailController
     reprintsdesk_extract_from_body(mail)
     return false unless reprintsdesk_handle_mail?
     raise ArgumentError unless(@deliver_url)
-    @order.request('reprintsdesk', @external_id).deliver(@deliver_url)
-    true
+    request = @order.request('reprintsdesk', @external_id)
+    if request
+      request.deliver(@deliver_url)
+      true
+    else
+      logger.info "Request #{@external_id} not found on order #{@order_number}"
+      false
+    end
   end
 
   # Extract the external_id, prefix code and order number
