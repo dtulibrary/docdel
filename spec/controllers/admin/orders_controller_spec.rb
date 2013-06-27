@@ -1,7 +1,8 @@
 require 'spec_helper'
-include Devise::TestHelpers
 
 describe Admin::OrdersController do
+  include Devise::TestHelpers
+  include WebMock::API
   render_views
 
   before(:each) do
@@ -33,6 +34,8 @@ describe Admin::OrdersController do
 
   describe "GET #deliver" do
     it "renders the order" do
+      stub_request(:get, "http://localhost/callback?status=deliver").
+        to_return(:status => 200, :body => "", :headers => {})
       FactoryGirl.create(:order_status, code: 'deliver')
       request = FactoryGirl.create(:order_request)
       get :deliver, id: request.order
@@ -43,6 +46,8 @@ describe Admin::OrdersController do
 
   describe "GET #cancel" do
     it "renders the order" do
+      stub_request(:get, "http://localhost/callback?status=cancel").
+        to_return(:status => 200, :body => "", :headers => {})
       FactoryGirl.create(:order_status, code: 'cancel')
       request = FactoryGirl.create(:order_request)
       get :cancel, id: request.order

@@ -3,6 +3,12 @@ require 'mail'
 require "suppliers/reprintsdesk"
 
 describe IncomingMailController do
+  include WebMock::API
+
+  after :all do
+    WebMock.reset!
+  end
+
   it "fails to handle incoming email" do
     mail = Mail.new(File.read("spec/fixtures/incoming_mail/error.eml"))
     IncomingMailController.receive(mail).should eq false
@@ -29,6 +35,8 @@ describe IncomingMailController do
     end
 
     it "handles New Order" do
+      stub_request(:get, "http://localhost/callback?status=confirm").
+        to_return(:status => 200, :body => "", :headers => {})
       FactoryGirl.create(:order_status, code: 'confirm')
       mail = Mail.new(File.read("spec/fixtures/reprintsdesk/new_order.eml"))
       IncomingMailController.receive(mail).should eq true
@@ -42,6 +50,8 @@ describe IncomingMailController do
     end
 
     it "handles Information cancel" do
+      stub_request(:get, "http://localhost/callback?status=cancel").
+        to_return(:status => 200, :body => "", :headers => {})
       FactoryGirl.create(:order_status, code: 'cancel')
       mail = Mail.new(File.read("spec/fixtures/reprintsdesk/cancel.eml"))
       IncomingMailController.receive(mail).should eq true
@@ -50,6 +60,8 @@ describe IncomingMailController do
     end
 
     it "handles Download" do
+      stub_request(:get, "http://localhost/callback?status=deliver").
+        to_return(:status => 200, :body => "", :headers => {})
       FactoryGirl.create(:order_status, code: 'deliver')
       mail = Mail.new(File.read("spec/fixtures/reprintsdesk/download.eml"))
       IncomingMailController.receive(mail).should eq true

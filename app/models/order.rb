@@ -115,11 +115,15 @@ class Order < ActiveRecord::Base
   end
 
   def do_callback(response_code)
-    response = HTTParty.get(callback_url +
-      (/\?/.match(callback_url) ? '&' : '?') +
-      "status=#{response_code}")
-    if !response.success?
-      # Put the request on the delay queue.
+    begin
+      response = HTTParty.get(callback_url +
+        (/\?/.match(callback_url) ? '&' : '?') +
+        "status=#{response_code}")
+      if !response.success?
+        raise "Callback request unsuccessfull"
+      end
+    rescue StandardError => e
+      raise "Callback failed for #{callback_url} - " + e.message
     end
   end
 

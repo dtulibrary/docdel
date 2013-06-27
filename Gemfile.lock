@@ -47,6 +47,7 @@ GEM
     activesupport (3.2.13)
       i18n (= 0.6.1)
       multi_json (~> 1.0)
+    addressable (2.3.5)
     akami (1.2.0)
       gyoku (>= 0.4.0)
       nokogiri (>= 1.4.0)
@@ -87,6 +88,8 @@ GEM
     coffee-script-source (1.6.2)
     colored (1.2)
     columnize (0.3.6)
+    crack (0.4.0)
+      safe_yaml (~> 0.9.0)
     debugger (1.6.0)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.2.0)
@@ -228,6 +231,7 @@ GEM
       sexp_processor (~> 4.1)
     rubycas-client (2.3.9)
       activesupport
+    safe_yaml (0.9.3)
     sass (3.2.9)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
@@ -279,6 +283,9 @@ GEM
     wasabi (3.1.0)
       httpi (~> 2.0)
       nokogiri (>= 1.4.0)
+    webmock (1.12.1)
+      addressable (>= 2.2.7)
+      crack (>= 0.3.2)
 
 PLATFORMS
   ruby
@@ -309,3 +316,4 @@ DEPENDENCIES
   therubyracer
   turbo-sprockets-rails3
   uglifier (>= 1.0.3)
+  webmock

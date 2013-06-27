@@ -17,6 +17,7 @@ require 'rspec/rails'
 require 'rspec/autorun'
 require 'mocha'
 require 'factory_girl_rails'
+require 'webmock/rspec'
 
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
@@ -35,3 +36,4 @@ RSpec.configure do |config|
 end
 
 #Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+

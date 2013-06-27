@@ -36,6 +36,7 @@ group :test do
   gem 'simplecov-rcov', :require => false
   gem 'mocha', :require => false
   gem 'factory_girl_rails'
+  gem 'webmock'
 end
 
 group :production do
