@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/dtulibrary/incoming_mail
-  revision: f332695ef3f7709182227d358d8918aef514f97f
+  revision: 0dc0a52b1a4a408062a974ffdeacf04f2de8d998
   specs:
-    incoming_mail (1.0.4)
+    incoming_mail (1.0.5)
       mail
 
 GEM
