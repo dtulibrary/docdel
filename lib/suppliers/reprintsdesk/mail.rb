@@ -3,7 +3,6 @@ require 'incoming_mail_controller'
 class IncomingMailController
   def supplier_mail_check_reprintsdesk(mail)
     if mail.from.grep(/reprintsdesk\.com/).count > 0
-      logger.info "Subject "+mail.subject
       case mail.subject
       when /New Order/
         reprintsdesk_new_order(mail)
@@ -106,7 +105,6 @@ class IncomingMailController
     else
       part = nil
       mail.parts.each do |p|
-        logger.info "Content type "+p.content_type
         if /text\/plain/.match p.content_type
           part = p
         end
