@@ -69,6 +69,16 @@ describe IncomingMailController do
       order.current_request.order_status.code.should eq 'deliver'
     end
 
+    it "handles Download - html only" do
+      stub_request(:get, "http://localhost/callback?status=deliver").
+        to_return(:status => 200, :body => "", :headers => {})
+      FactoryGirl.create(:order_status, code: 'deliver')
+      mail = Mail.new(File.read("spec/fixtures/reprintsdesk/download_html_only.eml"))
+      IncomingMailController.receive(mail).should eq true
+      order = Order.find(@order.id)
+      order.current_request.order_status.code.should eq 'deliver'
+    end
+
     it "doesn't handle unknown subject" do
       mail = Mail.new(File.read("spec/fixtures/reprintsdesk/unknown_subject.eml"))
       IncomingMailController.receive(mail).should eq false

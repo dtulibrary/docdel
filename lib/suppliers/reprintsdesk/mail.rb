@@ -3,6 +3,7 @@ require 'incoming_mail_controller'
 class IncomingMailController
   def supplier_mail_check_reprintsdesk(mail)
     if mail.from.grep(/reprintsdesk\.com/).count > 0
+      logger.info "Subject "+mail.subject
       case mail.subject
       when /New Order/
         reprintsdesk_new_order(mail)
@@ -78,16 +79,16 @@ class IncomingMailController
   def reprintsdesk_extract_from_body(mail)
     body = reprintsdesk_extract_text_part(mail).body.to_s
 
-    / orderid: ([^ ]+)/.match body
+    /orderid: ([^ ]+)/.match body
     @external_id = $1
 
-    / CustomerReference1: ([^ ]+)/.match body
+    /CustomerReference1: ([^ ]+)/.match body
     ref = $1
     /(\w+)-(\d+)/.match ref
     @prefix_code = $1
     @order_number = $2
 
-    / download_link: (\S+)/.match body
+    /download_link: (\S+)/.match body
     @deliver_url = $1
   end
 
@@ -100,10 +101,15 @@ class IncomingMailController
   end
 
   def reprintsdesk_extract_text_part(mail)
-    part = nil
-    mail.parts.each do |p|
-      if /text\/plain/.match p.content_type
-        part = p
+    if mail.parts.count == 0
+      part = mail
+    else
+      part = nil
+      mail.parts.each do |p|
+        logger.info "Content type "+p.content_type
+        if /text\/plain/.match p.content_type
+          part = p
+        end
       end
     end
     part
@@ -113,7 +119,7 @@ class IncomingMailController
     unless @prefix_code == config.reprintsdesk.order_prefix
       logger.info "Rejecting mail on prefix #{@prefix_code} != "+
         "#{config.reprintsdesk.order_prefix}"
-      return false 
+      return false
     end
     @order = Order.find_by_id(@order_number)
     unless @order

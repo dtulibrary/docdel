@@ -1,0 +1,63 @@
+From: Reprints Desk Customer Support <nobody@reprintsdesk.com>
+To: Testing <test@dom.ain>
+Subject: Download Order #123456
+Date: Thu, 27 Jun 2013 10:07:23 -0700
+Content-Type: text/html; charset="utf-8"
+Message-ID: <test-11>
+MIME-Version: 1.0
+
+<html xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <style>     body {font-family:verdana;font-size:10pt}     .disclaimer {font-size:7pt;font-weight:bold}     td {font-size:10pt;color=black}     .left {font-weight:bold}    </style>
+  <body>
+    <p>-RPDESK_BEGIN_BLOCK-
+
+companyid: 1093
+accountid: 3
+
+orderid: 123456
+rndID: 87654321
+order_date: 2013-06-27 05:57:00
+
+issn: 02624079
+journal: New Scientist
+article: Back to the moon
+volume: 209
+issue:
+pages: 46-49
+date: 2011
+author: Greg Klerkx
+
+user_firstname: Requestor
+user_lastname:
+user_username: test
+
+delivery_firstname: Requestor
+delivery_lastname:
+delivery_email: test@dom.ain
+
+CustomerReference1: TEST-5000
+CustomerReference2: OTHER
+CustomerReference3:
+CustomerReference4:
+CustomerReference5:
+CustomerReference6:
+CustomerReference7:
+CustomerReference8:
+CustomerReference9:
+CustomerReference10:
+CustomerReference11:
+CustomerReference12:
+CustomerReference13:
+CustomerReference14:
+CustomerReference15:
+CustomerReference16:
+CustomerReference17:
+CustomerReference18:
+CustomerReference19:
+CustomerReference20:
+
+download_link: http://test.dom.ain/download?o=123456
+
+-RPDESK_END_BLOCK-</p>
+  </body>
+</html>

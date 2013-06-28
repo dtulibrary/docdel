@@ -3,7 +3,7 @@ To: "test@dom.ain" <Testing>
 Subject: Download Order #123457
 Content-Class: urn:content-classes:message
 Date: Fri, 7 Jun 2013 12:42:54 +0000
-Message-ID: <test-05>
+Message-ID: <test-06>
 x-originalarrivaltime: 07 Jun 2013 12:42:54.0203 (UTC)
  FILETIME=[8793D4B0:01CE637C]
 Content-Type: multipart/alternative;
