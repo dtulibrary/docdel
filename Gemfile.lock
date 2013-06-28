@@ -1,8 +1,8 @@
 GIT
   remote: https://github.com/dtulibrary/incoming_mail
-  revision: 0dc0a52b1a4a408062a974ffdeacf04f2de8d998
+  revision: 1df06661a06aa517aac2e9f48af5141c95eedc99
   specs:
-    incoming_mail (1.0.5)
+    incoming_mail (1.0.6)
       mail
 
 GEM
@@ -95,7 +95,7 @@ GEM
       debugger-linecache (~> 1.2.0)
       debugger-ruby_core_source (~> 1.2.1)
     debugger-linecache (1.2.0)
-    debugger-ruby_core_source (1.2.2)
+    debugger-ruby_core_source (1.2.3)
     devise (2.2.4)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.1)
@@ -283,7 +283,7 @@ GEM
     wasabi (3.1.0)
       httpi (~> 2.0)
       nokogiri (>= 1.4.0)
-    webmock (1.12.1)
+    webmock (1.12.2)
       addressable (>= 2.2.7)
       crack (>= 0.3.2)
 
