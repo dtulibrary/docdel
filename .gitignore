@@ -15,8 +15,3 @@ capybara-*.html
 rerun.txt
 pickle-email-*.html
 *.local*
-
-.DS_Store
-.project
-.buildpath
-.*.swp
