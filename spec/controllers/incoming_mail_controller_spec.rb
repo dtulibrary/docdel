@@ -24,88 +24,153 @@ describe IncomingMailController do
     IncomingMailController.receive(mail).should eq true
   end
 
-  describe "ReprintsDesk" do
-    before :each do
+  context "ReprintsDesk" do
+    describe "correct order" do
+      before :each do
+        setup_reprintsdesk(5000, 123456, 'TEST')
+      end
+
+      it "handles New Order" do
+        mail_should_set_status('new_order', 'confirm')
+      end
+
+      it "handles Confirmation" do
+        mail = Mail.new(File.read("spec/fixtures/reprintsdesk/confirmation.eml"))
+        IncomingMailController.receive(mail).should eq true
+      end
+
+      it "handles Information cancel" do
+        mail_should_set_status('cancel', 'cancel')
+      end
+
+      it "handles Machine cancel" do
+        mail_should_set_status('cancel_machine', 'cancel')
+      end
+
+      it "handles Download" do
+        mail_should_set_status('download', 'deliver')
+      end
+
+      it "handles Download - html only" do
+        mail_should_set_status('download_html_only', 'deliver')
+      end
+
+      it "doesn't handle unknown subject" do
+        mail = Mail.new(File.read("spec/fixtures/reprintsdesk/unknown_subject.eml"))
+        IncomingMailController.receive(mail).should eq false
+      end
+
+      it "doesn't handle unknown information" do
+        mail = Mail.new(File.read("spec/fixtures/reprintsdesk/unknown_info.eml"))
+        IncomingMailController.receive(mail).should eq false
+      end
+
+    end
+
+    describe "wrong order-id" do
+      before :each do
+        setup_reprintsdesk(4999, 123456, 'TEST')
+      end
+
+      it "doesn't handle unknown order number" do
+        mail_should_not_be_handled('new_order')
+      end
+
+      it "doesn't handle Information cancel" do
+        mail_should_not_be_handled('cancel')
+      end
+
+      it "doesn't handle Machine cancel" do
+        mail_should_not_be_handled('cancel_machine')
+      end
+
+      it "doesn't handle Download" do
+        mail_should_not_be_handled('download')
+      end
+
+      it "doesn't handle Download - html only" do
+        mail_should_not_be_handled('download_html_only')
+      end
+
+    end
+
+    describe "wrong prefix" do
+      before :each do
+        setup_reprintsdesk(5000, 123456, 'TEST2')
+      end
+
+      it "doesn't handle unknown order number" do
+        mail_should_not_be_handled('new_order')
+      end
+
+      it "doesn't handle Information cancel" do
+        mail_should_not_be_handled('cancel')
+      end
+
+      it "doesn't handle Machine cancel" do
+        mail_should_not_be_handled('cancel_machine')
+      end
+
+      it "doesn't handle Download" do
+        mail_should_not_be_handled('download')
+      end
+
+      it "doesn't handle Download - html only" do
+        mail_should_not_be_handled('download_html_only')
+      end
+
+    end
+
+    describe "wrong external-id" do
+      before :each do
+        setup_reprintsdesk(5000, 123457, 'TEST')
+      end
+
+      it "doesn't handle unknown order number" do
+        mail_should_not_be_handled('new_order')
+      end
+
+      it "doesn't handle Information cancel" do
+        mail_should_not_be_handled('cancel')
+      end
+
+      it "doesn't handle Machine cancel" do
+        mail_should_not_be_handled('cancel_machine')
+      end
+
+      it "doesn't handle Download" do
+        mail_should_not_be_handled('download')
+      end
+
+      it "doesn't handle Download - html only" do
+        mail_should_not_be_handled('download_html_only')
+      end
+
+    end
+
+    def setup_reprintsdesk(order_id, external_id, prefix)
       ext = FactoryGirl.create(:external_system, code: 'reprintsdesk')
       # Create order we can test with that means fixed id
-      @order = FactoryGirl.create(:order, id: 5000)
-      @request = FactoryGirl.create(:order_request, order: @order,
-        external_system: ext, external_id: 123456)
-      Rails.application.config.reprintsdesk.order_prefix = "TEST"
+      @order = FactoryGirl.create(:order, id: order_id)
+      @request = FactoryGirl.create(:order_request, :order => @order,
+        :external_system => ext, :external_id => external_id)
+      Rails.application.config.reprintsdesk.order_prefix = prefix
     end
 
-    it "handles New Order" do
-      stub_request(:get, "http://localhost/callback?status=confirm").
+    def mail_should_set_status(mail_file, status)
+      stub_request(:get, "http://localhost/callback?status=#{status}").
         to_return(:status => 200, :body => "", :headers => {})
-      FactoryGirl.create(:order_status, code: 'confirm')
-      mail = Mail.new(File.read("spec/fixtures/reprintsdesk/new_order.eml"))
+      FactoryGirl.create(:order_status, code: status)
+      mail = Mail.new(
+        File.read("spec/fixtures/reprintsdesk/#{mail_file}.eml"))
       IncomingMailController.receive(mail).should eq true
       order = Order.find(@order.id)
-      order.current_request.order_status.code.should eq 'confirm'
+      order.current_request.order_status.code.should eq status
     end
 
-    it "handles Confirmation" do
-      mail = Mail.new(File.read("spec/fixtures/reprintsdesk/confirmation.eml"))
-      IncomingMailController.receive(mail).should eq true
-    end
-
-    it "handles Information cancel" do
-      stub_request(:get, "http://localhost/callback?status=cancel").
-        to_return(:status => 200, :body => "", :headers => {})
-      FactoryGirl.create(:order_status, code: 'cancel')
-      mail = Mail.new(File.read("spec/fixtures/reprintsdesk/cancel.eml"))
-      IncomingMailController.receive(mail).should eq true
-      order = Order.find(@order.id)
-      order.current_request.order_status.code.should eq 'cancel'
-    end
-
-    it "handles Download" do
-      stub_request(:get, "http://localhost/callback?status=deliver").
-        to_return(:status => 200, :body => "", :headers => {})
-      FactoryGirl.create(:order_status, code: 'deliver')
-      mail = Mail.new(File.read("spec/fixtures/reprintsdesk/download.eml"))
-      IncomingMailController.receive(mail).should eq true
-      order = Order.find(@order.id)
-      order.current_request.order_status.code.should eq 'deliver'
-    end
-
-    it "handles Download - html only" do
-      stub_request(:get, "http://localhost/callback?status=deliver").
-        to_return(:status => 200, :body => "", :headers => {})
-      FactoryGirl.create(:order_status, code: 'deliver')
-      mail = Mail.new(File.read("spec/fixtures/reprintsdesk/download_html_only.eml"))
-      IncomingMailController.receive(mail).should eq true
-      order = Order.find(@order.id)
-      order.current_request.order_status.code.should eq 'deliver'
-    end
-
-    it "doesn't handle unknown subject" do
-      mail = Mail.new(File.read("spec/fixtures/reprintsdesk/unknown_subject.eml"))
-      IncomingMailController.receive(mail).should eq false
-    end
-
-    it "doesn't handle unknown information" do
-      mail = Mail.new(File.read("spec/fixtures/reprintsdesk/unknown_info.eml"))
-      IncomingMailController.receive(mail).should eq false
-    end
-
-    it "doesn't handle unknown prefix" do
-      mail = Mail.new(File.read("spec/fixtures/reprintsdesk/wrong_prefix.eml"))
-      IncomingMailController.receive(mail).should eq false
-    end
-
-    it "doesn't handle unknown order number" do
-      mail = Mail.new(File.read("spec/fixtures/reprintsdesk/wrong_number.eml"))
-      IncomingMailController.receive(mail).should eq false
-    end
-
-    it "doesn't handle wrong request on new order" do
-      mail = Mail.new(File.read("spec/fixtures/reprintsdesk/wrong_order_req.eml"))
-      IncomingMailController.receive(mail).should eq false
-    end
-
-    it "doesn't handle wrong request on download order" do
-      mail = Mail.new(File.read("spec/fixtures/reprintsdesk/wrong_download_req.eml"))
+    def mail_should_not_be_handled(mail_file)
+      mail = Mail.new(
+        File.read("spec/fixtures/reprintsdesk/#{mail_file}.eml"))
       IncomingMailController.receive(mail).should eq false
     end
 

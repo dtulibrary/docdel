@@ -12,6 +12,8 @@ class IncomingMailController
         reprintsdesk_information(mail)
       when /Download Order/
         reprintsdesk_download(mail)
+      when /Cancelled Order/
+        reprintsdesk_machine_cancelled(mail)
       else
         logger.info "Reprintsdesk subject "+mail.subject
         false
@@ -51,8 +53,7 @@ class IncomingMailController
     return false unless reprintsdesk_handle_mail?
     case reprintsdesk_extract_text_part(mail).body.to_s
     when /This order has been canceled/
-      @order.request('reprintsdesk', @external_id).cancel
-      true
+      reprintsdesk_cancel
     else
       logger.info "Information mail "+reprintsdesk_extract_text_part(mail).body.to_s
       false
@@ -67,6 +68,23 @@ class IncomingMailController
     request = @order.request('reprintsdesk', @external_id)
     if request
       request.deliver(@deliver_url)
+      true
+    else
+      logger.info "Request #{@external_id} not found on order #{@order_number}"
+      false
+    end
+  end
+
+  def reprintsdesk_machine_cancelled(mail)
+    reprintsdesk_extract_from_body(mail)
+    return false unless reprintsdesk_handle_mail?
+    reprintsdesk_cancel
+  end
+
+  def reprintsdesk_cancel
+    request = @order.request('reprintsdesk', @external_id)
+    if request
+      request.cancel if(request.order_status.code != 'cancel')
       true
     else
       logger.info "Request #{@external_id} not found on order #{@order_number}"
