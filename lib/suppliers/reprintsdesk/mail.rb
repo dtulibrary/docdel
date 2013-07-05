@@ -29,14 +29,7 @@ class IncomingMailController
   def reprintsdesk_new_order(mail)
     reprintsdesk_extract_from_body(mail)
     return false unless reprintsdesk_handle_mail?
-    request = @order.request('reprintsdesk', @external_number)
-    if request
-      request.confirm
-      true
-    else
-      logger.info "Request #{@external_number} not found on order #{@order_number}"
-      false
-    end
+    confirm_request('reprintsdesk')
   end
 
   # Handle confirmation mail (human mail)
@@ -51,11 +44,11 @@ class IncomingMailController
   def reprintsdesk_information(mail)
     reprintsdesk_extract_from_subject(mail.subject)
     return false unless reprintsdesk_handle_mail?
-    case reprintsdesk_extract_text_part(mail).body.to_s
+    case extract_mail_text_part(mail).body.to_s
     when /This order has been canceled/
       reprintsdesk_cancel
     else
-      logger.info "Information mail "+reprintsdesk_extract_text_part(mail).body.to_s
+      logger.info "Information mail "+extract_mail_text_part(mail).body.to_s
       false
     end
   end
@@ -65,14 +58,7 @@ class IncomingMailController
     reprintsdesk_extract_from_body(mail)
     return false unless reprintsdesk_handle_mail?
     raise ArgumentError unless(@deliver_url)
-    request = @order.request('reprintsdesk', @external_number)
-    if request
-      request.deliver(@deliver_url)
-      true
-    else
-      logger.info "Request #{@external_number} not found on order #{@order_number}"
-      false
-    end
+    deliver_request('reprintsdesk', @deliver_url)
   end
 
   def reprintsdesk_machine_cancelled(mail)
@@ -82,19 +68,12 @@ class IncomingMailController
   end
 
   def reprintsdesk_cancel
-    request = @order.request('reprintsdesk', @external_number)
-    if request
-      request.cancel if(request.order_status.code != 'cancel')
-      true
-    else
-      logger.info "Request #{@external_number} not found on order #{@order_number}"
-      false
-    end
+    cancel_request('reprintsdesk')
   end
 
   # Extract the external_number, prefix code and order number
   def reprintsdesk_extract_from_body(mail)
-    body = reprintsdesk_extract_text_part(mail).body.to_s
+    body = extract_mail_text_part(mail).body.to_s
 
     /orderid: +(\S+)/.match body
     @external_number = $1
@@ -117,32 +96,8 @@ class IncomingMailController
     @external_number = $1
   end
 
-  def reprintsdesk_extract_text_part(mail)
-    if mail.parts.count == 0
-      part = mail
-    else
-      part = nil
-      mail.parts.each do |p|
-        if /text\/plain/.match p.content_type
-          part = p
-        end
-      end
-    end
-    part
-  end
-
   def reprintsdesk_handle_mail?
-    unless @prefix_code == config.reprintsdesk.order_prefix
-      logger.info "Rejecting mail on prefix #{@prefix_code} != "+
-        "#{config.reprintsdesk.order_prefix}"
-      return false
-    end
-    @order = Order.find_by_id(@order_number)
-    unless @order
-      logger.info "Rejecting mail on not found #{@order_number}"
-      return false
-    end
-    true
+    handle_mail?(config.reprintsdesk.order_prefix)
   end
 
 end

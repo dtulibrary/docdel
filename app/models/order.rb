@@ -126,6 +126,7 @@ class Order < ActiveRecord::Base
     rescue StandardError => e
       raise "Callback failed for #{callback_url} - " + e.message
     end
+    true
   end
 
 end

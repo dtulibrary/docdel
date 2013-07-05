@@ -21,7 +21,15 @@ ProtectMassAssignmentCheck: { }
 RemoveEmptyHelpersCheck: { }
 #RemoveTabCheck: { }
 RemoveTrailingWhitespaceCheck: { }
-RemoveUnusedMethodsInControllersCheck: { except_methods: ['IncomingMailController#receive'] }
+RemoveUnusedMethodsInControllersCheck: { except_methods: [
+  'IncomingMailController#receive',
+  'IncomingMailController#extract_mail_text_part',
+  'IncomingMailController#extract_mail_pdf_part',
+  'IncomingMailController#handle_mail?',
+  'IncomingMailController#confirm_request',
+  'IncomingMailController#cancel_request',
+  'IncomingMailController#deliver_request',
+] }
 RemoveUnusedMethodsInHelpersCheck: { except_methods: [] }
 RemoveUnusedMethodsInModelsCheck: { except_methods: ['OrderStatus#name', 'ExternalSystem#name'] }
 ReplaceComplexCreationWithFactoryMethodCheck: { attribute_assignment_count: 2 }

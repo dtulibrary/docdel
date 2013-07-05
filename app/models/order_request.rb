@@ -23,6 +23,7 @@ class OrderRequest < ActiveRecord::Base
   end
 
   def cancel
+    return if order_status.code == 'cancel'
     set_status('cancel')
     order.do_callback('cancel')
   end
