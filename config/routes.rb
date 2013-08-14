@@ -6,6 +6,7 @@ Haitatsu::Application.routes.draw do
 
   namespace :rest do
     resources :orders, :only => [:show, :create]
+    get 'test' => 'orders#test' if Rails.env.development?
   end
 
 end

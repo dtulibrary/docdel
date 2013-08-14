@@ -78,7 +78,6 @@ class Order < ActiveRecord::Base
         @request.external_system = external_sys
 
         # Return error if we can't validate and save the record
-        logger.info @request.inspect
         @request.valid? or raise "Request not valid"
         @request.save
 

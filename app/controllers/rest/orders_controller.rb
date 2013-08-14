@@ -15,4 +15,18 @@ class Rest::OrdersController < ApplicationController
       format.json { render :json => @order, :status => @order ? 200 : 404 }
     end
   end
+
+  if Rails.env.development?
+    def test
+      request = eval(File.read("test_order.local.rb"))
+      request.each do |k, v|
+        params[k] = v
+      end
+
+      @order = Order.create_from_param(params)
+      respond_to do |format|
+        format.json { render :json => @order, :status => @order ? 200 : 404 }
+      end
+    end
+  end
 end
