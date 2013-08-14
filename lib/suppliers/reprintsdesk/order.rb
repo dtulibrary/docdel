@@ -15,13 +15,15 @@ class Order
     Savon.observers << SavonObserver.new if Rails.env.development?
 
     request = current_request
-    response = client.call(:order_get_price_estimate,
-      message: { issn: issn || eissn, year: date, totalpages: 1 },
-      :attributes => { "xmlns" => "http://reprintsdesk.com/webservices/" })
-    if response.body[:order_get_price_estimate_response][:order_get_price_estimate_result] == "1"
-      request.external_service_charge = response.body[:order_get_price_estimate_response][:xml_data][:estimate][:servicecharge]
-      request.external_copyright_charge = response.body[:order_get_price_estimate_response][:xml_data][:estimate][:copyrightcharge]
-      request.external_currency = 'USD'
+    if (issn || eissn) && date
+      response = client.call(:order_get_price_estimate,
+        message: { issn: issn || eissn, year: date, totalpages: 1 },
+        :attributes => { "xmlns" => "http://reprintsdesk.com/webservices/" })
+      if response.body[:order_get_price_estimate_response][:order_get_price_estimate_result] == "1"
+        request.external_service_charge = response.body[:order_get_price_estimate_response][:xml_data][:estimate][:servicecharge]
+        request.external_copyright_charge = response.body[:order_get_price_estimate_response][:xml_data][:estimate][:copyrightcharge]
+        request.external_currency = 'USD'
+      end
     end
 
     builder = Nokogiri::XML::Builder.new do |xml|
