@@ -96,10 +96,10 @@ class IncomingMailController
   def reprintsdesk_extract_from_body(mail)
     body = reprintsdesk_extract_text_part(mail).body.to_s
 
-    /orderid: ([^ ]+)/.match body
+    /orderid: +(\S+)/.match body
     @external_id = $1
 
-    /CustomerReference1: ([^ ]+)/.match body
+    /CustomerReference1: +(\S+)/.match body
     ref = $1
     /(\w+)-(\d+)/.match ref
     @prefix_code = $1
