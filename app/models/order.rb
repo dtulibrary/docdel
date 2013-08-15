@@ -6,7 +6,7 @@ class Order < ActiveRecord::Base
 
   attr_accessible :atitle, :aufirst, :aulast, :callback_url, :date,
     :delivered_at, :doi, :eissn, :email, :epage, :isbn, :issn, :issue, :pages,
-    :spage, :title, :volume
+    :spage, :title, :volume, :customer_order_number
 
   has_many :order_requests, :dependent => :destroy
 
@@ -65,6 +65,7 @@ class Order < ActiveRecord::Base
           o.volume = data.referent.volume
           o.doi = doi
           o.callback_url = params[:callback_url]
+          o.customer_order_number = params[:dibs_order_id]
           o.email = params[:email]
           o.save or raise "Order not valid"
         end

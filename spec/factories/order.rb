@@ -14,5 +14,6 @@ FactoryGirl.define do
     f.spage "491"
     f.title "Journal of Testing"
     f.volume "1"
+    f.sequence(:customer_order_number) { |n| "T#{n}" }
   end
 end

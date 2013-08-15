@@ -3,11 +3,13 @@ ActiveAdmin.register Order do
 
   filter :atitle
   filter :email
+  filter :customer_order_number
   filter :delivered_at
   filter :created_at
   filter :updated_at
 
   index do
+    column :customer_order_number
     column :atitle
     column :email
     column :delivered_at

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130515134056) do
+ActiveRecord::Schema.define(:version => 20130815081721) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -63,8 +63,8 @@ ActiveRecord::Schema.define(:version => 20130515134056) do
   add_index "order_statuses", ["code"], :name => "index_order_statuses_on_code", :unique => true
 
   create_table "orders", :force => true do |t|
-    t.string   "email",        :null => false
-    t.string   "callback_url", :null => false
+    t.string   "email",                 :null => false
+    t.string   "callback_url",          :null => false
     t.string   "atitle"
     t.string   "aufirst"
     t.string   "aulast"
@@ -80,8 +80,9 @@ ActiveRecord::Schema.define(:version => 20130515134056) do
     t.string   "spage"
     t.string   "title"
     t.string   "volume"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+    t.string   "customer_order_number"
   end
 
   add_index "orders", ["email"], :name => "index_orders_on_email"
