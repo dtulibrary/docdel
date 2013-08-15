@@ -111,6 +111,7 @@ class Order < ActiveRecord::Base
 
   def mark_delivery
     delivered_at = Time.new
+    save!
     do_callback('deliver')
   end
 
