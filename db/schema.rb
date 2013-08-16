@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130815081721) do
+ActiveRecord::Schema.define(:version => 20130816094610) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(:version => 20130815081721) do
     t.integer  "external_system_id",        :null => false
     t.float    "external_copyright_charge"
     t.string   "external_currency"
-    t.integer  "external_id"
+    t.integer  "external_number"
     t.float    "external_service_charge"
     t.string   "external_url"
     t.string   "shelfmark"

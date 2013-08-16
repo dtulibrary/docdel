@@ -92,7 +92,7 @@ describe Rest::OrdersController do
       order = Order.first
       order.current_request.external_service_charge.should eq 10.0
       order.current_request.external_copyright_charge.should eq -1.0
-      order.current_request.external_id.should eq 123456
+      order.current_request.external_number.should eq 123456
     end
   end
 

@@ -148,12 +148,12 @@ describe IncomingMailController do
 
     end
 
-    def setup_reprintsdesk(order_id, external_id, prefix)
+    def setup_reprintsdesk(order_id, external_number, prefix)
       ext = FactoryGirl.create(:external_system, code: 'reprintsdesk')
       # Create order we can test with that means fixed id
       @order = FactoryGirl.create(:order, id: order_id)
       @request = FactoryGirl.create(:order_request, :order => @order,
-        :external_system => ext, :external_id => external_id)
+        :external_system => ext, :external_number => external_number)
       Rails.application.config.reprintsdesk.order_prefix = prefix
     end
 

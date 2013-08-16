@@ -85,7 +85,7 @@ class Order
       message: builder.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::NO_DECLARATION),
       attributes: { "xmlns" => "http://reprintsdesk.com/webservices/" })
     if response.body[:order_place_order2_response][:order_place_order2_result] == "1"
-      request.external_id = response.body[:order_place_order2_response][:order_id]
+      request.external_number = response.body[:order_place_order2_response][:order_id]
       request.order_status = OrderStatus.find_by_code("request")
     end
     request.save!

@@ -29,12 +29,12 @@ class IncomingMailController
   def reprintsdesk_new_order(mail)
     reprintsdesk_extract_from_body(mail)
     return false unless reprintsdesk_handle_mail?
-    request = @order.request('reprintsdesk', @external_id)
+    request = @order.request('reprintsdesk', @external_number)
     if request
       request.confirm
       true
     else
-      logger.info "Request #{@external_id} not found on order #{@order_number}"
+      logger.info "Request #{@external_number} not found on order #{@order_number}"
       false
     end
   end
@@ -65,12 +65,12 @@ class IncomingMailController
     reprintsdesk_extract_from_body(mail)
     return false unless reprintsdesk_handle_mail?
     raise ArgumentError unless(@deliver_url)
-    request = @order.request('reprintsdesk', @external_id)
+    request = @order.request('reprintsdesk', @external_number)
     if request
       request.deliver(@deliver_url)
       true
     else
-      logger.info "Request #{@external_id} not found on order #{@order_number}"
+      logger.info "Request #{@external_number} not found on order #{@order_number}"
       false
     end
   end
@@ -82,22 +82,22 @@ class IncomingMailController
   end
 
   def reprintsdesk_cancel
-    request = @order.request('reprintsdesk', @external_id)
+    request = @order.request('reprintsdesk', @external_number)
     if request
       request.cancel if(request.order_status.code != 'cancel')
       true
     else
-      logger.info "Request #{@external_id} not found on order #{@order_number}"
+      logger.info "Request #{@external_number} not found on order #{@order_number}"
       false
     end
   end
 
-  # Extract the external_id, prefix code and order number
+  # Extract the external_number, prefix code and order number
   def reprintsdesk_extract_from_body(mail)
     body = reprintsdesk_extract_text_part(mail).body.to_s
 
     /orderid: +(\S+)/.match body
-    @external_id = $1
+    @external_number = $1
 
     /CustomerReference1: +(\S+)/.match body
     ref = $1
@@ -114,7 +114,7 @@ class IncomingMailController
     @prefix_code = $1
     @order_number = $2
     / #(\d+) /.match subject
-    @external_id = $1
+    @external_number = $1
   end
 
   def reprintsdesk_extract_text_part(mail)

@@ -103,10 +103,10 @@ class Order < ActiveRecord::Base
     order_requests.current.first
   end
 
-  def request(system, external_id)
+  def request(system, external_number)
     OrderRequest.where(:order_id => id,
       :external_system_id => ExternalSystem.find_by_code(system),
-      :external_id => external_id).first
+      :external_number => external_number).first
   end
 
   def mark_delivery
