@@ -111,17 +111,19 @@ class Order < ActiveRecord::Base
       :external_number => external_number).first
   end
 
-  def mark_delivery
+  def mark_delivery(url)
+    raise ArgumentError "Missing url" unless url
     delivered_at = Time.new
     save!
-    do_callback('deliver')
+    do_callback('deliver', url)
   end
 
-  def do_callback(response_code)
+  def do_callback(response_code, url = nil)
     begin
       response = HTTParty.get(callback_url +
         (/\?/.match(callback_url) ? '&' : '?') +
-        "status=#{response_code}")
+        "status=#{response_code}" +
+        (url ? "&url=#{URI.escape(url)}" : ''))
       if !response.success?
         raise StandardError, "Callback request unsuccessfull"
       end

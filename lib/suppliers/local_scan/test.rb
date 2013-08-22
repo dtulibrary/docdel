@@ -9,8 +9,7 @@ Haitatsu::Application.configure do
   end
 end
 
-class Order
-  include HTTParty
+class Order < ActiveRecord::Base
 
   def request_from_local_scan
     logger.info "Execute LocalScan"

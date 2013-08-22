@@ -53,7 +53,7 @@ Content-Type: text/plain; charset="utf-8"
  CustomerReference18:
  CustomerReference19:
  CustomerReference20:
- download_link: http://test.dom.ain/download?o=123456
+ download_link: /Order_PlaceHolder.pdf
  -RPDESK_END_BLOCK-
 
 --_BOUNDARY_MARKER_
@@ -112,7 +112,7 @@ Content-ID: <5ac0724d-8496-4daf-8b0d-d32e83c03223>
  CustomerReference19:
  CustomerReference20:
 
- download_link: http://test.dom.ain/download?o=123456
+ download_link: /Order_PlaceHolder.pdf
 
  -RPDESK_END_BLOCK-</p>
   </body>

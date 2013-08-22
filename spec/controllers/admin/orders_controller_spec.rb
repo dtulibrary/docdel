@@ -34,7 +34,8 @@ describe Admin::OrdersController do
 
   describe "GET #deliver" do
     it "renders the order" do
-      stub_request(:get, "http://localhost/callback?status=deliver").
+      stub_request(:get, "http://localhost/callback?status=deliver"\
+        "&url=/Order_PlaceHolder.pdf").
         to_return(:status => 200, :body => "", :headers => {})
       FactoryGirl.create(:order_status, code: 'deliver')
       request = FactoryGirl.create(:order_request)

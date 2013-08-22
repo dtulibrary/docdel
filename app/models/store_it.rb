@@ -16,7 +16,6 @@ class StoreIt
         raise StandardError, "StoreIt responded with HTTP #{response.code}"
       end
       stored_url = response.body
-      logger.info "Returned url #{stored_url}"
     rescue StandardError => e
       raise StandardError, "Error storing document #{e.message}"
     end

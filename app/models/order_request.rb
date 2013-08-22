@@ -14,7 +14,7 @@ class OrderRequest < ActiveRecord::Base
   def deliver(url)
     self.external_url = url
     set_status('deliver')
-    order.mark_delivery
+    order.mark_delivery(url)
   end
 
   def confirm

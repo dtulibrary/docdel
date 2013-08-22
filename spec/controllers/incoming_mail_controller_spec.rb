@@ -244,7 +244,7 @@ describe IncomingMailController do
     def ls_mail_should_set_status(mail_form, status)
      stub_request(:post, "http://localhost/rest/documents.text?drm=false").
        with(:headers => {'Content-Type'=>'application/pdf'}).
-       to_return(:status => 200, :body => "http://localhost/local.pdf",
+       to_return(:status => 200, :body => "/Order_PlaceHolder.pdf",
          :headers => {})
       mail_should_set_status(mail_form, status, 'local_scan')
     end
@@ -269,7 +269,9 @@ describe IncomingMailController do
   end
 
   def mail_should_set_status(mail_file, status, supplier)
-    stub_request(:get, "http://localhost/callback?status=#{status}").
+    url = "http://localhost/callback?status=#{status}" +
+      (status == 'deliver' ? '&url=/Order_PlaceHolder.pdf' : '')
+    stub_request(:get, url).
       to_return(:status => 200, :body => "", :headers => {})
     FactoryGirl.create(:order_status, code: status)
     mail = Mail.new(
