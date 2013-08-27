@@ -39,6 +39,6 @@ class IncomingMailController
   end
 
   def local_scan_handle_mail?
-    handle_mail?(config.local_scan.order_prefix)
+    handle_mail?(config.order_prefix)
   end
 end

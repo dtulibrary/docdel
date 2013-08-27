@@ -97,7 +97,7 @@ class IncomingMailController
   end
 
   def reprintsdesk_handle_mail?
-    handle_mail?(config.reprintsdesk.order_prefix)
+    handle_mail?(config.order_prefix)
   end
 
 end

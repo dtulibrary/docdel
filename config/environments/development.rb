@@ -35,3 +35,21 @@ Haitatsu::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 end
+
+if File.exists? File.dirname(__FILE__) + '/../application.local.rb'
+  require File.dirname(__FILE__) + '/../application.local.rb'
+end
+
+class Rest::OrdersController < ApplicationController
+  def test
+    request = eval(File.read("test_order.local.rb"))
+    request.each do |k, v|
+      params[k] = v
+    end
+
+    @order = Order.create_from_param(params, self)
+    respond_to do |format|
+      format.json { render :json => @order, :status => @order ? 200 : 404 }
+    end
+  end
+end

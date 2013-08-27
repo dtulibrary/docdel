@@ -61,6 +61,7 @@ describe Rest::OrdersController do
 
     before(:all) do
       savon.mock!
+      Rails.application.config.order_prefix = 'TEST'
       Rails.application.config.reprintsdesk.wsdl = "spec/fixtures/reprintsdesk/reprints.wsdl"
       Rails.application.config.reprintsdesk.user = "Test"
       Rails.application.config.reprintsdesk.password = "Pass"
@@ -69,16 +70,10 @@ describe Rest::OrdersController do
       Rails.application.config.reprintsdesk.lastname = "Test"
       Rails.application.config.reprintsdesk.companyname = "Test"
       Rails.application.config.reprintsdesk.address1 = "Test"
-      Rails.application.config.reprintsdesk.address2 = ""
       Rails.application.config.reprintsdesk.city = "Test"
       Rails.application.config.reprintsdesk.zipcode = "9999"
-      Rails.application.config.reprintsdesk.statecode = "*"
-      Rails.application.config.reprintsdesk.statename = "*"
       Rails.application.config.reprintsdesk.countrycode = "XX"
-      Rails.application.config.reprintsdesk.phone = "*"
-      Rails.application.config.reprintsdesk.fax = "*"
       Rails.application.config.reprintsdesk.systemmail = "test@dom.ain"
-      Rails.application.config.reprintsdesk.order_prefix = 'TEST'
     end
     after(:all) { 
       savon.unmock!

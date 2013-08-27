@@ -151,7 +151,7 @@ describe IncomingMailController do
 
     def setup_reprintsdesk(order_id, external_number, prefix)
       setup_supplier(order_id, external_number, 'reprintsdesk')
-      Rails.application.config.reprintsdesk.order_prefix = prefix
+      Rails.application.config.order_prefix = prefix
     end
 
     def rd_mail_should_set_status(mail_file, status)
@@ -238,7 +238,7 @@ describe IncomingMailController do
 
     def setup_local_scan(order_id, external_number, prefix)
       setup_supplier(order_id, external_number, 'local_scan')
-      Rails.application.config.local_scan.order_prefix = prefix
+      Rails.application.config.order_prefix = prefix
     end
 
     def ls_mail_should_set_status(mail_form, status)

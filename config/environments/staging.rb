@@ -39,3 +39,7 @@ Haitatsu::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 end
+
+if File.exists? File.dirname(__FILE__) + '/../application.local.rb'
+  require File.dirname(__FILE__) + '/../application.local.rb'
+end

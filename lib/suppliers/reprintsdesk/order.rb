@@ -74,7 +74,7 @@ class Order
             xml.processinginstruction('id' => '2', 'valueid' => '0')
           }
           xml.customerreferences {
-            xml.customerreference(config.reprintsdesk.order_prefix + "-#{id}", 'id' => '1')
+            xml.customerreference(config.order_prefix + "-#{id}", 'id' => '1')
             xml.customerreference('OTHER', 'id' => '2')
           }
         }
