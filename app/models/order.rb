@@ -68,6 +68,7 @@ class Order < ActiveRecord::Base
           o.callback_url = params[:callback_url]
           o.customer_order_number = params[:dibs_order_id]
           o.email = params[:email]
+          o.user(params[:user_id])
           o.save or raise "Order not valid"
           o.path_controller = controller
         end
@@ -134,8 +135,12 @@ class Order < ActiveRecord::Base
   end
 
   def path_controller=(value)
-    logger.info "Setting path_controller "+ (value ? "true" : "nil")
     @path_controller = value
   end
 
+  def user(value)
+    return if value.blank?
+    @user = Riyosha.find(value)
+    logger.info "User #{@user.inspect}"
+  end
 end

@@ -107,7 +107,7 @@ module Haitatsu
 #        'user' => '',
 #        'password' => '',
 #      },
-#      'group3' => {
+#      'default' => {
 #        'user' => '',
 #        'password' => '',
 #      },

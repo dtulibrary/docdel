@@ -1,13 +1,17 @@
 class Order
   def request_from_reprintsdesk
+    # Find user/password
+    account = config.reprintsdesk.accounts[@user['user_type']] ||
+              config.reprintsdesk.accounts['default']
+    logger.info "Reprintsdesk account #{account['user']}"
     client = Savon.client(
       wsdl: config.reprintsdesk.wsdl,
       env_namespace: :soap,
       soap_version: 1,
       soap_header: {
         'UserCredentials' => {
-          'UserName' => config.reprintsdesk.user,
-          'Password' => config.reprintsdesk.password,
+          'UserName' => account['user'],
+          'Password' => account['password'],
         },
         :attributes! => { 'UserCredentials' => { 'xmlns' => "http://reprintsdesk.com/webservices/" }},
       }
@@ -48,7 +52,7 @@ class Order
             xml.date date
           }
           xml.user {
-            xml.username config.reprintsdesk.username
+            xml.username account['username']
             xml.email config.reprintsdesk.systemmail
             xml.firstname config.reprintsdesk.firstname
             xml.lastname config.reprintsdesk.lastname
@@ -91,4 +95,5 @@ class Order
     request.save!
     save!
   end
+
 end

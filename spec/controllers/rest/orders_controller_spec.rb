@@ -61,19 +61,30 @@ describe Rest::OrdersController do
 
     before(:all) do
       savon.mock!
-      Rails.application.config.order_prefix = 'TEST'
-      Rails.application.config.reprintsdesk.wsdl = "spec/fixtures/reprintsdesk/reprints.wsdl"
-      Rails.application.config.reprintsdesk.user = "Test"
-      Rails.application.config.reprintsdesk.password = "Pass"
-      Rails.application.config.reprintsdesk.username = "Test"
-      Rails.application.config.reprintsdesk.firstname = "Test"
-      Rails.application.config.reprintsdesk.lastname = "Test"
-      Rails.application.config.reprintsdesk.companyname = "Test"
-      Rails.application.config.reprintsdesk.address1 = "Test"
-      Rails.application.config.reprintsdesk.city = "Test"
-      Rails.application.config.reprintsdesk.zipcode = "9999"
-      Rails.application.config.reprintsdesk.countrycode = "XX"
-      Rails.application.config.reprintsdesk.systemmail = "test@dom.ain"
+      config = Rails.application.config
+      config.order_prefix = 'TEST'
+      config.reprintsdesk.wsdl = "spec/fixtures/reprintsdesk/reprints.wsdl"
+      config.reprintsdesk.firstname = "Test"
+      config.reprintsdesk.lastname = "Test"
+      config.reprintsdesk.companyname = "Test"
+      config.reprintsdesk.address1 = "Test"
+      config.reprintsdesk.city = "Test"
+      config.reprintsdesk.zipcode = "9999"
+      config.reprintsdesk.countrycode = "XX"
+      config.reprintsdesk.systemmail = "test@dom.ain"
+      config.reprintsdesk.accounts = {
+        'type1' => {
+          'user' => "Test1",
+          'password' => "Pass1",
+          'username' => "Test1",
+        },
+        'default' => {
+          'user' => "Test",
+          'password' => "Pass",
+          'username' => "Test",
+        },
+      }
+      config.user_url = "http://localhost"
     end
     after(:all) { 
       savon.unmock!
@@ -85,24 +96,41 @@ describe Rest::OrdersController do
       FactoryGirl.create(:order_status, code: 'request')
     end
 
-    it "create order for reprintsdesk" do
-      price_request = {:issn=>"21504091", :year=>"2010", :totalpages=>1}
-      price_response = File.read("spec/fixtures/reprintsdesk/price_response.xml")
-      order_request = File.read("spec/fixtures/reprintsdesk/order_request.xml")
-      order_response = File.read("spec/fixtures/reprintsdesk/order_response.xml")
-      savon.expects(:order_get_price_estimate).with(message: price_request).returns(price_response)
-      savon.expects(:order_place_order2).with(message: order_request).returns(order_response)
-      post :create,
-        :email => 'test@dom.ain', :supplier => 'reprintsdesk',
-        :callback_url => 'http://testhost/',
-        :open_url => @open_request
-#'url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&ctx_enc=info%3Aofi%2Fenc%3AUTF-8&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.au=Lokhande%2C+Ram&rft.atitle=Study+of+some+Indian+medicinal+plants+by+application+of+INAA+and+AAS+techniques&rft.jtitle=Natural+Science&rft.issn=21504091&rft.issn=21504105&rft.date=2010&rft.volume=02&rft.issue=01&rft.pages=26-32&rft_id=info:doi%2F10.4236%2Fns.2010.21004'
-      Order.count.should eq 1
-      # Check that order/request matches what we want.
-      order = Order.first
-      order.current_request.external_service_charge.should eq 10.0
-      order.current_request.external_copyright_charge.should eq -1.0
-      order.current_request.external_number.should eq 123456
+    describe "create order", :focus => true do
+      it "for type1" do
+        reprintsdesk_create_order('{"user_type": "type1"}', 'Test1')
+      end
+
+      it "for others" do
+        reprintsdesk_create_order('{"user_type": "other"}', 'Test')
+      end
+
+      def reprintsdesk_create_order(user_type, username)
+        price_request = {:issn=>"21504091", :year=>"2010", :totalpages=>1}
+        price_response = File.read("spec/fixtures/reprintsdesk/price_response.xml")
+        order_request = ERB.new(
+          File.read("spec/fixtures/reprintsdesk/order_request.xml")).result binding()
+
+        order_response = File.read("spec/fixtures/reprintsdesk/order_response.xml")
+
+        stub_request(:get, "http://localhost/users/1.json").
+          to_return(:status => 200, :body => user_type,
+            :headers => {})
+
+        savon.expects(:order_get_price_estimate).with(message: price_request).returns(price_response)
+        savon.expects(:order_place_order2).with(message: order_request).returns(order_response)
+        post :create,
+          :email => 'test@dom.ain', :supplier => 'reprintsdesk',
+          :callback_url => 'http://testhost/',
+          :user_id => '1',
+          :open_url => @open_request
+        Order.count.should eq 1
+        # Check that order/request matches what we want.
+        order = Order.first
+        order.current_request.external_service_charge.should eq 10.0
+        order.current_request.external_copyright_charge.should eq -1.0
+        order.current_request.external_number.should eq 123456
+      end
     end
   end
 
