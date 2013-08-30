@@ -96,16 +96,20 @@ describe Rest::OrdersController do
       FactoryGirl.create(:order_status, code: 'request')
     end
 
-    describe "create order", :focus => true do
+    describe "create order" do
       it "for type1" do
-        reprintsdesk_create_order('{"user_type": "type1"}', 'Test1')
+        reprintsdesk_create_order('{"user_type": "type1"}', '1', 'Test1')
       end
 
       it "for others" do
-        reprintsdesk_create_order('{"user_type": "other"}', 'Test')
+        reprintsdesk_create_order('{"user_type": "other"}', '1', 'Test')
       end
 
-      def reprintsdesk_create_order(user_type, username)
+      it "for anon" do
+        reprintsdesk_create_order(nil, nil, 'Test')
+      end
+
+      def reprintsdesk_create_order(user_type, user_id, username)
         price_request = {:issn=>"21504091", :year=>"2010", :totalpages=>1}
         price_response = File.read("spec/fixtures/reprintsdesk/price_response.xml")
         order_request = ERB.new(
@@ -115,14 +119,14 @@ describe Rest::OrdersController do
 
         stub_request(:get, "http://localhost/users/1.json").
           to_return(:status => 200, :body => user_type,
-            :headers => {})
+            :headers => {}) if user_type
 
         savon.expects(:order_get_price_estimate).with(message: price_request).returns(price_response)
         savon.expects(:order_place_order2).with(message: order_request).returns(order_response)
         post :create,
           :email => 'test@dom.ain', :supplier => 'reprintsdesk',
           :callback_url => 'http://testhost/',
-          :user_id => '1',
+          :user_id => user_id,
           :open_url => @open_request
         Order.count.should eq 1
         # Check that order/request matches what we want.

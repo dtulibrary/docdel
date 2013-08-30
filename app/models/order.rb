@@ -139,6 +139,7 @@ class Order < ActiveRecord::Base
   end
 
   def user(value)
+    @user = Hash.new
     return if value.blank?
     @user = Riyosha.find(value)
     logger.info "User #{@user.inspect}"
