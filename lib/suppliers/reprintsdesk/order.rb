@@ -71,7 +71,7 @@ class Order
             xml.countrycode config.reprintsdesk.countrycode
             xml.phone config.reprintsdesk.phone
             xml.fax config.reprintsdesk.fax
-            xml.email email
+            xml.email config.reprintsdesk.systemmail
           }
           xml.processinginstructions {
             xml.processinginstruction('id' => '1', 'valueid' => '1')
