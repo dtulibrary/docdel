@@ -22,7 +22,6 @@ ActiveAdmin.register Order do
     order = Order.find_by_id(params[:id])
     # Create url to static pdf file
     order.current_request.deliver(url_for '/Order_PlaceHolder.pdf')
-    # Send e-mail of delivery
     redirect_to admin_order_path
   end
 
