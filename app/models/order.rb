@@ -124,7 +124,7 @@ class Order < ActiveRecord::Base
       response = HTTParty.get(callback_url +
         (/\?/.match(callback_url) ? '&' : '?') +
         "status=#{response_code}" +
-        (url ? "&url=#{URI.escape(url)}" : ''))
+        (url ? "&url=#{URI.encode_www_form_component(url)}" : ''))
       if !response.success?
         raise StandardError, "Callback request unsuccessfull"
       end
