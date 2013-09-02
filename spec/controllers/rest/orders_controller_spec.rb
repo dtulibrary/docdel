@@ -145,8 +145,9 @@ describe Rest::OrdersController do
       FactoryGirl.create(:order_status, code: 'request')
     end
 
-    it "create order" do
+    it "create order", :focus => true do
       Rails.application.config.sendit_url = 'http://localhost'
+      Rails.application.config.order_prefix = 'TEST'
       stub_request(:post, "http://localhost/send/haitatsu_scan_request").
         to_return(:status => 200, :body => "", :headers => {})
       post :create,
