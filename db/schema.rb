@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130816094610) do
+ActiveRecord::Schema.define(:version => 20130903062808) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -35,6 +35,12 @@ ActiveRecord::Schema.define(:version => 20130816094610) do
   end
 
   add_index "external_systems", ["code"], :name => "index_external_systems_on_code", :unique => true
+
+  create_table "institutes", :force => true do |t|
+    t.string   "code",       :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "order_requests", :force => true do |t|
     t.integer  "order_id",                  :null => false
@@ -83,9 +89,13 @@ ActiveRecord::Schema.define(:version => 20130816094610) do
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
     t.string   "customer_order_number"
+    t.integer  "institute_id"
+    t.integer  "user_type_id"
   end
 
   add_index "orders", ["email"], :name => "index_orders_on_email"
+  add_index "orders", ["institute_id"], :name => "index_orders_on_institute_id"
+  add_index "orders", ["user_type_id"], :name => "index_orders_on_user_type_id"
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false
@@ -96,6 +106,12 @@ ActiveRecord::Schema.define(:version => 20130816094610) do
 
   add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
   add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
+
+  create_table "user_types", :force => true do |t|
+    t.string   "code",       :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "users", :force => true do |t|
     t.string   "username",   :null => false

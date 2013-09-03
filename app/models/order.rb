@@ -9,6 +9,8 @@ class Order < ActiveRecord::Base
     :spage, :title, :volume, :customer_order_number
 
   has_many :order_requests, :dependent => :destroy
+  belongs_to :institute
+  belongs_to :user_type
 
   validates :email, :presence => true
   validates :callback_url, :presence => true
@@ -143,5 +145,12 @@ class Order < ActiveRecord::Base
     return if value.blank?
     @user = Riyosha.find(value)
     logger.info "User #{@user.inspect}"
+    self.user_type = UserType.find_or_create_by_code(:code => @user['user_type'])
+    if @user['dtu']
+      code = Institute.find_or_create_by_code(:code =>
+        @user['dtu']['org_units'].join(','))
+      self.institute = code
+    end
   end
+
 end

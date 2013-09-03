@@ -98,7 +98,9 @@ describe Rest::OrdersController do
 
     describe "create order" do
       it "for type1" do
-        reprintsdesk_create_order('{"user_type": "type1"}', '1', 'Test1')
+        order = reprintsdesk_create_order(
+          '{"user_type":"type1","dtu":{"org_units":["45"]}}', '1', 'Test1')
+        order.institute.code.should eq '45'
       end
 
       it "for others" do
@@ -109,7 +111,7 @@ describe Rest::OrdersController do
         reprintsdesk_create_order(nil, nil, 'Test')
       end
 
-      def reprintsdesk_create_order(user_type, user_id, username)
+      def reprintsdesk_create_order(user_response, user_id, username)
         price_request = {:issn=>"21504091", :year=>"2010", :totalpages=>1}
         price_response = File.read("spec/fixtures/reprintsdesk/price_response.xml")
         order_request = ERB.new(
@@ -118,8 +120,8 @@ describe Rest::OrdersController do
         order_response = File.read("spec/fixtures/reprintsdesk/order_response.xml")
 
         stub_request(:get, "http://localhost/users/1.json").
-          to_return(:status => 200, :body => user_type,
-            :headers => {}) if user_type
+          to_return(:status => 200, :body => user_response,
+            :headers => {}) if user_response
 
         savon.expects(:order_get_price_estimate).with(message: price_request).returns(price_response)
         savon.expects(:order_place_order2).with(message: order_request).returns(order_response)
@@ -128,12 +130,15 @@ describe Rest::OrdersController do
           :callback_url => 'http://testhost/',
           :user_id => user_id,
           :open_url => @open_request
+        user = JSON.parse(user_response) if user_response
         Order.count.should eq 1
         # Check that order/request matches what we want.
         order = Order.first
         order.current_request.external_service_charge.should eq 10.0
         order.current_request.external_copyright_charge.should eq -1.0
         order.current_request.external_number.should eq 123456
+        order.user_type.code.should eq user['user_type'] if user_response
+        order
       end
     end
   end
@@ -145,7 +150,7 @@ describe Rest::OrdersController do
       FactoryGirl.create(:order_status, code: 'request')
     end
 
-    it "create order", :focus => true do
+    it "create order" do
       Rails.application.config.sendit_url = 'http://localhost'
       Rails.application.config.order_prefix = 'TEST'
       stub_request(:post, "http://localhost/send/haitatsu_scan_request").

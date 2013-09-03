@@ -15,5 +15,6 @@ FactoryGirl.define do
     f.title "Journal of Testing"
     f.volume "1"
     f.sequence(:customer_order_number) { |n| "T#{n}" }
+    f.association :user_type
   end
 end
