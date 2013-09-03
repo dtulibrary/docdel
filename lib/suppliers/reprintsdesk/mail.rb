@@ -85,7 +85,7 @@ class IncomingMailController
     @order_number = $2
 
     /download_link: (\S+)/.match body
-    @deliver_url = $1.gsub('&amp;', '&')
+    @deliver_url = $1 ? $1.gsub('&amp;', '&') : nil
   end
 
   def reprintsdesk_extract_from_subject(subject)
