@@ -99,19 +99,21 @@ describe Rest::OrdersController do
     describe "create order" do
       it "for type1" do
         order = reprintsdesk_create_order(
-          '{"user_type":"type1","dtu":{"org_units":["45"]}}', '1', 'Test1')
+          '{"user_type":"type1","dtu":{"org_units":["45"]}}', '1', 'Test1',
+          'TYPE1')
         order.institute.code.should eq '45'
       end
 
       it "for others" do
-        reprintsdesk_create_order('{"user_type": "other"}', '1', 'Test')
+        reprintsdesk_create_order('{"user_type": "other"}', '1', 'Test',
+          'OTHER')
       end
 
       it "for anon" do
-        reprintsdesk_create_order(nil, nil, 'Test')
+        reprintsdesk_create_order(nil, nil, 'Test', 'OTHER')
       end
 
-      def reprintsdesk_create_order(user_response, user_id, username)
+      def reprintsdesk_create_order(user_response, user_id, username, user_type)
         price_request = {:issn=>"21504091", :year=>"2010", :totalpages=>1}
         price_response = File.read("spec/fixtures/reprintsdesk/price_response.xml")
         order_request = ERB.new(
@@ -128,6 +130,7 @@ describe Rest::OrdersController do
         post :create,
           :email => 'test@dom.ain', :supplier => 'reprintsdesk',
           :callback_url => 'http://testhost/',
+          :dibs_order_id => 'OID',
           :user_id => user_id,
           :open_url => @open_request
         user = JSON.parse(user_response) if user_response

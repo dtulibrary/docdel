@@ -1,7 +1,8 @@
 class Order
   def request_from_reprintsdesk
     # Find user/password
-    account = config.reprintsdesk.accounts[@user['user_type']] ||
+    user_type = @user['user_type'] || 'other'
+    account = config.reprintsdesk.accounts[user_type] ||
               config.reprintsdesk.accounts['default']
     logger.info "Reprintsdesk account #{account['user']}"
     client = Savon.client(
@@ -79,7 +80,8 @@ class Order
           }
           xml.customerreferences {
             xml.customerreference(config.order_prefix + "-#{id}", 'id' => '1')
-            xml.customerreference('OTHER', 'id' => '2')
+            xml.customerreference(user_type.upcase, 'id' => '2')
+            xml.customerreference(customer_order_number, 'id' => '3')
           }
         }
       }
