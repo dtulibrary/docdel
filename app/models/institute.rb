@@ -5,4 +5,7 @@ class Institute < ActiveRecord::Base
 
   has_many :orders, :dependent => :restrict
 
+  def name
+    code
+  end
 end

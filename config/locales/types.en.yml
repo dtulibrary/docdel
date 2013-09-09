@@ -11,5 +11,10 @@ en:
         'confirm': 'Confirmed'
       external_system:
         reprintsdesk: 'ReprintsDesk'
+        local_scan: 'Local Scan'
       reason:
         not_avail: 'Issue not available'
+      user_type:
+        private: 'Public'
+        dtu_empl: 'DTU Employee'
+        student: 'Student'

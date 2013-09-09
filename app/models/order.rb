@@ -162,7 +162,7 @@ class Order < ActiveRecord::Base
   end
 
   def callback_param(response_code, url)
-    "status=#{response_code}" + 
+    "status=#{response_code}" +
     (url ? "&url=#{URI.encode_www_form_component(url)}" : '') +
     (@reason.blank? ? '' : "&reason=#{URI.encode_www_form_component(@reason)}")
   end

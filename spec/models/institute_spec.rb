@@ -14,4 +14,9 @@ describe Institute do
     FactoryGirl.build(:institute, code: institute.code).should_not be_valid
   end
 
+  it "name is code" do
+    institute = FactoryGirl.build(:institute)
+    institute.name.should eq institute.code
+  end
+
 end
