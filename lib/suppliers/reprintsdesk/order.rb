@@ -81,7 +81,6 @@ class Order
           xml.customerreferences {
             xml.customerreference(config.order_prefix + "-#{id}", 'id' => '1')
             xml.customerreference(user_type.upcase, 'id' => '2')
-            xml.customerreference(customer_order_number, 'id' => '3')
           }
         }
       }
