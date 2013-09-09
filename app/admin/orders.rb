@@ -20,8 +20,9 @@ ActiveAdmin.register Order do
 
   member_action :deliver, :method => :get do
     order = Order.find_by_id(params[:id])
-    # Create url to static pdf file
-    order.current_request.deliver(url_for '/Order_PlaceHolder.pdf')
+    pdfdoc = File.read("#{Rails.root}/public/Order_PlaceHolder.pdf")
+    url = StoreIt.store_pdf(pdfdoc, 'application/pdf')
+    order.current_request.deliver(url)
     redirect_to admin_order_path
   end
 

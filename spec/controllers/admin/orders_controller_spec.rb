@@ -34,9 +34,16 @@ describe Admin::OrdersController do
 
   describe "GET #deliver" do
     it "renders the order" do
+      Rails.application.config.storeit_url = 'http://localhost'
       stub_request(:get, "http://localhost/callback?status=deliver"\
-        "&url=/Order_PlaceHolder.pdf").
+        "&url=http://localhost/5.pdf").
         to_return(:status => 200, :body => "", :headers => {})
+      pdfdoc = File.read("#{Rails.root}/public/Order_PlaceHolder.pdf")
+      stub_request(:post, "http://localhost/rest/documents.text?drm=false").
+        with(:body => pdfdoc,
+             :headers => {'Content-Type'=>'application/pdf'}).
+        to_return(:status => 200, :body => "http://localhost/5.pdf",
+             :headers => {})
       FactoryGirl.create(:order_status, code: 'deliver')
       request = FactoryGirl.create(:order_request)
       get :deliver, id: request.order
