@@ -1,0 +1,52 @@
+#footer {
+  margin-top: 10em;
+
+  .fat-footer {
+    color: #ccc;
+    background-color: #212121;
+    padding: 48px 0px;
+    margin-top: 5em;
+     
+    h1,h2,h3,h4,h5,h6 {
+      color: #fff;
+    }
+
+    h5 {
+      line-height: 14px;
+      font-size: 14px;
+      font-weight: normal;
+      font-family: "Neo Sans W01 Medium";
+      text-transform: uppercase;
+
+      &:first-child {
+        margin-top: 0px;
+      }
+    }
+
+    a {
+      color: #ccc;
+      text-decoration: underline;
+    }
+
+    .about {
+      margin: 20px 0px;
+    }
+
+    .address {
+      margin-bottom: 20px;
+
+      .name:first-child {
+        font-family: "Neo Sans W01 Medium";
+        color: #fff;
+      }
+    }
+  }
+
+  .legal-notice {
+    height: 35px;
+    background: $dtu_red;
+    color: #faa;
+    line-height: 35px;
+    font-size: 12px;
+  }
+}

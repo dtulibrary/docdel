@@ -1,0 +1,32 @@
+<div id="header-navbar-fixed-top" class="navbar navbar-fixed-top">
+  <div class="navbar-inner level1-navbar">
+    <div class="container">
+      <div class="row">
+        <div class="span6">
+          <a href="http://www.dtu.dk/english"><%= image_tag 'dtu_text_header.png' %></a>
+        </div>
+        <div class="span6">
+          <div class="pull-right">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="navbar-inner level2-navbar">
+    <div class="header-gradient">
+      <div class="container header-gradient">
+        <div class="row logos">
+          <div class="span3">
+            <%= link_to 'DTU Find<span class="dtu-red">it</span>'.html_safe, 'http://findit.dtu.dk', :class => 'findit-logo visible-desktop pull-left' %>
+          </div>
+          <div class="span7 login_header">
+             DTU Library Document Download
+          </div>
+          <div class="span2">
+            <%= link_to content_tag('div', '', :class => 'dtu-logo').html_safe, 'http://www.dtu.dk/english', :class => 'logo pull-right' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

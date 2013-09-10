@@ -9,6 +9,7 @@ gem 'savon'
 gem 'httparty'
 gem 'capistrano'
 gem 'incoming_mail', :git => 'https://github.com/dtulibrary/incoming_mail'
+gem 'bootstrap-sass'
 
 # Gems used only for assets.
 group :assets do
@@ -17,6 +18,7 @@ group :assets do
   gem 'therubyracer', :platforms => :ruby
   gem 'turbo-sprockets-rails3'
   gem 'uglifier', '>= 1.0.3'
+  gem 'findit_font', :git => 'git://github.com/dtulibrary/findit_font.git'
 end
 
 group :development do

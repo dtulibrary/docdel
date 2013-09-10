@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/dtulibrary/findit_font.git
+  revision: 48e074e0ef89f8bd073569b354ad892f8ca3ab61
+  specs:
+    findit_font (0.0.1)
+      railties (>= 3.2)
+
+GIT
   remote: https://github.com/dtulibrary/incoming_mail
   revision: e9947879dc3268f18e5a79aa191193a3903d2d53
   specs:
@@ -57,6 +64,8 @@ GEM
     atomic (1.1.13)
     awesome_print (1.1.0)
     bcrypt-ruby (3.1.2)
+    bootstrap-sass (2.3.2.2)
+      sass (~> 3.2)
     bourbon (3.1.8)
       sass (>= 3.2.0)
       thor
@@ -299,12 +308,14 @@ PLATFORMS
 
 DEPENDENCIES
   activeadmin
+  bootstrap-sass
   brakeman
   capistrano
   coffee-rails (~> 3.2.1)
   debugger
   devise_cas_authenticatable
   factory_girl_rails
+  findit_font!
   httparty
   incoming_mail!
   jquery-rails (~> 2.3.0)

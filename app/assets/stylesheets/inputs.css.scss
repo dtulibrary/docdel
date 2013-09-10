@@ -1,0 +1,19 @@
+@import 'haitatsu_defaults';
+@import 'haitatsu_mixins';
+
+input {
+  &.no-margin {
+    margin: 0px;
+  }
+
+  &[type = 'text']:focus {
+    @include focused_field;
+  }
+}
+
+textarea {
+  &:focus {
+    @include focused_field;
+  }
+}
+
