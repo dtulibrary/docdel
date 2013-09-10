@@ -10,3 +10,5 @@ en:
         'cancel': 'Cancelled'
       external_system:
         reprintsdesk: 'ReprintsDesk'
+      reason:
+        not_avail: 'Issue not available'

@@ -1,0 +1,32 @@
+<div class="row">
+  <div class="span12">
+    <h4><%= t('haitatsu.order.not_available.title') %></h4>
+  </div>
+</div>
+
+<div class="row">
+  <div class="span12">
+     <%= t('haitatsu.order.not_available.body') %>
+  </div>
+</div>
+
+<%= form_tag :controller => 'orders', :action => 'not_available',
+      :id => @order.id do %>
+<div class="row">
+    <div class="span4">
+      <%= collection_select(:order_requests, :reason_id,
+            Reason.all, :id, :name, :include_blank => true) %>
+    </div>
+    <div class="span8">
+      <%= text_area_tag :reason_text, "", :rows => 10 %>
+    </div>
+</div>
+
+<div class="row">
+  <div class="span4">
+    <%= button_tag t('haitatsu.order.not_available.submit'),
+          :class => 'btn btn-primary' %>
+  </div>
+</div>
+
+<% end %>

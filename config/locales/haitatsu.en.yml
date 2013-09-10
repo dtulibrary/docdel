@@ -1,0 +1,8 @@
+en:
+  haitatsu:
+    order:
+      not_available:
+        title: 'Requested item not available'
+        body: 'Filling out and submitting this form will marked the request as cancelled'
+        submit: 'Cancel request'
+        done: 'Request marked as cancelled'

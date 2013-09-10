@@ -114,6 +114,11 @@ class Order < ActiveRecord::Base
       :external_number => external_number).first
   end
 
+  def system_request(system)
+    OrderRequest.where(:order_id => id,
+      :external_system_id => ExternalSystem.find_by_code(system)).first
+  end
+
   def mark_delivery(url)
     raise ArgumentError "Missing url" unless url
     self.delivered_at = Time.now
@@ -125,8 +130,7 @@ class Order < ActiveRecord::Base
     begin
       response = HTTParty.get(callback_url +
         (/\?/.match(callback_url) ? '&' : '?') +
-        "status=#{response_code}" +
-        (url ? "&url=#{URI.encode_www_form_component(url)}" : ''))
+        callback_param(response_code, url))
       if !response.success?
         raise StandardError, "Callback request unsuccessfull"
       end
@@ -153,4 +157,13 @@ class Order < ActiveRecord::Base
     end
   end
 
+  def reason=(text)
+    @reason = text
+  end
+
+  def callback_param(response_code, url)
+    "status=#{response_code}" + 
+    (url ? "&url=#{URI.encode_www_form_component(url)}" : '') +
+    (@reason.blank? ? '' : "&reason=#{URI.encode_www_form_component(@reason)}")
+  end
 end

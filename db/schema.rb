@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130903062808) do
+ActiveRecord::Schema.define(:version => 20130909135810) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -54,6 +54,8 @@ ActiveRecord::Schema.define(:version => 20130903062808) do
     t.string   "shelfmark"
     t.datetime "created_at",                :null => false
     t.datetime "updated_at",                :null => false
+    t.integer  "reason_id"
+    t.string   "reason_text"
   end
 
   add_index "order_requests", ["external_system_id"], :name => "index_order_requests_on_external_system_id"
@@ -96,6 +98,14 @@ ActiveRecord::Schema.define(:version => 20130903062808) do
   add_index "orders", ["email"], :name => "index_orders_on_email"
   add_index "orders", ["institute_id"], :name => "index_orders_on_institute_id"
   add_index "orders", ["user_type_id"], :name => "index_orders_on_user_type_id"
+
+  create_table "reasons", :force => true do |t|
+    t.string   "code",       :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "reasons", ["code"], :name => "index_reasons_on_code", :unique => true
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id", :null => false
