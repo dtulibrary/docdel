@@ -8,6 +8,7 @@ en:
         'deliver': 'Delivered'
         'fail': 'Failed'
         'cancel': 'Cancelled'
+        'confirm': 'Confirmed'
       external_system:
         reprintsdesk: 'ReprintsDesk'
       reason:
