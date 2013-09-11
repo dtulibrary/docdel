@@ -15,7 +15,7 @@ class IncomingMailController
       when /Cancelled Order/
         reprintsdesk_machine_cancelled(mail)
       else
-        logger.info "Reprintsdesk subject "+mail.subject
+        logger.info "Reprintsdesk unhandled subject "+mail.subject
         false
       end
     else
@@ -48,7 +48,8 @@ class IncomingMailController
     when /This order has been canceled/
       reprintsdesk_cancel
     else
-      logger.info "Information mail "+extract_mail_text_part(mail).body.to_s
+      logger.info "Unhandled information mail "+
+        extract_mail_text_part(mail).body.to_s
       false
     end
   end
