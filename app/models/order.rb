@@ -122,8 +122,8 @@ class Order < ActiveRecord::Base
   def mark_delivery(url)
     raise ArgumentError "Missing url" unless url
     self.delivered_at = Time.now
-    save!
     do_callback('deliver', url)
+    save!
   end
 
   def do_callback(response_code, url = nil)
@@ -166,4 +166,9 @@ class Order < ActiveRecord::Base
     (url ? "&url=#{URI.encode_www_form_component(url)}" : '') +
     (@reason.blank? ? '' : "&reason=#{URI.encode_www_form_component(@reason)}")
   end
+
+  def name
+    customer_order_number || atitle
+  end
+
 end

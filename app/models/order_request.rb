@@ -16,20 +16,20 @@ class OrderRequest < ActiveRecord::Base
 
   def deliver(url)
     self.external_url = url
-    set_status('deliver')
     order.mark_delivery(url)
+    set_status('deliver')
   end
 
   def confirm
-    set_status('confirm')
     order.do_callback('confirm')
+    set_status('confirm')
   end
 
   def cancel
     return if order_status.code == 'cancel'
-    set_status('cancel')
     order.reason = format_reason
     order.do_callback('cancel')
+    set_status('cancel')
   end
 
   def format_reason
