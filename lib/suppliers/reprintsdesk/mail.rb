@@ -14,6 +14,8 @@ class IncomingMailController
         reprintsdesk_download(mail)
       when /Cancelled Order/
         reprintsdesk_machine_cancelled(mail)
+      when /Reprints Desk article delivery/
+        reprintsdesk_delivery_mail(mail)
       else
         logger.info "Reprintsdesk unhandled subject "+mail.subject
         false
@@ -66,6 +68,14 @@ class IncomingMailController
     reprintsdesk_extract_from_body(mail)
     return false unless reprintsdesk_handle_mail?
     reprintsdesk_cancel
+  end
+
+  def reprintsdesk_delivery_mail(mail)
+    reprintsdesk_extract_from_subject(mail.subject)
+    return false unless reprintsdesk_handle_mail?
+    request = @order.request('reprintsdesk', @external_number)
+    return true if request && request.order_status.code == 'deliver'
+    false
   end
 
   def reprintsdesk_cancel

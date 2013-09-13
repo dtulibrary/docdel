@@ -1,0 +1,62 @@
+From: Reprints Desk Customer Support <nobody@reprintsdesk.com>
+To: Testing <test@dom.ain>
+Subject: Reprints Desk article delivery #123456 / Ref: TEST-5000.
+MIME-Version: 1.0
+Date: Thu, 12 Sep 2013 17:54:04 -0700
+Content-Type: text/html; charset="utf-8"
+Message-ID: <test-13>
+
+<html xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <style>     body {font-family:verdana;font-size:10pt}     .disclaimer {font-size:7pt;font-weight:bold}     td {font-size:10pt;color=black}     .left {font-weight:bold}    </style>
+  <body>
+    <p>Dear Requestor,</p>
+    <p>The article for OrderID 123456 may be downloaded by clicking on this link:</p>
+    <p><a href="http://localhost/Order_PlaceHolder.pdf">Download</a></p>
+    <p>Please note that Acrobat Reader is required to view this document</p>
+    <p>If you have any questions please contact us at +1(999)999-9999, or
+    <a href="mailto:nobody@reprintsdesk.com?Subject=Order Info Request on
+    OrderID 123456">nobody@reprintsdesk.com</a>. Please refer to the
+    OrderID number when making inquiries about this order.</p>
+    <p>Request details are below:</p>
+    <p>
+      <table border="1">
+        <tr>
+          <td class="left">Article Title</td>
+          <td>WIND TUNNEL STUDY OF ICING ON MARINE STRUCTURES.</td>
+        </tr>
+        <tr>
+          <td class="left">Author</td>
+          <td>Jouko Launiainen</td>
+        </tr>
+        <tr>
+          <td class="left" rowspan="2">Publication</td>
+          <td>VTT Symposium (Valtion Teknillinen Tutkimuskeskus)</td>
+        </tr>
+        <tr>
+          <td>1983 37():446-457</td>
+        </tr>
+        <tr>
+          <td class="left">Your Reference Number</td>
+          <td>TEST-5000</td>
+        </tr>
+      </table>
+    </p>
+    <p>Requested Delivery Method is Email to the following address:</p>
+    <p>
+      <table border="1">
+        <tr>
+          <td class="left">Email</td>
+          <td>test@dom.ain</td>
+        </tr>
+      </table>
+    </p>
+    <p>This document is protected by U.S. and International Copyright Laws.</p>
+    <p>This document is protected by copyright.  A single copy of this article
+    has been provided for your use. You are responsible for complying with all
+    appropriate copyright laws with your use of this article.</p>
+    <p>Thanks again for your order. We look forward to providing best-in-class
+    service to you.</p>
+    <hr>
+    <p>The Reprints Desk - One Stop Reprint Solutions</p>
+  </body>
+</html> 

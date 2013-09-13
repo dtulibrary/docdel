@@ -12,7 +12,7 @@ describe IncomingMailController do
 
   it "fails to handle incoming email" do
     mail = Mail.new(File.read("spec/fixtures/incoming_mail/error.eml"))
-    IncomingMailController.receive(mail).should eq false
+    expect(IncomingMailController.receive(mail)).to eq false
   end
 
   it "handle email with proper handler function" do
@@ -22,7 +22,7 @@ describe IncomingMailController do
       end
     end
     mail = Mail.new(File.read("spec/fixtures/incoming_mail/ok.eml"))
-    IncomingMailController.receive(mail).should eq true
+    expect(IncomingMailController.receive(mail)).to eq true
   end
 
   context "ReprintsDesk" do
@@ -37,7 +37,7 @@ describe IncomingMailController do
 
       it "handles Confirmation" do
         mail = Mail.new(File.read("spec/fixtures/reprintsdesk/confirmation.eml"))
-        IncomingMailController.receive(mail).should eq true
+        expect(IncomingMailController.receive(mail)).to eq true
       end
 
       it "handles Information cancel" do
@@ -56,14 +56,18 @@ describe IncomingMailController do
         rd_mail_should_set_status('download_html_only', 'deliver')
       end
 
+      it "handles Delivery" do
+        rd_mail_has_status('delivery', 'deliver')
+      end
+
       it "doesn't handle unknown subject" do
         mail = Mail.new(File.read("spec/fixtures/reprintsdesk/unknown_subject.eml"))
-        IncomingMailController.receive(mail).should eq false
+        expect(IncomingMailController.receive(mail)).to eq false
       end
 
       it "doesn't handle unknown information" do
         mail = Mail.new(File.read("spec/fixtures/reprintsdesk/unknown_info.eml"))
-        IncomingMailController.receive(mail).should eq false
+        expect(IncomingMailController.receive(mail)).to eq false
       end
 
     end
@@ -93,6 +97,10 @@ describe IncomingMailController do
         rd_mail_should_not_be_handled('download_html_only')
       end
 
+      it "doesn't handle Delivery" do
+        rd_mail_should_not_be_handled('delivery')
+      end
+
     end
 
     describe "wrong prefix" do
@@ -118,6 +126,10 @@ describe IncomingMailController do
 
       it "doesn't handle Download - html only" do
         rd_mail_should_not_be_handled('download_html_only')
+      end
+
+      it "doesn't handle Delivery" do
+        rd_mail_should_not_be_handled('delivery')
       end
 
     end
@@ -147,6 +159,10 @@ describe IncomingMailController do
         rd_mail_should_not_be_handled('download_html_only')
       end
 
+      it "doesn't handle Delivery" do
+        rd_mail_should_not_be_handled('delivery')
+      end
+
     end
 
     def setup_reprintsdesk(order_id, external_number, prefix)
@@ -158,10 +174,14 @@ describe IncomingMailController do
       mail_should_set_status(mail_file, status, 'reprintsdesk')
     end
 
+    def rd_mail_has_status(mail_file, status)
+      mail_has_status(mail_file, status, 'reprintsdesk')
+    end
+
     def rd_mail_should_not_be_handled(mail_file)
       mail = Mail.new(
         File.read("spec/fixtures/reprintsdesk/#{mail_file}.eml"))
-      IncomingMailController.receive(mail).should eq false
+      expect(IncomingMailController.receive(mail)).to eq false
     end
 
   end
@@ -255,7 +275,7 @@ describe IncomingMailController do
        to_return(:status => 404, :body => "", :headers => {})
       mail = Mail.new(
         File.read("spec/fixtures/local_scan/#{mail_file}.eml"))
-      IncomingMailController.receive(mail).should eq false
+      expect(IncomingMailController.receive(mail)).to eq false
     end
 
   end
@@ -276,12 +296,22 @@ describe IncomingMailController do
     FactoryGirl.create(:order_status, code: status)
     mail = Mail.new(
       File.read("spec/fixtures/#{supplier}/#{mail_file}.eml"))
-    IncomingMailController.receive(mail).should eq true
+    expect(IncomingMailController.receive(mail)).to eq true
     order = Order.find(@order.id)
-    order.current_request.order_status.code.should eq status
+    expect(order.current_request.order_status.code).to eq status
     if status == 'deliver'
-      order.current_request.external_url.should_not eq 'http://external.test.com/external_reference.html'
+      expect(order.current_request.external_url).not_to eq 'http://external.'+
+        'test.com/external_reference.html'
     end
+  end
+
+  def mail_has_status(mail_file, status, supplier)
+    order_status = FactoryGirl.create(:order_status, code: status)
+    @request.order_status = order_status
+    @request.save!
+    mail = Mail.new(
+      File.read("spec/fixtures/#{supplier}/#{mail_file}.eml"))
+    expect(IncomingMailController.receive(mail)).to eq true
   end
 
 end
