@@ -14,7 +14,8 @@ class Order
           'UserName' => account['user'],
           'Password' => account['password'],
         },
-        :attributes! => { 'UserCredentials' => { 'xmlns' => "http://reprintsdesk.com/webservices/" }},
+        :attributes! => { 'UserCredentials' => { 'xmlns' =>
+          "http://reprintsdesk.com/webservices/" }},
       }
     )
     Savon.observers << SavonObserver.new if Rails.env.development?
@@ -24,9 +25,11 @@ class Order
       response = client.call(:order_get_price_estimate,
         message: { issn: issn || eissn, year: date, totalpages: 1 },
         :attributes => { "xmlns" => "http://reprintsdesk.com/webservices/" })
-      if response.body[:order_get_price_estimate_response][:order_get_price_estimate_result] == "1"
-        request.external_service_charge = response.body[:order_get_price_estimate_response][:xml_data][:estimate][:servicecharge]
-        request.external_copyright_charge = response.body[:order_get_price_estimate_response][:xml_data][:estimate][:copyrightcharge]
+      resp = response.body[:order_get_price_estimate_response]
+      if resp[:order_get_price_estimate_result] == "1"
+        est = resp[:xml_data][:estimate]
+        request.external_service_charge = est[:servicecharge]
+        request.external_copyright_charge = est[:copyrightcharge]
         request.external_currency = 'USD'
       end
     end
@@ -87,11 +90,15 @@ class Order
     end
 
     response = client.call(:order_place_order2,
-      message: builder.to_xml(:save_with => Nokogiri::XML::Node::SaveOptions::NO_DECLARATION),
+      message: builder.to_xml(:save_with =>
+        Nokogiri::XML::Node::SaveOptions::NO_DECLARATION),
       attributes: { "xmlns" => "http://reprintsdesk.com/webservices/" })
-    if response.body[:order_place_order2_response][:order_place_order2_result] == "1"
-      request.external_number = response.body[:order_place_order2_response][:order_id]
+    resp = response.body[:order_place_order2_response]
+    if resp[:order_place_order2_result] == "1"
+      request.external_number = resp[:order_id]
       request.order_status = OrderStatus.find_by_code("request")
+    else
+      logger.warn "RD failed response #{response.body.inspect}"
     end
     request.save!
     save!

@@ -37,21 +37,21 @@ describe Rest::OrdersController do
       post :create, :email => 'test@dom.ain', :supplier => 'bogus',
         :callback_url => 'http://testhost/',
         :open_url => 'url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&ctx_enc=info%3Aofi%2Fenc%3AUTF-8&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.au=Lokhande%2C+Ram&rft.atitle=Study+of+some+Indian+medicinal+plants+by+application+of+INAA+and+AAS+techniques&rft.jtitle=Natural+Science&rft.issn=21504091&rft.issn=21504105&rft.date=2010&rft.volume=02&rft.issue=01&rft.pages=26-32&rft_id=info:doi%2F10.4236%2Fns.2010.21004'
-      Order.count.should eq 1
+      expect(Order.count).to eq 1
     end
 
     it "create order with corporation" do
       post :create, :email => 'test@dom.ain', :supplier => 'bogus',
         :callback_url => 'http://testhost/',
         :open_url => 'url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&ctx_enc=info%3Aofi%2Fenc%3AUTF-8&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.au=Test+Corporation&rft.atitle=Study+of+some+Indian+medicinal+plants+by+application+of+INAA+and+AAS+techniques&rft.jtitle=Natural+Science&rft.issn=21504091&rft.issn=21504105&rft.date=2010&rft.volume=02&rft.issue=01&rft.pages=26-32&rft_id=info:doi%2F10.4236%2Fns.2010.21004'
-      Order.count.should eq 1
+      expect(Order.count).to eq 1
     end
 
     it "fails create order" do
       post :create, :email => 'test@dom.ain', :supplier => 'notbogus',
         :callback_url => 'http://testhost/',
         :open_url => 'url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&ctx_enc=info%3Aofi%2Fenc%3AUTF-8&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.au=Test+Corporation&rft.atitle=Study+of+some+Indian+medicinal+plants+by+application+of+INAA+and+AAS+techniques&rft.jtitle=Natural+Science&rft.issn=21504091&rft.issn=21504105&rft.date=2010&rft.volume=02&rft.issue=01&rft.pages=26-32&rft_id=info:doi%2F10.4236%2Fns.2010.21004'
-      Order.count.should eq 0
+      expect(Order.count).to eq 0
     end
 
   end
@@ -97,54 +97,138 @@ describe Rest::OrdersController do
     end
 
     describe "create order" do
-      it "for type1" do
-        order = reprintsdesk_create_order(
-          '{"user_type":"type1","dtu":{"org_units":["45"]}}', '1', 'Test1',
-          'TYPE1')
-        order.institute.code.should eq '45'
+      before :each do
+      #  clear_order_information
       end
 
-      it "for others" do
-        reprintsdesk_create_order('{"user_type": "other"}', '1', 'Test',
-          'OTHER')
+      it "works for type1" do
+        set_user_id('1')
+        set_user_name('Test1')
+        set_user_response('{"user_type":"type1","dtu":{"org_units":["45"]}}')
+        set_user_type('TYPE1')
+        with_price_lookup
+        with_order_request_result(1)
+        
+        order = reprintsdesk_request
+        basic_order_test(order)
+        expect(order.institute.code).to eq '45'
       end
 
-      it "for anon" do
-        reprintsdesk_create_order(nil, nil, 'Test', 'OTHER')
+      it "works for others" do
+        set_user_id('1')
+        set_user_name('Test')
+        set_user_type('OTHER')
+        set_user_response('{"user_type": "other"}')
+        with_price_lookup
+        with_order_request_result(1)
+
+        order = reprintsdesk_request
+        basic_order_test(order)
       end
 
-      def reprintsdesk_create_order(user_response, user_id, username, user_type)
-        price_request = {:issn=>"21504091", :year=>"2010", :totalpages=>1}
-        price_response = File.read("spec/fixtures/reprintsdesk/price_response.xml")
-        order_request = ERB.new(
-          File.read("spec/fixtures/reprintsdesk/order_request.xml")).result binding()
+      it "works for anon" do
+        set_user_name('Test')
+        set_user_type('OTHER')
+        with_price_lookup
+        with_order_request_result(1)
+        order = reprintsdesk_request
+        basic_order_test(order)
+      end
 
-        order_response = File.read("spec/fixtures/reprintsdesk/order_response.xml")
+      it "failed rd response" do
+        set_user_name('Test')
+        set_user_type('OTHER')
+        with_price_lookup
+        with_order_request_result(2)
+        order = reprintsdesk_request
+        expect(order).to be_valid
+      end
 
-        stub_request(:get, "http://localhost/users/1.json").
-          to_return(:status => 200, :body => user_response,
-            :headers => {}) if user_response
+      def reprintsdesk_request
+        post :create, :format => :json,
+          :email => 'test@dom.ain', :supplier => 'reprintsdesk',
+          :callback_url => 'http://testhost/',
+          :dibs_order_id => 'OID',
+          :user_id => @user_id,
+          :open_url => @open_request
+        Order.first
+      end
 
-        savon.expects(:order_get_price_estimate).with(message: price_request).returns(price_response)
-        savon.expects(:order_place_order2).with(message: order_request).returns(order_response)
+      def basic_order_test(order)
+        expect(Order.count).to eq 1
+        # Check that order/request matches what we want.
+        expect(order.current_request.external_service_charge).to eq 10.0
+        expect(order.current_request.external_copyright_charge).to eq -1.0
+        expect(order.current_request.external_number).to eq 123456
+        expect(order.user_type.code).to eq @user['user_type'] if @user_response
+      end
+
+      def reprintsdesk_failed_order
         post :create,
           :email => 'test@dom.ain', :supplier => 'reprintsdesk',
           :callback_url => 'http://testhost/',
           :dibs_order_id => 'OID',
-          :user_id => user_id,
+          :user_id => @user_id,
           :open_url => @open_request
-        user = JSON.parse(user_response) if user_response
-        Order.count.should eq 1
-        # Check that order/request matches what we want.
-        order = Order.first
-        order.current_request.external_service_charge.should eq 10.0
-        order.current_request.external_copyright_charge.should eq -1.0
-        order.current_request.external_number.should eq 123456
-        order.user_type.code.should eq user['user_type'] if user_response
-        order
       end
+
+      def with_price_lookup
+        price_request = {:issn=>"21504091", :year=>"2010", :totalpages=>1}
+        price_response = File.read(
+          "spec/fixtures/reprintsdesk/price_response.xml"
+        )
+        savon.expects(:order_get_price_estimate).with(:message => 
+          price_request).returns(price_response)
+      end
+
+      def set_user_id(user_id)
+        @user_id = user_id
+      end
+
+      def set_user_name(user_name)
+        @user_name = user_name
+      end
+
+      def set_user_response(user_response)
+        @user_response = user_response
+        stub_request(:get, "http://localhost/users/1.json").
+          to_return(:status => 200, :body => user_response,
+            :headers => {})
+        @user = JSON.parse(user_response)
+      end
+
+      def set_user_type(user_type)
+        @user_type = user_type
+      end
+
+      def with_order_request_result(order_result)
+        # Create binding for ERB
+        user_name = @user_name
+        user_type = @user_type
+
+        order_request = ERB.new(
+          File.read("spec/fixtures/reprintsdesk/order_request.xml")
+        ).result binding()
+
+        order_response = ERB.new(
+          File.read("spec/fixtures/reprintsdesk/order_response.xml")
+        ).result binding()
+
+        savon.expects(:order_place_order2).with(:message => 
+          order_request).returns(order_response)
+      end
+
+      def clear_order_informaion
+        @user = nil
+        @user_response = nil
+        @user_name = nil
+        @user_type = nil
+        @user_response = nil
+      end
+
     end
   end
+
 
   describe "Local Scan" do
     before :each do
