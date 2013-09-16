@@ -4,7 +4,7 @@ class OrderRequest < ActiveRecord::Base
   belongs_to :external_system
   attr_accessible :external_copyright_charge, :external_currency,
     :external_number, :external_service_charge, :external_url, :shelfmark,
-    :reason_id, :reason_text
+    :reason_id, :reason_text, :order_status_id
 
   validates :order, :presence => true
   validates :order_status, :presence => true
