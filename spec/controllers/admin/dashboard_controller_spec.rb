@@ -18,8 +18,8 @@ describe Admin::DashboardController do
       FactoryGirl.create(:order)
       FactoryGirl.create(:order, :delivered_at => Time.now)
       get :index
-      response.status.should be(200)
-      response.should render_template :index
+      expect(response.status).to be(200)
+      expect(response).to render_template :index
     end
   end
 end

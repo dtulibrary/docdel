@@ -18,8 +18,8 @@ describe Admin::OrdersController do
     it "renders the order view" do
       FactoryGirl.create(:order)
       get :index
-      response.status.should be(200)
-      response.should render_template :index
+      expect(response.status).to be(200)
+      expect(response).to render_template :index
     end
   end
 
@@ -27,8 +27,8 @@ describe Admin::OrdersController do
     it "renders the order" do
       request = FactoryGirl.create(:order_request)
       get :show, id: request.order
-      response.status.should be(200)
-      response.should render_template :show
+      expect(response.status).to be(200)
+      expect(response).to render_template :show
     end
   end
 
@@ -47,8 +47,9 @@ describe Admin::OrdersController do
       FactoryGirl.create(:order_status, code: 'deliver')
       request = FactoryGirl.create(:order_request)
       get :deliver, id: request.order
-      response.status.should be(302)
-      OrderRequest.find_by_id(request.id).order_status.code.should eq 'deliver'
+      expect(response.status).to be(302)
+      expect(OrderRequest.find_by_id(request.id).order_status.code).
+        to eq 'deliver'
     end
   end
 
@@ -59,8 +60,9 @@ describe Admin::OrdersController do
       FactoryGirl.create(:order_status, code: 'cancel')
       request = FactoryGirl.create(:order_request)
       get :cancel, id: request.order
-      response.status.should be(302)
-      OrderRequest.find_by_id(request.id).order_status.code.should eq 'cancel'
+      expect(response.status).to be(302)
+      expect(OrderRequest.find_by_id(request.id).order_status.code).
+        to eq 'cancel'
     end
   end
 

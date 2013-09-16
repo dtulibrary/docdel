@@ -3,22 +3,22 @@ require 'spec_helper'
 describe Reason do
 
   it "has a valid factory" do
-    FactoryGirl.build(:reason).should be_valid
+    expect(FactoryGirl.build(:reason)).to be_valid
   end
 
   it "fails without code" do
-    FactoryGirl.build(:reason, code: nil).should_not be_valid
+    expect(FactoryGirl.build(:reason, :code => nil)).not_to be_valid
   end
 
   it "returns untranslated name" do
     reason = FactoryGirl.build(:reason)
-    reason.name.should eq "translation missing: en.haitatsu.code.reason."+
+    expect(reason.name).to eq "translation missing: en.haitatsu.code.reason."+
       reason.code
   end
 
   it "code is unique" do
     reason = FactoryGirl.create(:reason)
-    FactoryGirl.build(:reason, code: reason.code).should_not be_valid
+    expect(FactoryGirl.build(:reason, code: reason.code)).not_to be_valid
   end
 
   it "restrict delete with order_request" do

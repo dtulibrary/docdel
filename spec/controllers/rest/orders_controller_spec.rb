@@ -246,7 +246,7 @@ describe Rest::OrdersController do
         :email => 'test@dom.ain', :supplier => 'local_scan',
         :callback_url => 'http://localhost/',
         :open_url => @open_request
-      Order.count.should eq 1
+      expect(Order.count).to eq 1
     end
 
     it "fails to create order" do
@@ -257,7 +257,7 @@ describe Rest::OrdersController do
         :email => 'test@dom.ain', :supplier => 'local_scan',
         :callback_url => 'http://localhost/',
         :open_url => @open_request
-      Order.count.should eq 0
+      expect(Order.count).to eq 0
     end
   end
 
@@ -267,9 +267,9 @@ describe Rest::OrdersController do
       order1 = FactoryGirl.create(:order)
       order2 = FactoryGirl.create(:order)
       get :show, id: order1, :format => :json
-      assigns(:order).should eq (order1)
-      response.header['Content-Type'].should include 'application/json'
-      response.body.should eq order1.to_json
+      expect(assigns(:order)).to eq (order1)
+      expect(response.header['Content-Type']).to include 'application/json'
+      expect(response.body).to eq order1.to_json
     end
   end
 

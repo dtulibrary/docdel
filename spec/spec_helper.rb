@@ -33,6 +33,9 @@ RSpec.configure do |config|
 
   config.infer_base_class_for_anonymous_controllers = false
   config.mock_with :mocha
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
+  end
 end
 
 #Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}

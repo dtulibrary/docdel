@@ -6,9 +6,9 @@ describe OrdersController do
     it "renders view" do
       order = FactoryGirl.create(:order)
       get :show, :id => order
-      response.status.should be(200)
-      response.header['Content-Type'].should include 'text/html'
-      response.should render_template :show
+      expect(response.status).to be(200)
+      expect(response.header['Content-Type']).to include 'text/html'
+      expect(response).to render_template :show
     end
   end
 
@@ -29,13 +29,13 @@ describe OrdersController do
       post :not_available, :id => @order_request.order.id,
         'order_requests' => { 'reason_id' => 
         @reason.id }, 'reason_text' => 'Extra info'
-      response.status.should be(200)
-      response.header['Content-Type'].should include 'text/html'
-      response.should render_template :not_available
+      expect(response.status).to be(200)
+      expect(response.header['Content-Type']).to include 'text/html'
+      expect(response).to render_template :not_available
       order = Order.first
-      order.current_request.reason_id.should eq @reason.id
-      order.current_request.reason_text.should eq 'Extra info'
-      order.current_request.format_reason.should eq "Issue not available: "+
+      expect(order.current_request.reason_id).to eq @reason.id
+      expect(order.current_request.reason_text).to eq 'Extra info'
+      expect(order.current_request.format_reason).to eq "Issue not available: "+
         "Extra info"
     end
 
@@ -46,13 +46,13 @@ describe OrdersController do
       post :not_available, :id => @order_request.order.id,
         'order_requests' => { 'reason_id' => 
         @reason.id }
-      response.status.should be(200)
-      response.header['Content-Type'].should include 'text/html'
-      response.should render_template :not_available
+      expect(response.status).to be(200)
+      expect(response.header['Content-Type']).to include 'text/html'
+      expect(response).to render_template :not_available
       order = Order.first
-      order.current_request.reason_id.should eq @reason.id
-      order.current_request.reason_text.should be nil
-      order.current_request.format_reason.should eq "Issue not available"
+      expect(order.current_request.reason_id).to eq @reason.id
+      expect(order.current_request.reason_text).to be nil
+      expect(order.current_request.format_reason).to eq "Issue not available"
     end
 
     it "with reason_id and reason_text" do
@@ -62,13 +62,13 @@ describe OrdersController do
       post :not_available, :id => @order_request.order.id,
          'order_requests' => { 'reason_id' => ''},
          'reason_text' => 'Extra info'
-      response.status.should be(200)
-      response.header['Content-Type'].should include 'text/html'
-      response.should render_template :not_available
+      expect(response.status).to be(200)
+      expect(response.header['Content-Type']).to include 'text/html'
+      expect(response).to render_template :not_available
       order = Order.first
-      order.current_request.reason_id.should be nil
-      order.current_request.reason_text.should eq 'Extra info'
-      order.current_request.format_reason.should eq "Extra info"
+      expect(order.current_request.reason_id).to be nil
+      expect(order.current_request.reason_text).to eq 'Extra info'
+      expect(order.current_request.format_reason).to eq "Extra info"
     end
 
   end
