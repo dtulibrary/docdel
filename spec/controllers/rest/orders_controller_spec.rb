@@ -84,6 +84,10 @@ describe Rest::OrdersController do
           'username' => "Test",
         },
       }
+      config.reprintsdesk.timecaps = {
+        'type1' => 14.days,
+        'default' => 6.days + 14.hours
+      }
       config.user_url = "http://localhost"
     end
     after(:all) { 
@@ -106,6 +110,7 @@ describe Rest::OrdersController do
         set_user_name('Test1')
         set_user_response('{"user_type":"type1","dtu":{"org_units":["45"]}}')
         set_user_type('TYPE1')
+        set_timecap('2013-10-15T00:00:00Z')
         with_price_lookup
         with_order_request_result(1)
         
@@ -119,6 +124,7 @@ describe Rest::OrdersController do
         set_user_name('Test')
         set_user_type('OTHER')
         set_user_response('{"user_type": "other"}')
+        set_timecap('2013-10-07T14:00:00Z')
         with_price_lookup
         with_order_request_result(1)
 
@@ -129,6 +135,7 @@ describe Rest::OrdersController do
       it "works for anon" do
         set_user_name('Test')
         set_user_type('OTHER')
+        set_timecap('2013-10-07T14:00:00Z')
         with_price_lookup
         with_order_request_result(1)
         order = reprintsdesk_request
@@ -138,6 +145,7 @@ describe Rest::OrdersController do
       it "failed rd response" do
         set_user_name('Test')
         set_user_type('OTHER')
+        set_timecap('2013-10-07T14:00:00Z')
         with_price_lookup
         with_order_request_result(2)
         order = reprintsdesk_request
@@ -150,6 +158,7 @@ describe Rest::OrdersController do
           :callback_url => 'http://testhost/',
           :dibs_order_id => 'OID',
           :user_id => @user_id,
+          :timecap_base => '2013-10-01T00:00:00Z',
           :open_url => @open_request
         Order.first
       end
@@ -169,6 +178,7 @@ describe Rest::OrdersController do
           :callback_url => 'http://testhost/',
           :dibs_order_id => 'OID',
           :user_id => @user_id,
+          :timecap_base => '2013-10-01T00:00:00Z',
           :open_url => @open_request
       end
 
@@ -201,10 +211,15 @@ describe Rest::OrdersController do
         @user_type = user_type
       end
 
+      def set_timecap(date)
+        @timecap = date 
+      end
+
       def with_order_request_result(order_result)
         # Create binding for ERB
         user_name = @user_name
         user_type = @user_type
+        timecap   = @timecap
 
         order_request = ERB.new(
           File.read("spec/fixtures/reprintsdesk/order_request.xml")
@@ -224,6 +239,7 @@ describe Rest::OrdersController do
         @user_name = nil
         @user_type = nil
         @user_response = nil
+        @timecap = nil
       end
 
     end

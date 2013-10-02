@@ -1,5 +1,6 @@
 require 'openurl'
 require 'httparty'
+require 'time'
 
 class Order < ActiveRecord::Base
   include HTTParty
@@ -73,6 +74,11 @@ class Order < ActiveRecord::Base
           o.user(params[:user_id])
           o.save or raise "Order not valid"
           o.path_controller = controller
+          if params[:timecap_base].blank?
+            o.timecap_date = Time.now().round(0)
+          else
+            o.timecap_date = Time.iso8601(params[:timecap_base])
+          end
         end
 
         system = params[:supplier]
@@ -169,6 +175,11 @@ class Order < ActiveRecord::Base
 
   def name
     customer_order_number || atitle
+  end
+
+  def timecap_date=(date)
+    @timecap_date = date
+    logger.info "Timecap set #{@timecap_date}"
   end
 
 end

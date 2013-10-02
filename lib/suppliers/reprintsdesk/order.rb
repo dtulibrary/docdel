@@ -1,3 +1,5 @@
+require 'time'
+
 class Order
   def request_from_reprintsdesk
     # Find user/password
@@ -34,6 +36,13 @@ class Order
       end
     end
 
+    timecap_date = nil
+    if config.reprintsdesk.respond_to? :timecaps
+      timecap = config.reprintsdesk.timecaps[user_type] ||
+                config.reprintsdesk.timecaps['default']
+      logger.info "Timecap #{@timecap_date} + #{timecap}"
+      timecap_date = @timecap_date + timecap
+    end
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.xmlNode {
         xml.order('xmlns' => '') {
@@ -80,6 +89,11 @@ class Order
           xml.processinginstructions {
             xml.processinginstruction('id' => '1', 'valueid' => '1')
             xml.processinginstruction('id' => '2', 'valueid' => '0')
+            unless timecap_date.nil?
+              xml.processinginstruction('id' => '7', 'valueid' => '1') do
+                xml.text_value timecap_date.iso8601
+              end
+            end
           }
           xml.customerreferences {
             xml.customerreference(config.order_prefix + "-#{id}", 'id' => '1')
