@@ -4,6 +4,7 @@ ActiveAdmin.register Order do
   filter :atitle
   filter :email
   filter :customer_order_number
+  filter :user_type
   filter :delivered_at
   filter :created_at
   filter :updated_at
