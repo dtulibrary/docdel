@@ -1,5 +1,6 @@
 Haitatsu::Application.configure do
-  # Settings specified here will take precedence over those in config/application.rb
+  # Settings specified here will take precedence over those in
+  # config/application.rb
 
   # The test environment is used exclusively to run your application's
   # test suite. You never need to work with it otherwise. Remember that
@@ -34,8 +35,4 @@ Haitatsu::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
-end
-
-if File.exists? File.dirname(__FILE__) + '/../application.local.rb'
-  require File.dirname(__FILE__) + '/../application.local.rb'
 end

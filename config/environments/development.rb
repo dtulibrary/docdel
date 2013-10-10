@@ -1,5 +1,6 @@
 Haitatsu::Application.configure do
-  # Settings specified here will take precedence over those in config/application.rb
+  # Settings specified here will take precedence over those in
+  # config/application.rb
 
   # In the development environment your application's code is reloaded on
   # every request. This slows down response time but is perfect for development
@@ -34,10 +35,6 @@ Haitatsu::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
-end
-
-if File.exists? File.dirname(__FILE__) + '/../application.local.rb'
-  require File.dirname(__FILE__) + '/../application.local.rb'
 end
 
 class Rest::OrdersController < ApplicationController

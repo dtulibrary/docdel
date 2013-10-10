@@ -121,3 +121,7 @@ module Haitatsu
     c.handle_mails_from = ''
   end
 end
+
+if File.exists? File.dirname(__FILE__) + '/../application.local.rb'
+  require File.dirname(__FILE__) + '/../application.local.rb'
+end
