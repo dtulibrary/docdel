@@ -49,7 +49,7 @@ namespace :config do
     link_config_file('database.yml')
     link_config_file('application.local.rb')
     link_config_file('incomingmail.local.yml')
-    link_config_file('initializers/devisesetup.local.rb')
+    link_config_file('initializers/devisecas.local.rb')
   end
 end
 
