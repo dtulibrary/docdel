@@ -91,7 +91,7 @@ class Order
             xml.processinginstruction('id' => '2', 'valueid' => '0')
             unless timecap_date.nil?
               xml.processinginstruction('id' => '7', 'valueid' => '1') do
-                xml.text_value timecap_date.iso8601
+                xml.textvalue timecap_date.iso8601
               end
             end
           }
@@ -103,6 +103,8 @@ class Order
       }
     end
 
+    logger.info "RD XML: "+builder.to_xml(:save_with =>
+        Nokogiri::XML::Node::SaveOptions::NO_DECLARATION)
     response = client.call(:order_place_order2,
       message: builder.to_xml(:save_with =>
         Nokogiri::XML::Node::SaveOptions::NO_DECLARATION),
