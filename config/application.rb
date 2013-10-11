@@ -122,6 +122,6 @@ module Haitatsu
   end
 end
 
-if File.exists? File.dirname(__FILE__) + '/../application.local.rb'
-  require File.dirname(__FILE__) + '/../application.local.rb'
+if File.exists? File.dirname(__FILE__) + '/application.local.rb'
+  require File.dirname(__FILE__) + '/application.local.rb'
 end
