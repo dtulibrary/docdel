@@ -43,8 +43,9 @@ ActiveAdmin.register Order do
 
   sidebar 'orders.requests', :only => [ :show ] do
     table_for(order.order_requests) do
-      column :link do |order|
-        link_to I18n.t('haitatsu.admin.request.more'), admin_order_order_requests_path(order)
+      column :link do |order_req|
+        link_to I18n.t('haitatsu.admin.request.more'),
+          admin_order_order_requests_path(order)
       end
       column :external_system
       column :order_status
