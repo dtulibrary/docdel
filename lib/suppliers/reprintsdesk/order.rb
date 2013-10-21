@@ -116,8 +116,12 @@ class Order
     else
       logger.warn "RD failed response #{response.body.inspect}"
     end
-    request.save!
-    save!
+    unless request.save
+      logger.warn "Request save failed #{request.errors.full_messages}"
+    end
+    unless save
+      logger.warn "Order save failed #{errors.full_messages}"
+    end
   end
 
 end
