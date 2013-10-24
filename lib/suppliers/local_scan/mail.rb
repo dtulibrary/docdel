@@ -23,13 +23,13 @@ class IncomingMailController
 
   def local_scan_extract(mail)
     if mail.subject =~ /^(\w+)-(\d+)/
-      @prefix_code = $1
+      @prefix_code = $1.upcase
       @order_number = $2
       @external_number = @order_number
     else
       body = extract_mail_text_part(mail).body.to_s
       if body =~ /^\s*(\w+)-(\d+)/
-        @prefix_code = $1
+        @prefix_code = $1.upcase
         @order_number = $2
         @external_number = @order_number
       end
