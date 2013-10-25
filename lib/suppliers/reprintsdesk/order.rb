@@ -6,7 +6,6 @@ class Order
     user_type = @user['user_type'] || 'other'
     account = config.reprintsdesk.accounts[user_type] ||
               config.reprintsdesk.accounts['default']
-    logger.info "Reprintsdesk account #{account['user']}"
     client = Savon.client(
       wsdl: config.reprintsdesk.wsdl,
       env_namespace: :soap,
@@ -37,7 +36,7 @@ class Order
     end
 
     timecap_date = nil
-    if config.reprintsdesk.respond_to? :timecaps
+    unless config.reprintsdesk.timecaps.nil?
       timecap = config.reprintsdesk.timecaps[user_type] ||
                 config.reprintsdesk.timecaps['default']
       logger.info "Timecap #{@timecap_date} + #{timecap}"
@@ -103,8 +102,6 @@ class Order
       }
     end
 
-    logger.info "RD XML: "+builder.to_xml(:save_with =>
-        Nokogiri::XML::Node::SaveOptions::NO_DECLARATION)
     response = client.call(:order_place_order2,
       message: builder.to_xml(:save_with =>
         Nokogiri::XML::Node::SaveOptions::NO_DECLARATION),
@@ -117,10 +114,10 @@ class Order
       logger.warn "RD failed response #{response.body.inspect}"
     end
     unless request.save
-      logger.warn "Request save failed #{request.errors.full_messages}"
+      logger.warn "Request save failed #{request.errors}"
     end
     unless save
-      logger.warn "Order save failed #{errors.full_messages}"
+      logger.warn "Order save failed #{self.errors}"
     end
   end
 

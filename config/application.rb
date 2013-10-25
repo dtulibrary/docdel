@@ -98,6 +98,7 @@ module Haitatsu
     c.fax = '*'
     c.systemmail = ''
     c.order_prefix = ''
+    c.accounts = nil
 #    c.accounts = {
 #      'group1' => {
 #        'user' => '',
@@ -111,6 +112,12 @@ module Haitatsu
 #        'user' => '',
 #        'password' => '',
 #      },
+#    }
+    c.timecaps = nil
+#    c.timecaps = {
+#      'group1' => 21.days,
+#      'group2' => 10.days,
+#      'default' => 2.days,
 #    }
 
     config.local_scan = ActiveSupport::OrderedOptions.new
