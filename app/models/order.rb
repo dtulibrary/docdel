@@ -97,7 +97,7 @@ class Order < ActiveRecord::Base
         @order.send("request_from_"+system)
 
       rescue StandardError => e
-        logger.debug params[:callback_url] + ": " + e.message
+        logger.warn params[:callback_url] + ": " + e.message
         @order = nil
         raise ActiveRecord::Rollback
       end
