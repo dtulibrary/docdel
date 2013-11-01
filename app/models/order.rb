@@ -56,8 +56,8 @@ class Order < ActiveRecord::Base
         @order = Order.new do |o|
           o.aufirst = aufirst
           o.aulast = aulast
-          o.title = data.referent.jtitle[0,1024]
-          o.atitle = data.referent.atitle[0,1024]
+          o.title = truncate(data.referent.jtitle)
+          o.atitle = truncate(data.referent.atitle)
           o.isbn = data.referent.isbn
           o.issn = data.referent.issn
           o.eissn = data.referent.eissn
@@ -180,6 +180,10 @@ class Order < ActiveRecord::Base
   def timecap_date=(date)
     @timecap_date = date
     logger.info "Timecap set #{@timecap_date}"
+  end
+
+  def self.truncate(value)
+    value.nil? ? '' : value[0,1024]
   end
 
 end

@@ -36,21 +36,83 @@ describe Rest::OrdersController do
     it "create order with author" do
       post :create, :email => 'test@dom.ain', :supplier => 'bogus',
         :callback_url => 'http://testhost/',
-        :open_url => 'url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&ctx_enc=info%3Aofi%2Fenc%3AUTF-8&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.au=Lokhande%2C+Ram&rft.atitle=Study+of+some+Indian+medicinal+plants+by+application+of+INAA+and+AAS+techniques&rft.jtitle=Natural+Science&rft.issn=21504091&rft.issn=21504105&rft.date=2010&rft.volume=02&rft.issue=01&rft.pages=26-32&rft_id=info:doi%2F10.4236%2Fns.2010.21004'
+        :open_url => 'url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&ctx_enc=info%3A'+
+          'ofi%2Fenc%3AUTF-8&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx&'+
+          'rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.au=Lokhande'+
+          '%2C+Ram&rft.atitle=Study+of+some+Indian+medicinal+plants+by+'+
+          'application+of+INAA+and+AAS+techniques&rft.jtitle=Natural+Science&'+
+          'rft.issn=21504091&rft.issn=21504105&rft.date=2010&rft.volume=02&'+
+          'rft.issue=01&rft.pages=26-32&rft_id=info:doi%2F10.4236%2Fns.2010.'+
+          '21004'
       expect(Order.count).to eq 1
+      order = Order.first
+      expect(order.title).to eq 'Natural Science'
+      expect(order.aufirst).to eq  'Ram'
+      expect(order.aulast).to eq 'Lokhande'
     end
 
     it "create order with corporation" do
       post :create, :email => 'test@dom.ain', :supplier => 'bogus',
         :callback_url => 'http://testhost/',
-        :open_url => 'url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&ctx_enc=info%3Aofi%2Fenc%3AUTF-8&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.au=Test+Corporation&rft.atitle=Study+of+some+Indian+medicinal+plants+by+application+of+INAA+and+AAS+techniques&rft.jtitle=Natural+Science&rft.issn=21504091&rft.issn=21504105&rft.date=2010&rft.volume=02&rft.issue=01&rft.pages=26-32&rft_id=info:doi%2F10.4236%2Fns.2010.21004'
+        :open_url => 'url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&ctx_enc=info%3A'+
+          'ofi%2Fenc%3AUTF-8&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx&'+
+          'rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.au=Test+'+
+          'Corporation&rft.atitle=Study+of+some+Indian+medicinal+plants+by+'+
+          'application+of+INAA+and+AAS+techniques&rft.jtitle=Natural+Science'+
+          '&rft.issn=21504091&rft.issn=21504105&rft.date=2010&rft.volume=02&'+
+          'rft.issue=01&rft.pages=26-32&rft_id=info:doi%2F10.4236%2Fns.2010.'+
+          '21004'
       expect(Order.count).to eq 1
+      order = Order.first
+      expect(order.title).to eq 'Natural Science'
+      expect(order.aufirst).to eq nil
+      expect(order.aulast).to eq  'Test Corporation'
+    end
+
+    it "create order without journal title" do
+      post :create, :email => 'test@dom.ain', :supplier => 'bogus',
+        :callback_url => 'http://testhost/',
+        :open_url => 'url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&ctx_enc=info'+
+          '%3Aofi%2Fenc%3AUTF-8&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3A'+
+          'ctx&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.au='+
+          'Test+Corporation&rft.atitle=Study+of+some+Indian+medicinal+plants'+
+          '+by+application+of+INAA+and+AAS+techniques&rft.issn=21504091&'+
+          'rft.issn=21504105&rft.date=2010&rft.volume=02&rft.issue=01&'+
+          'rft.pages=26-32&rft_id=info:doi%2F10.4236%2Fns.2010.21004'
+      expect(Order.count).to eq 1
+      order = Order.first
+      expect(order.title).to eq ''
+    end
+
+    it "create order with long journal title" do
+      post :create, :email => 'test@dom.ain', :supplier => 'bogus',
+        :callback_url => 'http://testhost/',
+        :open_url => 'url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&ctx_enc=info%3A'+
+          'ofi%2Fenc%3AUTF-8&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx&'+
+          'rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.au=Lokhande'+
+          '%2C+Ram&rft.atitle=Study+of+some+Indian+medicinal+plants+by+'+
+          'application+of+INAA+and+AAS+techniques&rft.jtitle=Natural+Science'+
+          (' Long name' * 120) +
+          '&rft.issn=21504091&rft.issn=21504105&rft.date=2010&rft.volume=02&'+
+          'rft.issue=01&rft.pages=26-32&rft_id=info:doi%2F10.4236%2Fns.2010.'+
+          '21004'
+      expect(Order.count).to eq 1
+      order = Order.first
+      expect(order.title).to eq 'Natural Science' + (' Long name' * 100) +
+        ' Long nam'
     end
 
     it "fails create order" do
       post :create, :email => 'test@dom.ain', :supplier => 'notbogus',
         :callback_url => 'http://testhost/',
-        :open_url => 'url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&ctx_enc=info%3Aofi%2Fenc%3AUTF-8&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.au=Test+Corporation&rft.atitle=Study+of+some+Indian+medicinal+plants+by+application+of+INAA+and+AAS+techniques&rft.jtitle=Natural+Science&rft.issn=21504091&rft.issn=21504105&rft.date=2010&rft.volume=02&rft.issue=01&rft.pages=26-32&rft_id=info:doi%2F10.4236%2Fns.2010.21004'
+        :open_url => 'url_ver=Z39.88-2004&ctx_ver=Z39.88-2004&ctx_enc=info%3A'+
+          'ofi%2Fenc%3AUTF-8&url_ctx_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Actx'+
+          '&rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&rft.au=Test+'+
+          'Corporation&rft.atitle=Study+of+some+Indian+medicinal+plants+by+'+
+          'application+of+INAA+and+AAS+techniques&rft.jtitle=Natural+Science'+
+          '&rft.issn=21504091&rft.issn=21504105&rft.date=2010&rft.volume=02'+
+          '&rft.issue=01&rft.pages=26-32&rft_id=info:doi%2F10.4236%2Fns.2010'+
+          '.21004'
       expect(Order.count).to eq 0
     end
 
