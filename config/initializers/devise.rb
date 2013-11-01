@@ -3,8 +3,9 @@
 Devise.setup do |config|
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
-  # note that it will be overwritten if you use your own mailer class with default "from" parameter.
-  config.mailer_sender = "please-change-me-at-config-initializers-devise@example.com"
+  # note that it will be overwritten if you use your own mailer class with 
+  # default "from" parameter.
+  config.mailer_sender = "dtic@dtic.dtu.dk"
 
   # Configure the class responsible to send e-mails.
   # config.mailer = "Devise::Mailer"
@@ -22,13 +23,15 @@ Devise.setup do |config|
 
   # Configure which authentication keys should have whitespace stripped.
   # These keys will have whitespace before and after removed upon creating or
-  # modifying a user and when used to authenticate or find a user. Default is :email.
+  # modifying a user and when used to authenticate or find a user. Default is
+  # :email.
   config.strip_whitespace_keys = [ :username ]
 
   # Tell if authentication through request.params is enabled. True by default.
-  # It can be set to an array that will enable params authentication only for the
-  # given strategies, for example, `config.params_authenticatable = [:database]` will
-  # enable it only for database (email + password) authentication.
+  # It can be set to an array that will enable params authentication only for
+  # the given strategies, for example, `config.params_authenticatable =
+  # [:database]` will enable it only for database (email + password)
+  # authentication.
   # config.params_authenticatable = true
 
   # config.email_regexp = /\A[^@]+@[^@]+\z/
@@ -44,9 +47,9 @@ Devise.setup do |config|
   config.secret_key = '--secretkey--'
 
   # ==> Scopes configuration
-  # Turn scoped views on. Before rendering "sessions/new", it will first check for
-  # "users/sessions/new". It's turned off by default because it's slower if you
-  # are using only default views.
+  # Turn scoped views on. Before rendering "sessions/new", it will first check
+  # for "users/sessions/new". It's turned off by default because it's slower
+  # if you are using only default views.
   # config.scoped_views = false
 
   # Configure the default scope given to Warden. By default it's the first
@@ -73,10 +76,11 @@ Devise.setup do |config|
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
-  # change the failure app, you can configure them inside the config.warden block.
+  # change the failure app, you can configure them inside the config.warden
+  # block.
   #
   # config.warden do |manager|
   #   manager.intercept_401 = false
-  #   manager.default_strategies(:scope => :user).unshift :some_external_strategy
+  #   manager.default_strategies(:scope => :user).unshift :external_strategy
   # end
 end
