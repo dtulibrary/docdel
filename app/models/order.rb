@@ -56,8 +56,8 @@ class Order < ActiveRecord::Base
         @order = Order.new do |o|
           o.aufirst = aufirst
           o.aulast = aulast
-          o.title = data.referent.jtitle
-          o.atitle = data.referent.atitle
+          o.title = data.referent.jtitle[0,1024]
+          o.atitle = data.referent.atitle[0,1024]
           o.isbn = data.referent.isbn
           o.issn = data.referent.issn
           o.eissn = data.referent.eissn
