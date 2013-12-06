@@ -22,6 +22,8 @@ describe OrderRequest do
   end
 
   it "callback fails" do
+    stub_request(:get, "http://localhost/callback?status=cancel").
+      to_return(:status => 404, :body => "", :headers => {})
     FactoryGirl.create(:order_status, code: 'cancel')
     order_request = FactoryGirl.build(:order_request)
     assert_raise StandardError do

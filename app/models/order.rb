@@ -3,8 +3,6 @@ require 'httparty'
 require 'time'
 
 class Order < ActiveRecord::Base
-  include HTTParty
-
   attr_accessible :atitle, :aufirst, :aulast, :callback_url, :date,
     :delivered_at, :doi, :eissn, :email, :epage, :isbn, :issn, :issue, :pages,
     :spage, :title, :volume, :customer_order_number

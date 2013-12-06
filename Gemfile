@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails'
+gem 'rails', '~> 3.2.0'
 gem 'jquery-rails', '~> 2.3.0'
 gem 'activeadmin'
 gem 'devise_cas_authenticatable'
