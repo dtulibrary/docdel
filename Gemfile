@@ -7,7 +7,7 @@ gem 'devise_cas_authenticatable'
 gem 'openurl'
 gem 'savon'
 gem 'httparty'
-gem 'capistrano'
+gem 'capistrano', '~> 2.15'
 gem 'incoming_mail', :git => 'https://github.com/dtulibrary/incoming_mail'
 gem 'bootstrap-sass'
 
