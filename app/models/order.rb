@@ -126,15 +126,15 @@ class Order < ActiveRecord::Base
   def mark_delivery(url)
     raise ArgumentError "Missing url" unless url
     self.delivered_at = Time.now
-    do_callback('deliver', url)
+    do_callback('deliver', {:url => url})
     save!
   end
 
-  def do_callback(response_code, url = nil)
+  def do_callback(response_code, args = {})
     begin
       response = HTTParty.get(callback_url +
         (/\?/.match(callback_url) ? '&' : '?') +
-        callback_param(response_code, url))
+        callback_param(response_code, args))
       if !response.success?
         raise StandardError, "Callback request unsuccessfull"
       end
@@ -165,10 +165,13 @@ class Order < ActiveRecord::Base
     @reason = text
   end
 
-  def callback_param(response_code, url)
-    "status=#{response_code}" +
-    (url ? "&url=#{URI.encode_www_form_component(url)}" : '') +
-    (@reason.blank? ? '' : "&reason=#{URI.encode_www_form_component(@reason)}")
+  def callback_param(response_code, args)
+    { :status => response_code,
+      :reason => @reason
+    }.merge(args)
+     .reject {|k,v| v.blank?}
+     .collect {|k,v| "#{k}=#{URI.encode_www_form_component v}"}
+     .join '&'
   end
 
   def name

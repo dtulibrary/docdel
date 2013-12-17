@@ -289,8 +289,13 @@ describe IncomingMailController do
   end
 
   def mail_should_set_status(mail_file, status, supplier)
-    url = "http://localhost/callback?status=#{status}" +
-      (status == 'deliver' ? '&url=/Order_PlaceHolder.pdf' : '')
+    url_params = {:status => status}
+    url_params[:url]              = '/Order_PlaceHolder.pdf' if status == 'deliver'
+    url_params[:supplier_orderid] = @request.external_number if status == 'confirm'
+
+    url = "http://localhost/callback?" + 
+           url_params.collect {|k,v| "#{k}=#{URI.encode_www_form_component v}"}.join('&')
+
     stub_request(:get, url).
       to_return(:status => 200, :body => "", :headers => {})
     FactoryGirl.create(:order_status, code: status)

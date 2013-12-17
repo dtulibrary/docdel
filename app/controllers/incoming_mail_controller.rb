@@ -34,7 +34,7 @@ class IncomingMailController < ActionMailer::Base
 
   def confirm_request(supplier)
     request = @order.request(supplier, @external_number)
-    request ?  request.confirm : report_not_found
+    request ? request.confirm(@external_number) : report_not_found
   end
 
   def cancel_request(supplier)
