@@ -4,7 +4,6 @@ class SendIt
 
   def self.local_scan_request order, params = {}
     params['order'] = order.as_json
-    logger.info "Params #{params}"
     send_mail 'haitatsu_scan_request', params
   end
 
@@ -13,7 +12,6 @@ class SendIt
   def self.send_mail template, params = {}
     begin
       url = "#{config.sendit_url}/send/#{template}"
-      logger.info "Sending mail request to SendIt: URL = #{url}, template = #{template}, params = #{params}"
 
       default_params = {
         :from => 'noreply@dtic.dtu.dk',
