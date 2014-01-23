@@ -214,6 +214,16 @@ describe Rest::OrdersController do
         expect(order).to be_valid
       end
 
+      it "fails create order when user lookup fails" do
+        set_user_name('Test')
+        set_user_type('DTU')
+        set_user_response('{"user_type":"type1","dtu":{
+          "reason":"lookup_failed"}}')
+        order = reprintsdesk_request
+        expect(order).to eq nil
+        expect(Order.count).to eq 0
+      end
+
       def reprintsdesk_request
         post :create, :format => :json,
           :email => 'test@dom.ain', :supplier => 'reprintsdesk',
@@ -232,16 +242,6 @@ describe Rest::OrdersController do
         expect(order.current_request.external_copyright_charge).to eq -1.0
         expect(order.current_request.external_number).to eq 123456
         expect(order.user_type.code).to eq @user['user_type'] if @user_response
-      end
-
-      def reprintsdesk_failed_order
-        post :create,
-          :email => 'test@dom.ain', :supplier => 'reprintsdesk',
-          :callback_url => 'http://testhost/',
-          :dibs_order_id => 'OID',
-          :user_id => @user_id,
-          :timecap_base => '2013-10-01T00:00:00Z',
-          :open_url => @open_request
       end
 
       def with_price_lookup
@@ -271,6 +271,12 @@ describe Rest::OrdersController do
 
       def set_user_type(user_type)
         @user_type = user_type
+      end
+
+      def set_failed_user_response
+        stub_request(:get, "http://localhost/users/1.json").
+          to_return(:status => 500, :body => "Failure",
+            :headers => {})
       end
 
       def set_timecap(date)

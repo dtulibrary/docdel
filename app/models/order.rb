@@ -2,6 +2,9 @@ require 'openurl'
 require 'httparty'
 require 'time'
 
+class LookupFailure < StandardError
+end
+
 class Order < ActiveRecord::Base
   attr_accessible :atitle, :aufirst, :aulast, :callback_url, :date,
     :delivered_at, :doi, :eissn, :email, :epage, :isbn, :issn, :issue, :pages,
@@ -94,8 +97,13 @@ class Order < ActiveRecord::Base
         # Execute request
         @order.send("request_from_"+system)
 
+      rescue LookupFailure => e
+        logger.info params[:callback_url] + ": " + e.message
+        @order = nil
+        raise ActiveRecord::Rollback
       rescue StandardError => e
-        logger.warn params[:callback_url] + ": " + e.message
+        logger.warn params[:callback_url] + ": " + e.message +
+          "\n\tBacktrace:\n\t#{e.backtrace.join("\n\t")}"
         @order = nil
         raise ActiveRecord::Rollback
       end
@@ -155,6 +163,9 @@ class Order < ActiveRecord::Base
     logger.info "User #{@user.inspect}"
     self.user_type = UserType.find_or_create_by_code(:code => @user['user_type'])
     if @user['dtu']
+      raise LookupFailure if @user['dtu']['reason'] == 'lookup_failed'
+      raise ArgumentError, @user['dtu']['reason'] unless
+        @user['dtu']['reason'].blank?
       code = Institute.find_or_create_by_code(:code =>
         @user['dtu']['org_units'].join(','))
       self.institute = code
