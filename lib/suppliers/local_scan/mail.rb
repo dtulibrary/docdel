@@ -1,3 +1,4 @@
+# Encoding: UTF-8
 require 'incoming_mail_controller'
 
 class IncomingMailController
@@ -26,6 +27,16 @@ class IncomingMailController
       @prefix_code = $1.upcase
       @order_number = $2
       @external_number = @order_number
+    elsif ((mail.subject =~ /^(\d+)$/) && config.local_scan.allow_no_prefix)
+      @order_number = $1
+      @order = Order.find_by_id(@order_number)
+      logger.info "Status is #{@order.current_request.order_status.code}"
+      if (@order && @order.current_request.order_status.code == 'requested')
+        @prefix_code = config.order_prefix
+        @external_number = @order_number
+      else
+        @order_number = nil
+      end
     else
       body = extract_mail_text_part(mail).body.to_s
       if body =~ /^\s*(\w+)-(\d+)/

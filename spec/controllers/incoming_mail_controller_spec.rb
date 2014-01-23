@@ -211,6 +211,22 @@ describe IncomingMailController do
         end
       end
 
+      it "handles without prefix when configured" do
+        Rails.application.config.local_scan.allow_no_prefix = true
+        request_set_status('requested')
+        ls_mail_should_set_status('order_no_prefix', 'deliver')
+      end
+
+      it "doesn't handle without prefix when status is wrong" do
+        Rails.application.config.local_scan.allow_no_prefix = true
+        ls_mail_should_not_be_handled('order_no_prefix')
+      end
+
+      it "doesn't handle without prefix when not configured" do
+        Rails.application.config.local_scan.allow_no_prefix = false
+        ls_mail_should_not_be_handled('order_no_prefix')
+      end
+
     end
 
     describe "wrong order-id" do
@@ -278,6 +294,10 @@ describe IncomingMailController do
       expect(IncomingMailController.receive(mail)).to eq false
     end
 
+    def ls_mail_has_status(mail_file, status)
+      mail_has_status(mail_file, status, 'local_scan')
+    end
+
   end
 
   def setup_supplier(order_id, external_number, supplier)
@@ -311,12 +331,16 @@ describe IncomingMailController do
   end
 
   def mail_has_status(mail_file, status, supplier)
-    order_status = FactoryGirl.create(:order_status, code: status)
-    @request.order_status = order_status
-    @request.save!
+    request_set_status(status)
     mail = Mail.new(
       File.read("spec/fixtures/#{supplier}/#{mail_file}.eml"))
     expect(IncomingMailController.receive(mail)).to eq true
+  end
+
+  def request_set_status(status)
+    order_status = FactoryGirl.create(:order_status, code: status)
+    @request.order_status = order_status
+    @request.save!
   end
 
 end

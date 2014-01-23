@@ -79,8 +79,7 @@ module Haitatsu
     config.sendit_url = ''
     config.storeit_url = ''
 
-    config.reprintsdesk = ActiveSupport::OrderedOptions.new
-    c = config.reprintsdesk
+    c = config.reprintsdesk = ActiveSupport::OrderedOptions.new
     c.wsdl = 'https://www.reprintsdesk.com/webservice/main.asmx?wsdl'
     c.user = ''
     c.password = ''
@@ -121,12 +120,12 @@ module Haitatsu
 #      'default' => 2.days,
 #    }
 
-    config.local_scan = ActiveSupport::OrderedOptions.new
-    c = config.local_scan
+    c = config.local_scan = ActiveSupport::OrderedOptions.new
     c.order_mail = ''
     c.from_mail = ''
     c.order_prefix = ''
     c.handle_mails_from = ''
+    c.allow_no_prefix = false
   end
 end
 
