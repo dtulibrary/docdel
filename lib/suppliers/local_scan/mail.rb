@@ -14,7 +14,6 @@ class IncomingMailController
 
   # Handle mail with scanned document
   def local_scan_deliver(mail)
-    logger.info "Extract local mail info"
     local_scan_extract(mail)
     return false unless @pdfdoc && local_scan_handle_mail?
     url = StoreIt.store_pdf(@pdfdoc, 'application/pdf')
@@ -30,8 +29,7 @@ class IncomingMailController
     elsif ((mail.subject =~ /^(\d+)$/) && config.local_scan.allow_no_prefix)
       @order_number = $1
       @order = Order.find_by_id(@order_number)
-      logger.info "Status is #{@order.current_request.order_status.code}"
-      if (@order && @order.current_request.order_status.code == 'requested')
+      if (@order && @order.current_request.order_status.code == 'request')
         @prefix_code = config.order_prefix
         @external_number = @order_number
       else

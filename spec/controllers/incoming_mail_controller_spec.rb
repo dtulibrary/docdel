@@ -213,7 +213,7 @@ describe IncomingMailController do
 
       it "handles without prefix when configured" do
         Rails.application.config.local_scan.allow_no_prefix = true
-        request_set_status('requested')
+        request_set_status('request')
         ls_mail_should_set_status('order_no_prefix', 'deliver')
       end
 
