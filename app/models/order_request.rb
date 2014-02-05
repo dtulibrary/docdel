@@ -21,7 +21,7 @@ class OrderRequest < ActiveRecord::Base
   end
 
   def confirm(external_number = nil)
-    order.do_callback('confirm', :supplier_orderid => external_number)
+    order.do_callback('confirm', :supplier_order_id => external_number)
     set_status('confirm')
   end
 
