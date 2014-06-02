@@ -9,7 +9,7 @@ gem 'savon'
 gem 'httparty'
 gem 'capistrano', '~> 2.15'
 gem 'incoming_mail', :git => 'https://github.com/dtulibrary/incoming_mail'
-gem 'bootstrap-sass'
+gem 'bootstrap-sass', '~> 2.3.0'
 
 # Gems used only for assets.
 group :assets do

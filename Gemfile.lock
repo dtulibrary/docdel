@@ -63,7 +63,7 @@ GEM
     atomic (1.1.14)
     awesome_print (1.2.0)
     bcrypt-ruby (3.1.2)
-    bootstrap-sass (3.1.1.0)
+    bootstrap-sass (2.3.2.2)
       sass (~> 3.2)
     bourbon (3.1.8)
       sass (>= 3.2.0)
@@ -251,7 +251,7 @@ GEM
       activesupport
     rubyntlm (0.3.4)
     safe_yaml (1.0.1)
-    sass (3.3.7)
+    sass (3.3.8)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
@@ -318,7 +318,7 @@ PLATFORMS
 
 DEPENDENCIES
   activeadmin
-  bootstrap-sass
+  bootstrap-sass (~> 2.3.0)
   brakeman
   capistrano (~> 2.15)
   coffee-rails (~> 3.2.1)
