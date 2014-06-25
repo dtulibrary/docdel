@@ -164,8 +164,6 @@ class Order < ActiveRecord::Base
     self.user_type = UserType.find_or_create_by_code(:code => @user['user_type'])
     if @user['dtu']
       raise LookupFailure if @user['dtu']['reason'] == 'lookup_failed'
-      raise ArgumentError, @user['dtu']['reason'] unless
-        @user['dtu']['reason'].blank?
       code = Institute.find_or_create_by_code(:code =>
         @user['dtu']['org_units'].join(','))
       self.institute = code
