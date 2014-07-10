@@ -50,7 +50,7 @@ Parameters:
 Creating an order is done by POST to rest/orders.
 The following parameters must be supplied:
 
-Parameter      | Description|
+Parameter      | Description
 ---------------|----------------------------------------
  open_url      |  Open url for the item to be ordered.
  callback_url  |  The url to call when something happens. The url will be appended with status=<new status> as parameter 
@@ -58,6 +58,7 @@ Parameter      | Description|
  email         |  The email address of the customer.
 
 Optional parameters:
-Parameter      | Description|
------------------|----------------------------------------
+
+Parameter        | Description
+-----------------|-----------------------------------------------
  dibs_order_id   |  The ID number the customer has for this order
