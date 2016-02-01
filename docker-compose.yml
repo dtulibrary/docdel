@@ -1,0 +1,25 @@
+# TODO commands that need to be run:
+#docker exec -it --user=solr findit-solr bin/solr create_core -c metastore
+#docker exec -it --user=solr findit-solr bin/solr create_core -c toc
+
+# And from within the container:
+#docker exec -it findit-solr bash
+#bin/post -c metastore /fixtures/solr_data.xml
+#bin/post -c toc /fixtures/toc_data.xml
+
+# create the db (only the first time)
+#docker-compose run findit-web bundle exec rake db:migrate
+
+orders-db:
+  image: postgres
+
+orders-web:
+  build: .
+  command: bundle exec rails s -p 3000 -b '0.0.0.0'
+  volumes:
+    - .:/myapp
+  ports:
+    - "3002:3000"
+  links:
+    - orders-db
+
