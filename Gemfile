@@ -29,7 +29,7 @@ group :development, :test do
   gem 'sqlite3'
   gem 'rspec-rails'
   gem 'brakeman'
-  gem 'debugger'
+  gem 'byebug'
 end
 
 group :test do
