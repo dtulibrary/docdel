@@ -1,11 +1,11 @@
 # Usage
 # create the db (only the first time)
-# docker-compose run orders-web bundle exec rake db:migrate
+# docker-compose run web bundle exec rake db:migrate
 
-orders-db:
+db:
   image: postgres
 
-orders-web:
+web:
   build: .
   command: bundle exec rails s -p 3000 -b '0.0.0.0'
   volumes:
@@ -13,5 +13,5 @@ orders-web:
   ports:
     - "3002:3000"
   links:
-    - orders-db
+    - db
 
