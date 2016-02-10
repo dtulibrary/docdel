@@ -4,7 +4,7 @@ Haitatsu::Application.routes.draw do
   devise_for :users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 
-  resources :orders, :only => [:show]
+  resources :orders, :only => [:show, :index]
   post 'orders/:id/not_available' => 'orders#not_available', :as => 'order_not_available'
 
   namespace :rest do
