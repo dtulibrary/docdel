@@ -30,14 +30,14 @@
 
   <div id="ajax-modal" class="modal hide fade" tabindex="-1"></div>
 
-<!-- /container -->
+  <!-- /container -->
   <div id="main-container" class="container">
             <!-- Top bar -->
-            <div id="search-found" class="row hidden-phone">
+            <div id="search-found" class="row hidden-xs">
             </div>
             <!-- /Top bar -->
                   <div class="row">
-                      <div class="span12">
+                      <div class="col-md-12">
                         <div id="main-flashes">
                           <%= render :partial=>'/flash_msg' %>
                         </div>
@@ -45,10 +45,11 @@
                   </div>
 
                   <div class="row">
-                       <%= yield %>
-                       </div>
-</div>
+                    <%= yield %>
+                  </div>
+  </div>
 
-<%= render :partial => 'shared/footer' %>
-    </body>
+  <%= render :partial => 'shared/footer' %>
+
+  </body>
 </html>
