@@ -1,0 +1,54 @@
+<div class="col-md-12">
+  <h1>Listing orders</h1>
+
+  <p> Total orders: <%= @orders.count %> </p>
+  <table>
+    <tr>
+      <th>id    </th>
+      <th>email </th>
+      <th>atitle</th>
+      <th>aufirst</th>
+      <th>date  </th>
+      <th>delivered_at </th>
+      <th>doi   </th>
+      <th>eissn </th>
+      <th>epage </th>
+      <th>isbn  </th>
+      <th>issn  </th>
+      <th>issue </th>
+      <th>pages </th>
+      <th>spage </th>
+      <th>title </th>
+      <th>volume</th>
+    </tr>
+
+    <% @orders.each do |order| %>
+      <tr>
+        <td><%= order.id %></td>
+        <td><%= order.email %></td>
+        <td><%= order.atitle %></td>
+        <td><%= order.aufirst %></td>
+        <td><%= order.date %></td>
+        <td><%= order.delivered_at %></td>
+        <td><%= order.doi %> </td>
+        <td><%= order.eissn %> </td>
+        <td><%= order.epage %></td>
+        <td><%= order.isbn %></td>
+        <td><%= order.issn %> </td>
+        <td><%= order.issue %> </td>
+        <td><%= order.pages %></td>
+        <td><%= order.spage %> </td>
+        <td><%= order.title %> </td>
+        <td><%= order.volume %></td>
+
+        <td><%= link_to 'Show', order %></td>
+        <td><%#= link_to 'Edit', edit_order_path(order) %></td>
+        <td><%= link_to 'Destroy', order, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </table>
+
+  <br />
+
+  <%#= link_to 'New Order', new_order_path %>
+</div>
