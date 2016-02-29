@@ -1,11 +1,11 @@
 development: &default
   adapter: postgresql
   encoding: unicode
-  database: postgres
+  database: docdel
   pool: 5
-  username: postgres
-  password:
-  host: docdel-db
+  username: db
+  password: db
+  host: db
 
 
 test:
