@@ -1,8 +1,4 @@
 class OrdersController < ApplicationController
-  def index
-    @orders = Order.all
-  end
-
  def show
    @order = Order.find(params[:id])
    @order_request = @order.system_request('local_scan')
