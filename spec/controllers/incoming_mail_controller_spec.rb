@@ -18,7 +18,7 @@ describe IncomingMailController do
   it "handle email with proper handler function" do
     class IncomingMailController
       def supplier_mail_check_test(mail)
-        (mail.subject == "Test mail") ? true : false
+        mail.subject == "Test mail"
       end
     end
     mail = Mail.new(File.read("spec/fixtures/incoming_mail/ok.eml"))

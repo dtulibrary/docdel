@@ -1,32 +1,20 @@
-# This file should contain all the record creation needed to seed the database
-# with its default values.
-# The data can then be loaded with the rake db:seed (or created alongside the
-# db with db:setup).
-#
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
-[
-  { code: 'new', },
-  { code: 'deliver' },
-  { code: 'request' },
-  { code: 'fail', },
-  { code: 'cancel' },
-  { code: 'confirm' },
-].each do |o|
-  OrderStatus.find_or_create_by_code(o)
+['new', 'deliver', 'request', 'fail', 'cancel', 'confirm'].each do |code|
+  unless OrderStatus.find_by_code(code)
+    OrderStatus.create(code: code)
+    puts "Seeded order status '#{code}'"
+  end
 end
 
-[
-  { code: 'reprintsdesk' },
-  { code: 'local_scan' },
-].each do |e|
-  ExternalSystem.find_or_create_by_code(e)
+['reprintsdesk', 'local_scan', 'tib'].each do |code|
+  unless ExternalSystem.find_by_code(code)
+    ExternalSystem.create(code: code)
+    puts "Seeded external system '#{code}'"
+  end
 end
 
-[
-  { code: 'not_avail' },
-].each do |r|
-  Reason.find_or_create_by_code(r)
+['not_avail'].each do |code|
+  unless Reason.find_by_code(code)
+    Reason.create(code: code)
+    puts "Seeded reason '#{code}'"
+  end
 end
