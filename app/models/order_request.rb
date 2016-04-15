@@ -33,7 +33,10 @@ class OrderRequest < ActiveRecord::Base
   end
 
   def format_reason
-    "#{self.reason_id.nil? ? '' : "#{self.reason.name}: "}#{self.reason_text || ''}"
+    return ''               if self.reason.nil? && self.reason_text.blank?
+    return self.reason.name if self.reason_text.blank?
+    return self.reason_text if self.reason.nil?
+    "#{self.reason.name}: #{self.reason_text}"
   end
 
   private
