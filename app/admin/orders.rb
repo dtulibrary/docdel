@@ -34,17 +34,17 @@ ActiveAdmin.register Order do
   end
 
   action_item :only => :show, :if => proc { !Rails.env.production? } do
-    link_to I18n.t('haitatsu.admin.order.deliver'), deliver_admin_order_path
+    link_to I18n.t('docdel.admin.order.deliver'), deliver_admin_order_path
   end
 
   action_item :only => :show, :if => proc { !Rails.env.production? } do
-    link_to I18n.t('haitatsu.admin.order.cancel'), cancel_admin_order_path
+    link_to I18n.t('docdel.admin.order.cancel'), cancel_admin_order_path
   end
 
   sidebar 'orders.requests', :only => [ :show ] do
     table_for(order.order_requests) do
       column :link do |order_req|
-        link_to I18n.t('haitatsu.admin.request.more'),
+        link_to I18n.t('docdel.admin.request.more'),
           admin_order_order_requests_path(order)
       end
       column :external_system

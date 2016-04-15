@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-Haitatsu::Application.load_tasks
+Docdel::Application.load_tasks

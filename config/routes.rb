@@ -1,4 +1,4 @@
-Haitatsu::Application.routes.draw do
+Docdel::Application.routes.draw do
   root :to => 'home#index'
 
   devise_for :users, ActiveAdmin::Devise.config

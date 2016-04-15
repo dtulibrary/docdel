@@ -4,7 +4,7 @@ class SendIt
 
   def self.local_scan_request order, params = {}
     params['order'] = order.as_json
-    send_mail 'haitatsu_scan_request', params
+    send_mail 'docdel_scan_request', params
   end
 
   private

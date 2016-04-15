@@ -11,7 +11,7 @@ describe OrderStatus do
 
   it "returns untranslated name" do
     order_status = FactoryGirl.build(:order_status)
-    expect(order_status.name).to eq "translation missing: en.haitatsu.code"+
+    expect(order_status.name).to eq "translation missing: en.docdel.code"+
       ".order_status."+order_status.code
   end
 

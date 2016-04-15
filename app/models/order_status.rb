@@ -4,6 +4,6 @@ class OrderStatus < ActiveRecord::Base
   validates :code, :presence => true, :uniqueness => true
 
   def name
-    I18n.t code, :scope => 'haitatsu.code.order_status'
+    I18n.t code, :scope => 'docdel.code.order_status'
   end
 end

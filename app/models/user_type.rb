@@ -6,7 +6,7 @@ class UserType < ActiveRecord::Base
   has_many :orders, :dependent => :restrict
 
   def name
-    I18n.t(code, :scope => 'haitatsu.code.user_type')
+    I18n.t(code, :scope => 'docdel.code.user_type')
   end
 
 end
