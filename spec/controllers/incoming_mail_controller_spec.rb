@@ -330,6 +330,33 @@ describe IncomingMailController do
     end
   end
 
+  context "TIB" do
+    describe "Correct order confirmation" do
+
+      let(:mail) {Mail.new(File.read("spec/fixtures/tib/ok_response.eml"))}
+
+      it "handles mail subject" do
+        expect(mail.subject).to eq("Status change")
+      end
+
+      it "has the correct sender and receiver" do
+        expect(mail.to[0]).to eq("test@dtu")
+        expect(mail.from[0]).to eq("test@other.domain")
+      end
+      
+      it "has the correct message type" do
+        expect(mail.body.encoded).to match("ANSWER")
+      end
+
+    end
+
+  end
+
+  # not used at the moment
+  def tib_mail_has_status(mail_file, status)
+    mail_has_status(mail_file, status, 'tib')
+  end
+
   def mail_has_status(mail_file, status, supplier)
     request_set_status(status)
     mail = Mail.new(
