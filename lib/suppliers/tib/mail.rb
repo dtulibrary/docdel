@@ -10,22 +10,20 @@ class IncomingMailController
 
 
       when /^ACCEPTED/
-        # unconfirmed
-        return true
+        tib_accept(mail)
+        return true unless tib_handle_mail?
       when /DELIVERY-FAILED/
-        return true
+        return true unless tib_handle_mail?
       when /^NOT-ACCEPTED/
-        return true
+        return true unless tib_handle_mail?
       when /Status change/
-        # Confirmed, this was the email reply jimmy got 
-        return true
+        return true unless tib_handle_mail?
       when /RETRY/
-        return true
+        return true unless tib_handle_mail?
       when /UNFILLED/
-        return true
+        return true unless tib_handle_mail?
       when /WILL-SUPPLY/
-        return true
-
+        return true unless tib_handle_mail?
       else
         # mail from tib, but unhandled status
         false
@@ -34,9 +32,18 @@ class IncomingMailController
       # Mail not from tib
       false
     end
-      
   end
 
+  private
+
+  def tib_accept(mail)
+    tib_extract_mail_body(mail)
+
+    #confirm_request('tib')
+
+    # Mark the order in our system as Accepted?
+    # Let user know the order was processed?
+  end
 
   def tib_extract_mail_body(mail)
 
@@ -54,13 +61,24 @@ class IncomingMailController
     /responder-note: +(\S+)/.match body
     @responder_note = $1
 
-    /result-explanation: +(\S+)/.match body
-    @result_explanation = $1
+    /results-explanation: +(\S+)/.match body
+    @results_explanation = $1
 
     /supplier-ordernr: +(\S+)/.match body
     @supplier_ordernr = $1
+
+    # Temp testing
+    puts "======================="
+    puts "@message_type    : #{@message_type}"
+    puts "@customer_nr     : #{@customer_nr}"
+    puts "@responder_note  : #{@responder_note}"
+    puts "@results_explan  : #{@results_explanation}"
+    puts "@supplier_ordernr: #{@supplier_ordernr}"
+
   end
 
-  private
+  def tib_handle_mail?
+    handle_mail?(config.order_prefix)
+  end
 
 end
