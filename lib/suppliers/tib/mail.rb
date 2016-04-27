@@ -4,22 +4,28 @@ class IncomingMailController
   def supplier_mail_check_tib(mail)
     # Return true if this is a TIB mail and we handled it
 
-    if mail.from.grep(/tib\.uni/).count > 0
+    if mail.from.grep(/other/).count > 0
       #dod1t.tib.uni-hannover.de
       case mail.subject
 
+
+      when /^ACCEPTED/
+        # unconfirmed
+        return true
+      when /DELIVERY-FAILED/
+        return true
+      when /^NOT-ACCEPTED/
+        return true
       when /Status change/
         # Confirmed, this was the email reply jimmy got 
-        puts "Status has changed"
-      when /ACCEPTED/
-        # unconfirmed
-        puts "Accept"
-      when /NOT-ACCEPTED/
-        # unconfirmed
-        puts "Not accepted"
-      when /Status Change/
-        # unconfirmed
-        puts "Status has changed"
+        return true
+      when /RETRY/
+        return true
+      when /UNFILLED/
+        return true
+      when /WILL-SUPPLY/
+        return true
+
       else
         # mail from tib, but unhandled status
         false

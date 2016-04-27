@@ -126,6 +126,9 @@ module Docdel
     c.order_prefix = ''
     c.handle_mails_from = ''
     c.allow_no_prefix = false
+
+    config.tib = ActiveSupport::OrderedOptions.new
+    
   end
 end
 

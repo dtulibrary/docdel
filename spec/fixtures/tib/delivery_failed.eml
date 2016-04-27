@@ -1,0 +1,22 @@
+To: test@dtu
+From: test@other.domain
+Subject: DELIVERY-FAILED
+
+
+message-type: ANSWER
+transaction-id:
+transaction-initial-req-id-symbol: 
+transaction-group-qualifier: TIBSUBITO:DK201600012
+transaction-qualifier: VGW  0
+transaction-sub-transaction-qualifier: 
+service-date-time: 12.04.2016 10:50:10 
+supplier-ordernr: E000072676
+requester-id: DTV
+customer-no: TLS00777
+requester-note: 
+requester-group: USER-GROUP-t8
+requester-email-address: test@dtu.dk
+responder-id: 89
+responder-note: 
+results-explanation: ACCEPTED
+supplier-ordernr: E000072676
