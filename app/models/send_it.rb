@@ -7,6 +7,13 @@ class SendIt
     send_mail 'docdel_scan_request', params
   end
 
+  def self.tib_request order, params = {}
+    params['order'] = order.as_json
+    # TODO: also copy config settings, fx if a customer orders
+    #params['config'] = {'customerid' => }
+    send_mail 'tib_scan_request', params
+  end
+
   private
 
   def self.send_mail template, params = {}
