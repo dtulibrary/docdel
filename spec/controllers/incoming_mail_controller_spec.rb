@@ -324,7 +324,7 @@ describe IncomingMailController do
     describe "Correct order status " do
     # Test the code in lib/suppliers/tib/mail
       before :each do
-        setup_tib(000072676, 1, 'E')
+        setup_tib(72676, 201600012, 'E')
       end
 
       it "has the correct status" do
@@ -358,6 +358,10 @@ describe IncomingMailController do
     @order = FactoryGirl.create(:order, id: order_id)
     @request = FactoryGirl.create(:order_request, :order => @order,
       :external_system => ext, :external_number => external_number)
+
+   # puts "============== setup order / request inspect"
+   # puts @order.inspect
+   # puts @request.inspect
   end
 
   def mail_should_set_status(mail_file, status, supplier)

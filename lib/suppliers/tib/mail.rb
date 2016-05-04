@@ -4,7 +4,7 @@ class IncomingMailController
   def supplier_mail_check_tib(mail)
     # Return true if this is a TIB mail and we handled it
 
-    if mail.from.grep(/other/).count > 0
+    if mail.from.grep(/@tib\.eu$/).count > 0
       #dod1t.tib.uni-hannover.de
       case mail.subject
       when 'ACCEPTED'
@@ -38,8 +38,9 @@ class IncomingMailController
     return false unless @message_type == 'ANSWER'
     return false unless @results_explanation == 'ACCEPTED'
 
+    puts "============= Handle mail = #{tib_handle_mail?}"
     return false unless tib_handle_mail?
-    #confirm_request('tib')
+    confirm_request('tib')
 
     # Mark the order in our system as Accepted?
     # Let user know the order was processed?
