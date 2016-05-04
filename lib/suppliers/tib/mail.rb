@@ -38,7 +38,6 @@ class IncomingMailController
     return false unless @message_type == 'ANSWER'
     return false unless @results_explanation == 'ACCEPTED'
 
-    puts "============= Handle mail = #{tib_handle_mail?}"
     return false unless tib_handle_mail?
     confirm_request('tib')
 
@@ -75,17 +74,17 @@ class IncomingMailController
     /customer-no: +(\S+)/.match body
     @customer_nr = $1
 
-    # Temp testing
-    puts "======================="
-    puts "@prefix_code     : #{@prefix_code}"
-    puts "@order_number    : #{@order_number}"
-    puts "@external_number : #{@external_number}"
-    puts "======= TIB specific ======"
-    puts "@message_type    : #{@message_type}"
-    puts "@responder_note  : #{@responder_note}"
-    puts "@results_explan  : #{@results_explanation}"
-    puts "@customer_nr     : #{@customer_nr}"
-    puts "======================="
+   # # Temp testing
+   # puts "======================="
+   # puts "@prefix_code     : #{@prefix_code}"
+   # puts "@order_number    : #{@order_number}"
+   # puts "@external_number : #{@external_number}"
+   # puts "======= TIB specific ======"
+   # puts "@message_type    : #{@message_type}"
+   # puts "@responder_note  : #{@responder_note}"
+   # puts "@results_explan  : #{@results_explanation}"
+   # puts "@customer_nr     : #{@customer_nr}"
+   # puts "======================="
 
   end
 

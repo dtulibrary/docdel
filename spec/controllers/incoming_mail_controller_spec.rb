@@ -329,8 +329,8 @@ describe IncomingMailController do
 
       it "has the correct status" do
         tib_mail_should_set_status('accepted', 'confirm')
-        # TODO: this does not check the later argument, can be blank. Why?
-        tib_mail_has_status('accepted', 'ACCEPTED')
+       # TODO: the later argument is accepted no matter what. Why?
+        tib_mail_has_status('accepted', 'faiasdfasdl')
        # tib_mail_has_status('delivery_failed', 'DELIVERY-FAILED')
        # tib_mail_has_status('not_accepted', 'NOT-ACCEPTED')
        # tib_mail_has_status('retry', 'RETRY')
@@ -364,9 +364,6 @@ describe IncomingMailController do
     @request = FactoryGirl.create(:order_request, :order => @order,
       :external_system => ext, :external_number => external_number)
 
-    puts "============== setup order / request inspect"
-    puts @order.inspect
-    puts @request.inspect
   end
 
   def mail_should_set_status(mail_file, status, supplier)
@@ -377,7 +374,6 @@ describe IncomingMailController do
     url = "http://localhost/callback?" + 
            url_params.collect {|k,v| "#{k}=#{URI.encode_www_form_component v}"}.join('&')
 
-    puts url
     stub_request(:get, url).
       to_return(:status => 200, :body => "", :headers => {})
     FactoryGirl.create(:order_status, code: status)
