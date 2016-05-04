@@ -53,16 +53,14 @@ class IncomingMailController
 
     # TODO: use standed variable names
 
-    /supplier-ordernr: +(\S+)/.match body
-    ordernr = $1
-    /(.)(\d+)/.match ordernr
-    @prefix_code = $1
-    @order_number = $2
+    /supplier-ordernr: \D*0*(\d+)$/.match body
+    @external_number = $1
 
     # MAX 13 chars after the ':DK'
     # TIBSUBITO:DK201600012
-    /transaction-group-qualifier: TIBSUBITO:DK(\S+)/.match body
-    @external_number = $1
+    /transaction-group-qualifier: TIBSUBITO:DK-(.)0*(\d+)/.match body
+    @prefix_code = $1
+    @order_number = $2
 
     # TIB unique fields:
     /message-type: +(\S+)/.match body

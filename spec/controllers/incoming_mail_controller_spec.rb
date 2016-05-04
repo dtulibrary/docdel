@@ -324,10 +324,11 @@ describe IncomingMailController do
     describe "Correct order status " do
     # Test the code in lib/suppliers/tib/mail
       before :each do
-        setup_tib(72676, 201600012, 'E')
+        setup_tib(1234, 72676, 'T')
       end
 
       it "has the correct status" do
+        tib_mail_should_set_status('accepted', 'confirm')
         # TODO: this does not check the later argument, can be blank. Why?
         tib_mail_has_status('accepted', 'ACCEPTED')
        # tib_mail_has_status('delivery_failed', 'DELIVERY-FAILED')
@@ -346,6 +347,10 @@ describe IncomingMailController do
       Rails.application.config.order_prefix = prefix
     end
 
+    def tib_mail_should_set_status(mail_file, status)
+      mail_should_set_status(mail_file, status, 'tib')
+    end
+
     def tib_mail_has_status(mail_file, status)
       mail_has_status(mail_file, status, 'tib')
     end
@@ -359,9 +364,9 @@ describe IncomingMailController do
     @request = FactoryGirl.create(:order_request, :order => @order,
       :external_system => ext, :external_number => external_number)
 
-   # puts "============== setup order / request inspect"
-   # puts @order.inspect
-   # puts @request.inspect
+    puts "============== setup order / request inspect"
+    puts @order.inspect
+    puts @request.inspect
   end
 
   def mail_should_set_status(mail_file, status, supplier)
@@ -372,6 +377,7 @@ describe IncomingMailController do
     url = "http://localhost/callback?" + 
            url_params.collect {|k,v| "#{k}=#{URI.encode_www_form_component v}"}.join('&')
 
+    puts url
     stub_request(:get, url).
       to_return(:status => 200, :body => "", :headers => {})
     FactoryGirl.create(:order_status, code: status)
