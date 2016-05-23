@@ -3,7 +3,7 @@ en:
     sidebars:
       orders:
         requests: 'Requests'
-  haitatsu:
+  docdel:
     admin:
       order:
         deliver: "Deliver"

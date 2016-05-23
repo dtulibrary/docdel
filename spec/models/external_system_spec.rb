@@ -11,7 +11,7 @@ describe ExternalSystem do
 
   it "returns untranslated name" do
     external_system = FactoryGirl.build(:external_system)
-    expect(external_system.name).to eq "translation missing: en.haitatsu.code"+
+    expect(external_system.name).to eq "translation missing: en.docdel.code"+
       ".external_system."+external_system.code
   end
 

@@ -1,7 +1,7 @@
 require 'bundler/capistrano'
 
 set :rails_env, ENV['RAILS_ENV'] || "unstable"
-set :application, ENV['HOST'] || 'haitatsu.vagrant.vm'
+set :application, ENV['HOST'] || 'docdel.vagrant.vm'
 
 set :deploy_to, "/var/www/#{application}"
 role :web, "#{application}"

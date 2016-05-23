@@ -324,7 +324,7 @@ describe Rest::OrdersController do
     it "create order" do
       Rails.application.config.sendit_url = 'http://localhost'
       Rails.application.config.order_prefix = 'TEST'
-      stub_request(:post, "http://localhost/send/haitatsu_scan_request").
+      stub_request(:post, "http://localhost/send/docdel_scan_request").
         to_return(:status => 200, :body => "", :headers => {})
       post :create,
         :email => 'test@dom.ain', :supplier => 'local_scan',
@@ -335,7 +335,7 @@ describe Rest::OrdersController do
 
     it "fails to create order" do
       Rails.application.config.sendit_url = 'http://localhost'
-      stub_request(:post, "http://localhost/send/haitatsu_scan_request").
+      stub_request(:post, "http://localhost/send/docdel_scan_request").
         to_return(:status => 406, :body => "", :headers => {})
       post :create,
         :email => 'test@dom.ain', :supplier => 'local_scan',

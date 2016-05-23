@@ -6,6 +6,6 @@ class Reason < ActiveRecord::Base
   has_many :order_requests, :dependent => :restrict
 
   def name
-    I18n.t(code, :scope => 'haitatsu.code.reason')
+    I18n.t(code, :scope => 'docdel.code.reason')
   end
 end

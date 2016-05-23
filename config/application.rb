@@ -15,7 +15,7 @@ if defined?(Bundler)
   # Bundler.require(:default, :assets, Rails.env)
 end
 
-module Haitatsu
+module Docdel
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified
     # here.
@@ -126,6 +126,9 @@ module Haitatsu
     c.order_prefix = ''
     c.handle_mails_from = ''
     c.allow_no_prefix = false
+
+    config.tib = ActiveSupport::OrderedOptions.new
+    
   end
 end
 

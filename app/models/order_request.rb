@@ -33,19 +33,16 @@ class OrderRequest < ActiveRecord::Base
   end
 
   def format_reason
-    reason = ''
-    reason = self.reason.name if self.reason_id
-    unless self.reason_text.blank?
-      reason += ': ' unless reason.blank?
-      reason += self.reason_text
-    end
-    reason
+    return ''               if self.reason.nil? && self.reason_text.blank?
+    return self.reason.name if self.reason_text.blank?
+    return self.reason_text if self.reason.nil?
+    "#{self.reason.name}: #{self.reason_text}"
   end
 
   private
 
   def set_status(code)
-    self.order_status_id = OrderStatus.find_by_code(code).id
+    self.order_status = OrderStatus.find_by_code(code)
     save!
   end
 
