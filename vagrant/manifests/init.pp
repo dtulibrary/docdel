@@ -4,8 +4,8 @@ class {'apache2':
   disable_default_vhost => true,
 }
 
-class {'haitatsu':
+class {'docdel':
   rails_env => 'unstable',
   conf_set => 'vagrant',
-  vhost_name => 'haitatsu.vagrant.vm',
+  vhost_name => 'docdel.vagrant.vm',
 }

@@ -1,4 +1,4 @@
-DocDel (haitatsu)
+DocDel (docdel)
 ========
 
 Delivery Proxy gateway
@@ -23,7 +23,7 @@ An example:
 require "order"
 require "suppliers/reprintsdesk.rb"
 
-Haitatsu::Application.configure do
+Docdel::Application.configure do
   config.reprintsdesk.wsdl = 'https://www.demo.reprintsdesk.com/webservice/main.asmx?wsdl'
   config.reprintsdesk.user = <reprintsdesk account name>
   config.reprintsdesk.password = <password for account>

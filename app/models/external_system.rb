@@ -4,7 +4,7 @@ class ExternalSystem < ActiveRecord::Base
   validates :code, :presence => true, :uniqueness => true
 
   def name
-    I18n.t code, :scope => 'haitatsu.code.external_system'
+    I18n.t code, :scope => 'docdel.code.external_system'
   end
 
 end

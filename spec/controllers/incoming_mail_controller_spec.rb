@@ -18,7 +18,7 @@ describe IncomingMailController do
   it "handle email with proper handler function" do
     class IncomingMailController
       def supplier_mail_check_test(mail)
-        (mail.subject == "Test mail") ? true : false
+        mail.subject == "Test mail"
       end
     end
     mail = Mail.new(File.read("spec/fixtures/incoming_mail/ok.eml"))
@@ -300,12 +300,70 @@ describe IncomingMailController do
 
   end
 
+  context "TIB" do
+    describe "Correct order confirmation - via fixtures" do
+      # Only test the if the fixture is correct.
+      before do
+        @mail = Mail.new(File.read("spec/fixtures/tib/status_change.eml"))
+      end
+
+      it "handles mail subject" do
+        expect(@mail.subject).to eq("Status change")
+      end
+
+      it "has the correct sender and receiver" do
+        expect(@mail.to[0]).to eq("test@dtu")
+        expect(@mail.from[0]).to eq("test@other.domain")
+      end
+      
+      it "has the correct message type" do
+        expect(@mail.body.encoded).to match("ANSWER")
+      end
+    end
+
+    describe "Correct order status " do
+    # Test the code in lib/suppliers/tib/mail
+      before :each do
+        setup_tib(1234, 72676, 'T')
+      end
+
+      it "has the correct status" do
+        tib_mail_should_set_status('accepted', 'confirm')
+       # TODO: the later argument is accepted no matter what. Why?
+        tib_mail_has_status('accepted', 'faiasdfasdl')
+       # tib_mail_has_status('delivery_failed', 'DELIVERY-FAILED')
+       # tib_mail_has_status('not_accepted', 'NOT-ACCEPTED')
+       # tib_mail_has_status('retry', 'RETRY')
+       # tib_mail_has_status('status_change', 'Status change')
+       # tib_mail_has_status('unfilled', 'UNFILLED')
+       # tib_mail_has_status('will_supply', 'WILL-SUPPLY')
+      end
+
+    end
+
+    # TIB Helpers
+    def setup_tib(order_id, external_number, prefix)
+      setup_supplier(order_id, external_number, 'tib')
+      Rails.application.config.order_prefix = prefix
+    end
+
+    def tib_mail_should_set_status(mail_file, status)
+      mail_should_set_status(mail_file, status, 'tib')
+    end
+
+    def tib_mail_has_status(mail_file, status)
+      mail_has_status(mail_file, status, 'tib')
+    end
+
+  end # end TIB context
+
   def setup_supplier(order_id, external_number, supplier)
     ext = FactoryGirl.create(:external_system, code: supplier)
     # Create order we can test with that means fixed id
     @order = FactoryGirl.create(:order, id: order_id)
     @request = FactoryGirl.create(:order_request, :order => @order,
       :external_system => ext, :external_number => external_number)
+
   end
 
   def mail_should_set_status(mail_file, status, supplier)

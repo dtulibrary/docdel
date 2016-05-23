@@ -12,7 +12,7 @@ describe Reason do
 
   it "returns untranslated name" do
     reason = FactoryGirl.build(:reason)
-    expect(reason.name).to eq "translation missing: en.haitatsu.code.reason."+
+    expect(reason.name).to eq "translation missing: en.docdel.code.reason."+
       reason.code
   end
 
