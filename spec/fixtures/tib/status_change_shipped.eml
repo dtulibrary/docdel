@@ -1,0 +1,34 @@
+To: test@dtu
+From: test@tib.eu
+Subject: Status change
+
+
+message-type: SHIPPED
+transaction-id: 
+transaction-initial-req-id-symbol: 
+transaction-group-qualifier: TIBSUBITO:DK-T00001234
+transaction-qualifier: DRM  0
+transaction-sub-transaction-qualifier: 
+service-date-time: 27.04.2016 10:50:10 
+requester-id: DTV
+customer-no: TLS00666
+requester-note: 
+requester-group: USER-GROUP-t8
+requester-email-address: test@dtu.dk
+responder-id: 89
+responder-email-address: test@test.com
+intermediary-id: 
+supplier-id: 89
+client-id:
+client-name: 
+client-identifier: test1234
+transaction-type: 
+shipped-service-type: COPY
+supply-details:
+sdet-date-shipped: 24.05.2016
+sdet-shipped-via: FTP
+sdet-url: ftp://:@
+sdet-userid: 
+sdet-password: 
+responder-note: 
+supplier-ordernr: E000072676

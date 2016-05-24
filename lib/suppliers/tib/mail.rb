@@ -14,7 +14,7 @@ class IncomingMailController
       when 'NOT-ACCEPTED'
         return true unless tib_handle_mail?
       when 'Status change'
-        return true unless tib_handle_mail?
+        tib_status_change(mail)
       when 'RETRY'
         return true unless tib_handle_mail?
       when 'UNFILLED'
@@ -35,14 +35,32 @@ class IncomingMailController
 
   def tib_accept(mail)
     tib_extract_mail_body(mail)
-    return false unless @message_type == 'ANSWER'
-    return false unless @results_explanation == 'ACCEPTED'
 
     return false unless tib_handle_mail?
     confirm_request('tib')
 
     # Mark the order in our system as Accepted?
     # Let user know the order was processed?
+  end
+
+  def tib_status_change(mail)
+    tib_extract_mail_body(mail)
+
+    if @message_type == 'ANSWER'
+      case @results_explanation
+      when 'ACCEPTED'
+        # TIB is processing, the next email should arrive in 15 hours
+        # That email will be message-type SHIPPED
+      when 'UNFILLED'
+      when 'NOT-ACCEPTED'
+      end
+    elsif @message_type == 'SHIPPED'
+      # Order has been sent from TIB
+      # TODO: Update DRM info
+    end
+
+    tib_handle_mail?
+    confirm_request('tib')
   end
 
   def tib_extract_mail_body(mail)
@@ -73,6 +91,10 @@ class IncomingMailController
 
     /customer-no: +(\S+)/.match body
     @customer_nr = $1
+
+    # TIB document format: DRM / VGW
+    /transaction-qualifier: +(\S+)/.match body
+    @transqual = $1
 
    # # Temp testing
    # puts "======================="
