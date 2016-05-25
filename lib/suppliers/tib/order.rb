@@ -6,8 +6,8 @@ class Order
       # TODO: these are copied from local_scan/order.rb
       :not_available_link => @path_controller.order_url(self),
       :order_id => "#{config.order_prefix}#{'%08d' % self.id}",
-      :from => config.local_scan.from_mail,
-      :to => config.local_scan.order_mail
+      :from => config.tib.from_mail,
+      :to => config.tib.order_mail
     }
 
     request.external_number = self.id

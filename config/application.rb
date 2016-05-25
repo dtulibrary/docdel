@@ -127,7 +127,9 @@ module Docdel
     c.handle_mails_from = ''
     c.allow_no_prefix = false
 
-    config.tib = ActiveSupport::OrderedOptions.new
+    c = config.tib = ActiveSupport::OrderedOptions.new
+    c.order_mail = ''
+    c.from_mail = ''
     
   end
 end
