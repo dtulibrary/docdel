@@ -42,6 +42,10 @@ class IncomingMailController
   def tib_status_change(mail)
     tib_extract_mail_body(mail)
 
+    logger.info "_____________"
+    logger.info "message_type = #{@message_type}"
+    logger.info "results_explanation = #{@results_explanation}"
+
     if @message_type == 'ANSWER'
       case @results_explanation
       when 'ACCEPTED'
