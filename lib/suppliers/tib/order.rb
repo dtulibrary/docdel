@@ -12,11 +12,14 @@ class Order
       tib_prefix = 3
     end
 
+    logger.debug "------------ Prefix = #{config.order_prefix}"
+    logger.debug "------------ tib_prefix = #{tib_prefix}"
+
     request = current_request
     SendIt.tib_request self, {
 
       :not_available_link => @path_controller.order_url(self),
-      :order_id => "#{config.tib_prefix}#{'%09d' % self.id}",
+      :order_id => "#{tib_prefix}#{'%09d' % self.id}",
       :from => config.tib.from_mail,
       :to => config.tib.order_mail
     }
