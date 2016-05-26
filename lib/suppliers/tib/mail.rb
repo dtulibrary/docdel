@@ -11,13 +11,9 @@ class IncomingMailController
         tib_accept(mail)
       when 'DELIVERY-FAILED'
         return true unless tib_handle_mail?
-      when 'NOT-ACCEPTED'
-        return true unless tib_handle_mail?
       when 'Status change'
         tib_status_change(mail)
       when 'RETRY'
-        return true unless tib_handle_mail?
-      when 'UNFILLED'
         return true unless tib_handle_mail?
       when 'WILL-SUPPLY'
         return true unless tib_handle_mail?
@@ -49,8 +45,7 @@ class IncomingMailController
     if @message_type == 'ANSWER'
       case @results_explanation
       when 'ACCEPTED'
-        # TIB is processing, the next email should arrive in 15 hours
-        # That email will be message-type SHIPPED
+        # TIB is processing, the next email should arrive in 15 hours?
       when 'UNFILLED'
       when 'NOT-ACCEPTED'
       end
@@ -68,15 +63,24 @@ class IncomingMailController
     # call the generic/reusable extract_mail_text_part(mail) to get the email body into a variable
     body = extract_mail_text_part(mail).body.to_s
 
-    # TODO: use standed variable names
-
     /supplier-ordernr: \D*0*(\d+)$/.match body
     @external_number = $1
 
     # MAX 13 chars after the ':DK'
     # TIBSUBITO:DK201600012
-    /transaction-group-qualifier: TIBSUBITO:DK-(.)0*(\d+)/.match body
-    @prefix_code = $1
+    /transaction-group-qualifier: TIBSUBITO:DK(.)0*(\d+)/.match body
+    
+    case $1.to_i
+    when 0
+      @prefix_code = 'PROD'
+    when 1
+      @prefix_code = 'STAGING'
+    when 2
+      @prefix_code = 'UNSTABLE'
+    when 3
+      @prefix_code = 'T'
+    end
+    
     @order_number = $2
 
     # TIB unique fields:

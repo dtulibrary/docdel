@@ -1,11 +1,22 @@
 class Order
   def request_from_tib
-    # TODO: Send TIB order mail
+
+    case config.order_prefix
+    when 'PROD'
+      tib_prefix = 0
+    when 'STAGING'
+      tib_prefix = 1
+    when 'UNSTABLE'
+      tib_prefix = 2
+    when 'TEST'
+      tib_prefix = 3
+    end
+
     request = current_request
     SendIt.tib_request self, {
-      # TODO: these are copied from local_scan/order.rb
+
       :not_available_link => @path_controller.order_url(self),
-      :order_id => "#{config.order_prefix}#{'%08d' % self.id}",
+      :order_id => "#{config.tib_prefix}#{'%09d' % self.id}",
       :from => config.tib.from_mail,
       :to => config.tib.order_mail
     }
