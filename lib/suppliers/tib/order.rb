@@ -10,9 +10,6 @@ class Order
       tib_prefix = 3
     end
 
-    logger.debug "------------ Prefix = #{config.order_prefix}"
-    logger.debug "------------ tib_prefix = #{tib_prefix}"
-
     request = current_request
     SendIt.tib_request self, {
 

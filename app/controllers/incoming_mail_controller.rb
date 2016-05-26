@@ -49,6 +49,8 @@ class IncomingMailController < ActionMailer::Base
 
   def report_not_found
     logger.info "Request #{@external_number} not found on order #{@order_number}"
+    logger.info Order.find_by_id(@order_number)
+    logger.info "---"
     false
   end
 
