@@ -43,6 +43,7 @@ class IncomingMailController
     tib_extract_mail_body(mail)
 
     logger.info "_____________"
+    logger.info "order_number = #{@order_number}"
     logger.info "message_type = #{@message_type}"
     logger.info "results_explanation = #{@results_explanation}"
 
