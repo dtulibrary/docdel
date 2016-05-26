@@ -42,12 +42,6 @@ class IncomingMailController
   def tib_status_change(mail)
     tib_extract_mail_body(mail)
 
-    logger.info "_____________"
-    logger.info "order_number = #{@order_number}"
-    logger.info "message_type = #{@message_type}"
-    logger.info "results_explanation = #{@results_explanation}"
-    logger.info @order.inspect
-
     if @message_type == 'ANSWER'
       case @results_explanation
       when 'ACCEPTED'
@@ -106,17 +100,15 @@ class IncomingMailController
     /transaction-qualifier: +(\S+)/.match body
     @transqual = $1
 
-   # # Temp testing
-   # puts "======================="
-   # puts "@prefix_code     : #{@prefix_code}"
-   # puts "@order_number    : #{@order_number}"
-   # puts "@external_number : #{@external_number}"
-   # puts "======= TIB specific ======"
-   # puts "@message_type    : #{@message_type}"
-   # puts "@responder_note  : #{@responder_note}"
-   # puts "@results_explan  : #{@results_explanation}"
-   # puts "@customer_nr     : #{@customer_nr}"
-   # puts "======================="
+    # Temp testing
+    logger.info "======================="
+    logger.info "@prefix_code     : #{@prefix_code}"
+    logger.info "@order_number    : #{@order_number}"
+    logger.info "@external_number : #{@external_number}"
+    logger.info "@message_type    : #{@message_type}"
+    logger.info "@responder_note  : #{@responder_note}"
+    logger.info "@results_explan  : #{@results_explanation}"
+    logger.info "@customer_nr     : #{@customer_nr}"
 
   end
 

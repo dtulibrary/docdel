@@ -33,6 +33,7 @@ class IncomingMailController < ActionMailer::Base
   end
 
   def confirm_request(supplier)
+    logger.info "Is @order defined? #{@order.inspect} "
     request = @order.request(supplier, @external_number)
     request ? request.confirm(@external_number) : report_not_found
   end
