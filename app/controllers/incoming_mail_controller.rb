@@ -20,7 +20,7 @@ class IncomingMailController < ActionMailer::Base
 
   def handle_mail?(prefix)
     unless @prefix_code == prefix
-      logger.info "Rejecting mail on prefix #{@prefix_code} != "+
+      logger.info "Rejecting mail on prefix_code #{@prefix_code} != "+
         "#{prefix}"
       return false
     end

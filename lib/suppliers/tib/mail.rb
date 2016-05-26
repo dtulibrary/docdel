@@ -46,6 +46,7 @@ class IncomingMailController
     logger.info "order_number = #{@order_number}"
     logger.info "message_type = #{@message_type}"
     logger.info "results_explanation = #{@results_explanation}"
+    logger.info @order.inspect
 
     if @message_type == 'ANSWER'
       case @results_explanation
