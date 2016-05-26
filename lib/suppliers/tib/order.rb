@@ -17,7 +17,7 @@ class Order
     SendIt.tib_request self, {
 
       :not_available_link => @path_controller.order_url(self),
-      :order_id => "#{tib_prefix}#{'%09d' % self.id}",
+      :order_id => "#{tib_prefix}#{'%07d' % self.id}",
       :from => config.tib.from_mail,
       :to => config.tib.order_mail
     }
