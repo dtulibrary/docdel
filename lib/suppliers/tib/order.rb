@@ -3,12 +3,10 @@ class Order
 
     case config.order_prefix
     when 'PROD'
-      tib_prefix = 0
-    when 'STAGING'
       tib_prefix = 1
-    when 'UNSTABLE'
+    when 'STAGING'
       tib_prefix = 2
-    when 'TEST'
+    when 'UNSTABLE'
       tib_prefix = 3
     end
 

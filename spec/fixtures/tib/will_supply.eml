@@ -6,7 +6,7 @@ Subject: WILL-SUPPLY
 message-type: ANSWER
 transaction-id:
 transaction-initial-req-id-symbol: 
-transaction-group-qualifier: TIBSUBITO:DK3000001234
+transaction-group-qualifier: TIBSUBITO:DK4000001234
 transaction-qualifier: VGW 0
 transaction-sub-transaction-qualifier: 
 service-date-time: 12.04.2016 10:50:10 

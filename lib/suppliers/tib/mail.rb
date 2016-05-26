@@ -71,13 +71,13 @@ class IncomingMailController
     /transaction-group-qualifier: TIBSUBITO:DK(.)0*(\d+)/.match body
     
     case $1.to_i
-    when 0
-      @prefix_code = 'PROD'
     when 1
-      @prefix_code = 'STAGING'
+      @prefix_code = 'PROD'
     when 2
-      @prefix_code = 'UNSTABLE'
+      @prefix_code = 'STAGING'
     when 3
+      @prefix_code = 'UNSTABLE'
+    when 4
       @prefix_code = 'T'
     end
     
