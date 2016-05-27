@@ -321,22 +321,13 @@ describe IncomingMailController do
       end
     end
 
-    describe "Correct order status " do
-    # Test the code in lib/suppliers/tib/mail
+    describe "Correct order" do
       before :each do
-        setup_tib(1234, 72676, 'T')
+        setup_tib(1234, 1234, 'T')
       end
 
-      it "has the correct status" do
+      it "handles delivery from body (field tra.goup-qual)" do
         tib_mail_should_set_status('accepted', 'confirm')
-       # TODO: the later argument is accepted no matter what. Why?
-
-       # tib_mail_has_status('delivery_failed', 'DELIVERY-FAILED')
-       # tib_mail_has_status('not_accepted', 'NOT-ACCEPTED')
-       # tib_mail_has_status('retry', 'RETRY')
-       # tib_mail_has_status('status_change', 'Status change')
-       # tib_mail_has_status('unfilled', 'UNFILLED')
-       # tib_mail_has_status('will_supply', 'WILL-SUPPLY')
       end
 
       describe "Correct message-types" do
@@ -351,7 +342,16 @@ describe IncomingMailController do
           end
         end
       end
+    end
 
+    describe "Wrong order-id" do
+      before :each do
+        setup_tib(123,321, 'T')
+      end
+
+      it "doesn't handle delivery from body" do
+        tib_mail_should_not_be_handled('accepted')
+      end
     end
 
     # TIB Helpers
@@ -364,8 +364,10 @@ describe IncomingMailController do
       mail_should_set_status(mail_file, status, 'tib')
     end
 
-    def tib_mail_has_status(mail_file, status)
-      mail_has_status(mail_file, status, 'tib')
+    def tib_mail_should_not_be_handled(mail_file)
+      mail = Mail.new(
+        File.read("spec/fixtures/tib/#{mail_file}.eml"))
+      expect(IncomingMailController.receive(mail)).to eq false
     end
 
   end # end TIB context
