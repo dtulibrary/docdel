@@ -301,10 +301,10 @@ describe IncomingMailController do
   end
 
   context "TIB" do
-    describe "Correct order confirmation - via fixtures" do
+    describe "Mail fixture has correct sender, receiver, subject" do
       # Only test the if the fixture is correct.
       before do
-        @mail = Mail.new(File.read("spec/fixtures/tib/status_change.eml"))
+        @mail = Mail.new(File.read("spec/fixtures/tib/status_change_answer.eml"))
       end
 
       it "handles mail subject" do
@@ -313,7 +313,7 @@ describe IncomingMailController do
 
       it "has the correct sender and receiver" do
         expect(@mail.to[0]).to eq("test@dtu")
-        expect(@mail.from[0]).to eq("test@other.domain")
+        expect(@mail.from[0]).to eq("test@tib.eu")
       end
       
       it "has the correct message type" do
@@ -330,13 +330,26 @@ describe IncomingMailController do
       it "has the correct status" do
         tib_mail_should_set_status('accepted', 'confirm')
        # TODO: the later argument is accepted no matter what. Why?
-        tib_mail_has_status('accepted', 'faiasdfasdl')
+
        # tib_mail_has_status('delivery_failed', 'DELIVERY-FAILED')
        # tib_mail_has_status('not_accepted', 'NOT-ACCEPTED')
        # tib_mail_has_status('retry', 'RETRY')
        # tib_mail_has_status('status_change', 'Status change')
        # tib_mail_has_status('unfilled', 'UNFILLED')
        # tib_mail_has_status('will_supply', 'WILL-SUPPLY')
+      end
+
+      describe "Correct message-types" do
+        context "when message type is ANSWER" do
+          it "confirms the request" do
+            tib_mail_should_set_status('status_change_answer', 'confirm')
+          end
+        end
+        context "when message type is SHIPPED" do
+          it "confirms the request" do
+            tib_mail_should_set_status('status_change_shipped', 'confirm')
+          end
+        end
       end
 
     end

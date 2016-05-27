@@ -20,7 +20,7 @@ class IncomingMailController < ActionMailer::Base
 
   def handle_mail?(prefix)
     unless @prefix_code == prefix
-      logger.info "Rejecting mail on prefix #{@prefix_code} != "+
+      logger.info "Rejecting mail on prefix_code #{@prefix_code} != "+
         "#{prefix}"
       return false
     end
@@ -33,6 +33,7 @@ class IncomingMailController < ActionMailer::Base
   end
 
   def confirm_request(supplier)
+    logger.info "Is @order defined? #{@order.inspect} "
     request = @order.request(supplier, @external_number)
     request ? request.confirm(@external_number) : report_not_found
   end
@@ -48,7 +49,8 @@ class IncomingMailController < ActionMailer::Base
   end
 
   def report_not_found
-    logger.info "Request #{@external_number} not found on order #{@order_number}"
+    logger.info "Request #{@external_number} not found on order_number #{@order_number}"
+    logger.info "---"
     false
   end
 

@@ -1,13 +1,13 @@
 To: test@dtu
 From: test@tib.eu
-Subject: NOT-ACCEPTED
+Subject: Status change
 
 
 message-type: ANSWER
 transaction-id:
 transaction-initial-req-id-symbol: 
 transaction-group-qualifier: TIBSUBITO:DK4000001234
-transaction-qualifier: VGW 0
+transaction-qualifier: DRM  0
 transaction-sub-transaction-qualifier: 
 service-date-time: 12.04.2016 10:50:10 
 requester-id: DTV
@@ -16,6 +16,6 @@ requester-note:
 requester-group: USER-GROUP-t8
 requester-email-address: test@dtu.dk
 responder-id: 89
-responder-note: 
-results-explanation: ACCEPTED
+responder-note: Double-order, this order is being dealt with order no
+results-explanation: UNFILLED
 supplier-ordernr: E000072676
