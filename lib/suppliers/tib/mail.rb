@@ -82,6 +82,8 @@ class IncomingMailController
     end
     
     @order_number = $2
+    # With TIB, we are unable to make our own external nr
+    @external_number = @order_number
 
     # TIB unique fields:
     /message-type: +(\S+)/.match body
