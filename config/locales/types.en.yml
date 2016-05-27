@@ -12,6 +12,7 @@ en:
       external_system:
         reprintsdesk: 'ReprintsDesk'
         local_scan: 'Local Scan'
+        tib: 'TIB'
       reason:
         not_avail: 'Issue not available'
       user_type:
