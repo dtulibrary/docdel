@@ -1,3 +1,7 @@
+if RUBY_VERSION =~ /1.9/ # assuming you're running Ruby ~1.9
+  Encoding.default_external = Encoding::UTF_8
+  Encoding.default_internal = Encoding::UTF_8
+end
 source 'https://rubygems.org'
 
 gem 'rails', '~> 3.2.0'
@@ -29,7 +33,7 @@ group :development, :test do
   gem 'sqlite3'
   gem 'rspec-rails'
   gem 'brakeman'
-  gem 'byebug'
+  gem 'debugger'
 end
 
 group :test do
