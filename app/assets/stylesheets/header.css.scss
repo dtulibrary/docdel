@@ -5,11 +5,6 @@
   position: inherit;
   box-shadow: none;
 
-  .navbar-inner {
-    min-height: 0px;
-    background-color: #fff;
-  }
-
   .header-gradient {
     background-image: image-url('header_gradient.png');
     background-position: top left;
@@ -21,7 +16,7 @@
     background-image: image-url('header_bg.png');
     filter: none;
     color: #fff;
-    height: 25px;
+    height: 35px;
     padding-top: 5px;
     padding-bottom: 5px;
     line-height: 25px;

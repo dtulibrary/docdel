@@ -1,4 +1,4 @@
-DocDel (docdel)
+DocDel (haitatsu)
 ========
 
 Delivery Proxy gateway
