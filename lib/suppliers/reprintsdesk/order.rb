@@ -88,7 +88,7 @@ class Order
           }
           xml.processinginstructions {
             xml.processinginstruction('id' => '1', 'valueid' => '1')
-            xml.processinginstruction('id' => '2', 'valueid' => user_type == 'dtu_empl' ? '2' : '0')
+            xml.processinginstruction('id' => '2', 'valueid' => ['student', 'dtu_empl'].include?(user_type) ? '2' : '0')
             unless timecap_date.nil?
               xml.processinginstruction('id' => '7', 'valueid' => '1') do
                 xml.textvalue timecap_date.iso8601
