@@ -8,7 +8,7 @@ class Order < ActiveRecord::Base
       :order_id => "#{config.order_prefix}-#{self.id}",
       :from => config.local_scan.from_mail,
       :to => config.local_scan.order_mail }
-    request.external_number = self.id
+    request.external_number = self.id.to_s
     request.order_status = OrderStatus.find_by_code("request")
     request.save!
     save!

@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'mail'
 require "suppliers/reprintsdesk"
 require "suppliers/local_scan"
+require 'suppliers/tib'
 
 describe IncomingMailController do
   include WebMock::API
@@ -28,7 +29,7 @@ describe IncomingMailController do
   context "ReprintsDesk" do
     describe "correct order" do
       before :each do
-        setup_reprintsdesk(5000, 123456, 'TEST')
+        setup_reprintsdesk(5000, '123456', 'TEST')
       end
 
       it "handles New Order" do
@@ -74,7 +75,7 @@ describe IncomingMailController do
 
     describe "wrong order-id" do
       before :each do
-        setup_reprintsdesk(4999, 123456, 'TEST')
+        setup_reprintsdesk(4999, '123456', 'TEST')
       end
 
       it "doesn't handle unknown order number" do
@@ -105,7 +106,7 @@ describe IncomingMailController do
 
     describe "wrong prefix" do
       before :each do
-        setup_reprintsdesk(5000, 123456, 'TEST2')
+        setup_reprintsdesk(5000, '123456', 'TEST2')
       end
 
       it "doesn't handle unknown order number" do
@@ -136,7 +137,7 @@ describe IncomingMailController do
 
     describe "wrong external-id" do
       before :each do
-        setup_reprintsdesk(5000, 123457, 'TEST')
+        setup_reprintsdesk(5000, '123457', 'TEST')
       end
 
       it "doesn't handle order" do
@@ -194,7 +195,7 @@ describe IncomingMailController do
 
     describe "correct order" do
       before :each do
-        setup_local_scan(234, 234, 'T')
+        setup_local_scan(234, '234', 'T')
       end
 
       it "handles delivery from subject" do
@@ -231,7 +232,7 @@ describe IncomingMailController do
 
     describe "wrong order-id" do
       before :each do
-        setup_local_scan(233, 234, 'T')
+        setup_local_scan(233, '234', 'T')
       end
 
       it "doesn't handle delivery from subject" do
@@ -246,7 +247,7 @@ describe IncomingMailController do
 
     describe "wrong external-id" do
       before :each do
-        setup_local_scan(4000, 235, 'T')
+        setup_local_scan(4000, '235', 'T')
       end
 
       it "doesn't handle delivery from subject" do
@@ -260,7 +261,7 @@ describe IncomingMailController do
 
     describe "wrong prefix" do
       before :each do
-        setup_local_scan(234, 234, 'F')
+        setup_local_scan(234, '234', 'F')
       end
 
       it "doesn't handle delivery from subject" do
@@ -300,64 +301,99 @@ describe IncomingMailController do
 
   end
 
-  context "TIB" do
-    describe "Mail fixture has correct sender, receiver, subject" do
-      # Only test the if the fixture is correct.
+  context 'TIB' do
+    context 'when mail matches an existing order' do
       before do
-        @mail = Mail.new(File.read("spec/fixtures/tib/status_change_answer.eml"))
+        setup_tib(1234, 'E012345678')
       end
 
-      it "handles mail subject" do
-        expect(@mail.subject).to eq("Status change")
-      end
+      context 'when mail is a status change' do
+        context 'when order exists' do
+          it 'handles the mail' do
+            expect(tib_stub_and_receive('accepted', 'confirm')).to eq true
+          end
 
-      it "has the correct sender and receiver" do
-        expect(@mail.to[0]).to eq("test@dtu")
-        expect(@mail.from[0]).to eq("test@tib.eu")
-      end
-      
-      it "has the correct message type" do
-        expect(@mail.body.encoded).to match("ANSWER")
-      end
-    end
+          context 'when order is accepted' do
+            it "sets request status to 'confirm'" do
+              tib_stub_and_receive('accepted', 'confirm')
+              expect(Order.find(@order.id).current_request.order_status.code).to eq 'confirm'
+            end
+          end
 
-    describe "Correct order" do
-      before :each do
-        setup_tib(1234, 1234, 'T')
-      end
+          context 'when order is shipped' do
+            context 'with DRM' do
+            end
 
-      it "handles delivery from body (field tra.goup-qual)" do
-        tib_mail_should_set_status('accepted', 'confirm')
-      end
+            context 'without DRM' do
+            end
+          end
+          
+          context 'when order is not accepted' do
+            it "sets request status to 'cancel'" do
+              tib_stub_and_receive('unfilled', 'cancel')
+              expect(Order.find(@order.id).current_request.order_status.code).to eq 'cancel'
+            end
 
-      describe "Correct message-types" do
-        context "when message type is ANSWER" do
-          it "confirms the request" do
-            tib_mail_should_set_status('status_change_answer', 'confirm')
+            it 'records the reason for not accepting' do
+              tib_stub_and_receive('unfilled', 'cancel')
+              expect(Order.find(@order.id).current_request.format_reason).to eq 'Double-order, this order is being dealt with order no'
+            end
           end
         end
-        context "when message type is SHIPPED" do
-          it "confirms the request" do
-            tib_mail_should_set_status('status_change_shipped', 'confirm')
+      end
+
+      context 'when mail is a delivery' do
+        context 'with DRM' do
+          before do
+            Rails.application.config.storeit_url = "http://localhost"
+            stub_request(:post, 'http://localhost/rest/documents.text?drm=true')
+              .with(:headers => {content_type: 'application/octet-stream'},
+                    :body    => Base64.encode64(IO.read("#{Rails.root}/public/dummy_document.pdf")))
+              .to_return(status: 200, body: '/dummy_document.pdf', headers: {})
+          end
+
+          it 'handles the mail' do
+            expect(tib_stub_and_receive('delivery_drm', 'deliver')).to eq true
+          end
+
+          it "sets request status to 'deliver'" do
+            tib_stub_and_receive('delivery_drm', 'deliver')
+            expect(Order.find(@order.id).current_request.order_status.code).to eq 'deliver'
+          end
+
+          it 'stores the document in the document store with drm flag' do
+          end
+        end
+
+        context 'without DRM' do
+          it 'stores the document in the document store without drm flag' do
           end
         end
       end
     end
-
-    describe "Wrong order-id" do
-      before :each do
-        setup_tib(123,321, 'T')
-      end
-
-      it "doesn't handle delivery from body" do
-        tib_mail_should_not_be_handled('accepted')
+    
+    context "when mail contains non-existing order id" do
+      it "doesn't handle the mail" do
+        expect(tib_stub_and_receive('accepted')).to eq false
       end
     end
 
-    # TIB Helpers
-    def setup_tib(order_id, external_number, prefix)
-      setup_supplier(order_id, external_number, 'tib')
-      Rails.application.config.order_prefix = prefix
+    context "when mail contains prefix that doesn't match system prefix" do
+      before do
+        setup_tib(1234, 'E012345678', 'WRONG')
+      end
+
+      it "doesn't handle the mail" do
+        expect(tib_stub_and_receive('accepted')).to eq false
+      end
+    end
+
+    def setup_tib(order_id, external_number, prefix = nil)
+      setup_supplier(order_id, external_number, 'tib', prefix || 'TEST')
+    end
+
+    def tib_stub_and_receive(mail_file, status = nil)
+      stub_and_receive('tib', mail_file, status)
     end
 
     def tib_mail_should_set_status(mail_file, status)
@@ -369,16 +405,47 @@ describe IncomingMailController do
         File.read("spec/fixtures/tib/#{mail_file}.eml"))
       expect(IncomingMailController.receive(mail)).to eq false
     end
+  end
 
-  end # end TIB context
-
-  def setup_supplier(order_id, external_number, supplier)
+  def setup_supplier(order_id, external_number, supplier, prefix = nil)
     ext = FactoryGirl.create(:external_system, code: supplier)
     # Create order we can test with that means fixed id
     @order = FactoryGirl.create(:order, id: order_id)
     @request = FactoryGirl.create(:order_request, :order => @order,
       :external_system => ext, :external_number => external_number)
+    Rails.application.config.order_prefix = prefix unless prefix.nil?
+  end
 
+  def stub_and_receive(supplier, mail_file, status = nil)
+    stub_status_change_request(status)
+    mail = Mail.new(File.read("spec/fixtures/#{supplier}/#{mail_file}.eml"))
+    IncomingMailController.receive(mail)
+  end
+
+  def stub_status_change_request(status)
+    callback_url_regex = Regexp.new("^http://localhost/callback")
+
+    callback_lambda = lambda do |request|
+      query_values = request.uri.query_values
+
+      if not query_values["status"].eql?(status)
+        raise Exception.new("callback service was called with a bad status.")
+      end
+
+      if "deliver".eql?(status) && !"/dummy_document.pdf".eql?(query_values["url"])
+        raise Exception.new("callback service was called with a bad url.")
+      end
+
+      if "confirm".eql?(status) && !@request.external_number.eql?(query_values["supplier_order_id"])
+        raise Exception.new("callback service was called with a bad supplier_order_id.")
+      end
+
+      return {status: 200, body: '', headers: {}}
+    end
+
+    stub_request(:get, callback_url_regex).to_return(callback_lambda)
+
+    FactoryGirl.create(:order_status, code: status) unless status.nil?
   end
 
   def mail_should_set_status(mail_file, status, supplier)

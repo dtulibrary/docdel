@@ -1,3 +1,4 @@
+require 'base64'
 require 'incoming_mail_controller'
 
 class IncomingMailController
@@ -5,20 +6,13 @@ class IncomingMailController
     # Return true if this is a TIB mail and we handled it
 
     if mail.from.grep(/@tib\.eu$/).count > 0
-      #dod1t.tib.uni-hannover.de
       case mail.subject
-      when 'ACCEPTED'
-        tib_accept(mail)
-      when 'DELIVERY-FAILED'
-        return true unless tib_handle_mail?
       when 'Status change'
-        tib_status_change(mail)
-      when 'RETRY'
-        return true unless tib_handle_mail?
-      when 'WILL-SUPPLY'
-        return true unless tib_handle_mail?
+        tib_handle_mail?(mail) && tib_status_change(mail)
+      when /^Lieferung zu Bestellung/
+        tib_handle_delivery?(mail) && tib_deliver(mail)
       else
-        # mail from tib, but unhandled status
+        # TODO: Mail from tib, but unhandled status - perhaps this should be logged?
         false
       end
     else
@@ -29,78 +23,90 @@ class IncomingMailController
 
   private
 
-  def tib_accept(mail)
-    tib_extract_mail_body(mail)
-
-    return false unless tib_handle_mail?
-    confirm_request('tib')
-
-    # Mark the order in our system as Accepted?
-    # Let user know the order was processed?
+  def tib_status_change(mail)
+    case @message_type
+    when 'ANSWER'
+      tib_status_answer
+    when 'SHIPPED'
+      tib_status_shipped
+    else
+    end
   end
 
-  def tib_status_change(mail)
-    tib_extract_mail_body(mail)
-
-    if @message_type == 'ANSWER'
-      case @results_explanation
-      when 'ACCEPTED'
-        # TIB is processing, the next email should arrive in 15 hours?
-      when 'UNFILLED'
-      when 'NOT-ACCEPTED'
-      end
-    elsif @message_type == 'SHIPPED'
-      # Order has been sent from TIB
-      # TODO: Update DRM info
+  def tib_status_answer
+    case @results_explanation
+    when 'ACCEPTED'
+      # TIB confirmed that they will deliver
+      confirm_request('tib')
+    when 'UNFILLED'
+      # TIB will not deliver
+      cancel_request('tib')
+    when 'NOT-ACCEPTED'
+      # Bad or inadequate request
+      cancel_request('tib')
+    else
     end
+  end
 
-    tib_handle_mail?
-    confirm_request('tib')
+  def tip_status_shipped
+    # Order has been sent from TIB
+    # TODO: Update DRM info
+  end
+
+  def tib_deliver(mail)
+    tib_extract_delivery(mail)
+    return false unless @pdf
+    url = StoreIt.store_pdf(Base64.encode64(@pdf), 'application/octet-stream', drm: true)
+    deliver_request('tib', url)
+  end
+
+  def prefix_map
+    {
+      '1' => 'PROD',     # Production
+      '2' => 'STAGING',  # Staging
+      '3' => 'UNSTABLE', # Unstable
+      '4' => 'TEST'      # Test
+    }
   end
 
   def tib_extract_mail_body(mail)
+    return if @mail_body_extracted
+    
+    text_part = extract_mail_text_part(mail)
+    return if text_part.nil?
 
-    # call the generic/reusable extract_mail_text_part(mail) to get the email body into a variable
-    body = extract_mail_text_part(mail).body.to_s
+    body = text_part.body.to_s
 
-    /supplier-ordernr: \D*0*(\d+)$/.match body
+    # TIB controlled number
+    /supplier-ordernr: (\S+)/.match body
     @external_number = $1
 
-    # MAX 13 chars after the ':DK'
-    # TIBSUBITO:DK201600012
+
+    # Combination of service qualifier (TIB controlled) and our "prefix + zero-padded" order number
+    # Note that TIB doesn't support letters in the value supplied by us, so we use a mapping of
+    # our normal prefixes for TIB.
+    # Example for a production order with order number 1234: "TIBSUBITO:DK2016100001234"
     /transaction-group-qualifier: TIBSUBITO:DK(.)0*(\d+)/.match body
-    
-    case $1.to_i
-    when 1
-      @prefix_code = 'PROD'
-    when 2
-      @prefix_code = 'STAGING'
-    when 3
-      @prefix_code = 'UNSTABLE'
-    when 4
-      @prefix_code = 'T'
-    end
-    
+    @prefix_code  = prefix_map[$1] 
     @order_number = $2
-    # With TIB, we are unable to make our own external nr
-    @external_number = @order_number
 
     # TIB unique fields:
-    /message-type: +(\S+)/.match body
+    /message-type: (\S+)/.match body
     @message_type = $1
 
-    /responder-note: +(\S+)/.match body
-    @responder_note = $1
+    /responder-note: ([^\n]+)/.match(body) { |m| @responder_note = m[1] }
 
-    /results-explanation: +(\S+)/.match body
+    /results-explanation: (\S+)/.match body
     @results_explanation = $1
 
-    /customer-no: +(\S+)/.match body
-    @customer_nr = $1
-
     # TIB document format: DRM / VGW
-    /transaction-qualifier: +(\S+)/.match body
+    /transaction-qualifier: (\S+)/.match body
     @transqual = $1
+    
+    if @transqual
+      @drm = @transqual.upcase.match(/DRM/)
+    end
+    
 
     # Temp testing
     logger.info "======================="
@@ -111,11 +117,30 @@ class IncomingMailController
     logger.info "@responder_note  : #{@responder_note}"
     logger.info "@results_explan  : #{@results_explanation}"
     logger.info "@customer_nr     : #{@customer_nr}"
-
+    
+    @mail_body_extracted = true
   end
 
-  def tib_handle_mail?
-    handle_mail?(config.order_prefix)
+  def tib_extract_mail_subject(mail)
+    m = mail.subject.match(/Lieferung zu Bestellung (\S+)$/)
+    @external_number = m[1] unless m.nil? 
+  end
+
+  def tib_extract_delivery(mail)
+    return if @delivery_extracted
+    part = extract_mail_octet_streams(mail).select {|p| p.content_description == "#{@external_number}.pdf"}.first
+    @pdf = part.body.to_s if part
+    @delivery_extracted = true
+  end
+
+  def tib_handle_delivery?(mail)
+    tib_extract_mail_subject(mail)
+    valid_order_request?(@external_number)
+  end
+
+  def tib_handle_mail?(mail)
+    tib_extract_mail_body(mail)
+    handle_mail?
   end
 
 end

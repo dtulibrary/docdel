@@ -25,13 +25,13 @@ class IncomingMailController
     if mail.subject =~ /^(\w+)-(\d+)/
       @prefix_code = $1.upcase
       @order_number = $2
-      @external_number = @order_number
+      @external_number = @order_number.to_s
     elsif ((mail.subject =~ /^(\d+)$/) && config.local_scan.allow_no_prefix)
       @order_number = $1
       @order = Order.find_by_id(@order_number)
       if (@order && @order.current_request.order_status.code == 'request')
         @prefix_code = config.order_prefix
-        @external_number = @order_number
+        @external_number = @order_number.to_s
       else
         @order_number = nil
       end
@@ -40,7 +40,7 @@ class IncomingMailController
       if body =~ /^\s*(\w+)-(\d+)/
         @prefix_code = $1.upcase
         @order_number = $2
-        @external_number = @order_number
+        @external_number = @order_number.to_s
       end
     end
     @pdfdoc = extract_mail_pdf_part(mail).body.to_s

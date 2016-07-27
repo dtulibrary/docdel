@@ -6,7 +6,7 @@ Subject: Status change
 message-type: ANSWER
 transaction-id:
 transaction-initial-req-id-symbol: 
-transaction-group-qualifier: TIBSUBITO:DK4000001234
+transaction-group-qualifier: TIBSUBITO:DK200001234
 transaction-qualifier: VGW 0
 transaction-sub-transaction-qualifier: 
 service-date-time: 12.04.2016 10:50:10 
@@ -18,4 +18,4 @@ requester-email-address: test@dtu.dk
 responder-id: 89
 responder-note: 
 results-explanation: ACCEPTED
-supplier-ordernr: E000072676
+supplier-ordernr: E012345678

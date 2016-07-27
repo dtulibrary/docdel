@@ -109,7 +109,7 @@ class Order
       attributes: { "xmlns" => "http://reprintsdesk.com/webservices/" })
     resp = response.body[:order_place_order2_response]
     if resp[:order_place_order2_result] == "1"
-      request.external_number = resp[:order_id]
+      request.external_number = resp[:order_id].to_s
       request.order_status = OrderStatus.find_by_code("request")
     else
       logger.warn "RD failed response #{response.body.inspect}"

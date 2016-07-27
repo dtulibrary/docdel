@@ -6,7 +6,7 @@ Subject: Status change
 message-type: SHIPPED
 transaction-id: 
 transaction-initial-req-id-symbol: 
-transaction-group-qualifier: TIBSUBITO:DK4000001234
+transaction-group-qualifier: TIBSUBITO:DK400001234
 transaction-qualifier: DRM  0
 transaction-sub-transaction-qualifier: 
 service-date-time: 27.04.2016 10:50:10 
@@ -31,4 +31,4 @@ sdet-url: ftp://:@
 sdet-userid: 
 sdet-password: 
 responder-note: 
-supplier-ordernr: E000072676
+supplier-ordernr: E012345678

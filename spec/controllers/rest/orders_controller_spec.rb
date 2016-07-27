@@ -240,7 +240,7 @@ describe Rest::OrdersController do
         # Check that order/request matches what we want.
         expect(order.current_request.external_service_charge).to eq 10.0
         expect(order.current_request.external_copyright_charge).to eq -1.0
-        expect(order.current_request.external_number).to eq 123456
+        expect(order.current_request.external_number).to eq '123456'
         expect(order.user_type.code).to eq @user['user_type'] if @user_response
       end
 

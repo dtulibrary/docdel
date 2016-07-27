@@ -9,38 +9,51 @@ class IncomingMailController < ActionMailer::Base
   end
 
   def extract_mail_text_part(mail)
-    extract_mail_part(mail, /text\/plain/)
+    extract_mail_part(mail, 'text/plain')
   end
 
   def extract_mail_pdf_part(mail)
-    extract_mail_part(mail, /application\/pdf/)
+    extract_mail_part(mail, 'application/pdf')
+  end
+
+  def extract_mail_octet_streams(mail)
+    extract_mail_parts(mail, 'application/octet-stream')
   end
 
   private
 
-  def handle_mail?(prefix)
-    unless @prefix_code == prefix
-      logger.info "Rejecting mail on prefix_code #{@prefix_code} != "+
-        "#{prefix}"
-      return false
-    end
+  def valid_prefix?(prefix)
+    logger.info "Rejecting mail on prefix_code '#{@prefix_code}' != '#{prefix}'" unless @prefix_code == prefix
+    @prefix_code == prefix
+  end
+
+  def valid_order?(order_number)
     @order = Order.find_by_id(@order_number)
-    unless @order
-      logger.info "Rejecting mail on not found #{@order_number}"
-      return false
-    end
-    true
+    logger.info "Rejecting mail on order not found '#{@order_number}'" unless @order
+    @order
+  end
+
+  def valid_order_request?(external_number)
+    order_request = OrderRequest.where(external_number: external_number)
+    return false unless order_request.count > 0
+    @order = order_request.first.order
+  end
+
+  def handle_mail?(prefix = config.order_prefix)
+    valid_prefix?(prefix) && valid_order?(@order_number)
   end
 
   def confirm_request(supplier)
-    logger.info "Is @order defined? #{@order.inspect} "
     request = @order.request(supplier, @external_number)
     request ? request.confirm(@external_number) : report_not_found
   end
 
   def cancel_request(supplier)
     request = @order.request(supplier, @external_number)
-    request ? request.cancel : report_not_found
+    return report_not_found unless request
+
+    request.reason_text = @responder_note
+    request.cancel
   end
 
   def deliver_request(supplier, url)
@@ -50,22 +63,15 @@ class IncomingMailController < ActionMailer::Base
 
   def report_not_found
     logger.info "Request #{@external_number} not found on order_number #{@order_number}"
-    logger.info "---"
     false
   end
 
   def extract_mail_part(mail, mime_type)
-    if mail.parts.count == 0
-      part = mail
-    else
-      part = nil
-      mail.parts.each do |p|
-        if p.content_type =~ mime_type
-          part = p
-        end
-      end
-    end
-    part
+    extract_mail_parts(mail, mime_type).first || mail
+  end
+
+  def extract_mail_parts(mail, mime_type)
+    mail.parts.select {|p| mime_type =~ %r{^#{mime_type}}}
   end
 
   def config
