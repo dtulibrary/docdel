@@ -302,6 +302,31 @@ describe IncomingMailController do
   end
 
   context 'TIB' do
+    context 'when order is accepted' do
+      before do
+        setup_tib(1234, nil)
+      end
+
+      it 'handles the mail' do
+        expect(tib_stub_and_receive('accepted', 'confirm')).to eq true
+      end
+
+      it "sets request status to 'confirm'" do
+        tib_stub_and_receive('accepted', 'confirm')
+        expect(Order.find(@order.id).current_request.order_status.code).to eq 'confirm'
+      end
+
+      it "sets request status to 'cancel'" do
+        tib_stub_and_receive('unfilled', 'cancel')
+        expect(Order.find(@order.id).current_request.order_status.code).to eq 'cancel'
+      end
+
+      it 'records the reason for not accepting' do
+        tib_stub_and_receive('unfilled', 'cancel')
+        expect(Order.find(@order.id).current_request.format_reason).to eq 'Double-order, this order is being dealt with order no'
+      end
+    end
+
     context 'when mail matches an existing order' do
       before do
         setup_tib(1234, 'E012345678')
@@ -436,7 +461,7 @@ describe IncomingMailController do
         raise Exception.new("callback service was called with a bad url.")
       end
 
-      if "confirm".eql?(status) && !@request.external_number.eql?(query_values["supplier_order_id"])
+      if "confirm".eql?(status) && (!@request.external_number.nil? && !@request.external_number.eql?(query_values["supplier_order_id"]))
         raise Exception.new("callback service was called with a bad supplier_order_id.")
       end
 

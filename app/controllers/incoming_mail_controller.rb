@@ -43,6 +43,14 @@ class IncomingMailController < ActionMailer::Base
     valid_prefix?(prefix) && valid_order?(@order_number)
   end
 
+  def enrich_request_with_external_number(supplier, external_number)
+    request = @order.request(supplier, nil)
+    return if request.nil?
+
+    request.external_number = external_number
+    request.save!
+  end
+
   def confirm_request(supplier)
     request = @order.request(supplier, @external_number)
     request ? request.confirm(@external_number) : report_not_found

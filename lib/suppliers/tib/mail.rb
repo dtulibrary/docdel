@@ -26,6 +26,7 @@ class IncomingMailController
   def tib_status_change(mail)
     case @message_type
     when 'ANSWER'
+      enrich_request_with_external_number('tib', @external_number)
       tib_status_answer
     when 'SHIPPED'
       tib_status_shipped
