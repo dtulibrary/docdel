@@ -132,7 +132,7 @@ class Order < ActiveRecord::Base
   end
 
   def mark_delivery(url)
-    raise ArgumentError "Missing url" unless url
+    raise ArgumentError.new("Missing url") unless url
     self.delivered_at = Time.now
     do_callback('deliver', :url => url)
     save!
