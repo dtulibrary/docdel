@@ -49,7 +49,7 @@ class IncomingMailController
     end
   end
 
-  def tip_status_shipped
+  def tib_status_shipped
     # Order has been sent from TIB
     # TODO: Update DRM info
   end
