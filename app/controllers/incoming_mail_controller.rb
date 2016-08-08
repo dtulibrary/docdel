@@ -44,11 +44,11 @@ class IncomingMailController < ActionMailer::Base
   end
 
   def enrich_request_with_external_number(supplier, external_number)
-    request = @order.request(supplier, nil)
-    return if request.nil?
+    current_request = @order.current_request
+    return if current_request.nil? || !current_request.external_number.nil?
 
-    request.external_number = external_number
-    request.save!
+    current_request.external_number = external_number
+    current_request.save!
   end
 
   def confirm_request(supplier)
