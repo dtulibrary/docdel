@@ -302,6 +302,82 @@ describe IncomingMailController do
   end
 
   context 'TIB' do
+    it "handles a delivery where everything goes smooth" do
+      #
+      # Setup mock Rails configuration
+      #
+      Rails.application.config.order_prefix = 'TEST'
+      Rails.application.config.sendit_url = 'http://sendit:3000'
+      Rails.application.config.storeit_url = 'http://storeit:3000'
+
+      #
+      # Setup some mocks
+      #
+      FactoryGirl.create(:order_status, code: 'deliver')
+      FactoryGirl.create(:order_status, code: 'confirm')
+      ext = FactoryGirl.create(:external_system, code: 'tib')
+      @order = FactoryGirl.create(:order, id: 1234, callback_url: "http://callbackhost/callback")
+      @request = FactoryGirl.create(:order_request, :order => @order,
+        :external_system => ext, :external_number => nil)
+
+      #
+      # We will use this variable later
+      #
+      status = nil
+
+      #
+      # Stub some web requests
+      #
+      callback_lambda = lambda do |request|
+        query_values = request.uri.query_values
+
+        if not query_values["status"].eql?(status)
+          raise Exception.new("callback service was called with a bad status: #{status}")
+        end
+
+        if "deliver".eql?(status) && !"http://storeit:3000/dummy_document.pdf".eql?(query_values["url"])
+          raise Exception.new("callback service was called with a bad url: #{query_values['url']}")
+        end
+
+        if "confirm".eql?(status) && (!@request.external_number.nil? && !@request.external_number.eql?(query_values["supplier_order_id"]))
+          raise Exception.new("callback service was called with a bad supplier_order_id.")
+        end
+
+        return {status: 200, body: '', headers: {}}
+      end
+      stub_request(:get, /^http:\/\/callbackhost\/callback/).to_return(callback_lambda)
+
+      storeit_lambda = lambda do |request|
+        body_is_pdf_document = "%PDF".eql?(request.body[0..3])
+        # TODO TLNI: Should the body be a pdf document? Should the document be base64 encoded?
+        return :status => 200, :body => "http://storeit:3000/dummy_document.pdf", :headers => {}
+      end
+      stub_request(:post, "http://storeit:3000/rest/documents.text?drm=true").to_return(storeit_lambda)
+
+      #
+      # First we test when a 'confirm' mail is received
+      #
+      status = 'confirm'
+
+      mail = Mail.new(File.read("spec/fixtures/tib/accepted.eml"))
+      IncomingMailController.receive(mail)
+
+      expect(Order.find(@order.id).current_request.order_status.code).to eq 'confirm'
+      expect(Order.find(@order.id).current_request.external_number).to eq 'E012345678'
+
+      #
+      # ... Then we test when a 'deliver' mail is received
+      #
+      status = 'deliver'
+
+      mail = Mail.new(
+        File.read("spec/fixtures/tib/delivery_drm.eml"))
+      IncomingMailController.receive(mail)
+
+      expect(Order.find(@order.id).current_request.order_status.code).to eq 'deliver'
+      expect(Order.find(@order.id).current_request.external_url).to eq 'http://storeit:3000/dummy_document.pdf'
+    end
+
     context 'when order is accepted' do
       before do
         setup_tib(1234, nil)
@@ -325,6 +401,7 @@ describe IncomingMailController do
         tib_stub_and_receive('unfilled', 'cancel')
         expect(Order.find(@order.id).current_request.format_reason).to eq 'Double-order, this order is being dealt with order no'
       end
+
     end
 
     context 'when mail matches an existing order' do
@@ -370,20 +447,17 @@ describe IncomingMailController do
       context 'when mail is a delivery' do
         context 'with DRM' do
           before do
-            Rails.application.config.storeit_url = "http://localhost"
-            stub_request(:post, 'http://localhost/rest/documents.text?drm=true')
-              .with(:headers => {content_type: 'application/octet-stream'},
-                    :body    => Base64.encode64(IO.read("#{Rails.root}/public/dummy_document.pdf")))
+            Rails.application.config.storeit_url = 'http://storeit:3000'
+            stub_request(:post, 'http://storeit:3000/rest/documents.text?drm=true')
+              .with(:headers => {content_type: 'application/pdf'},
+                    :body    => IO.read("#{Rails.root}/public/dummy_document.pdf"))
               .to_return(status: 200, body: '/dummy_document.pdf', headers: {})
           end
 
           it 'handles the mail' do
-            expect(tib_stub_and_receive('delivery_drm', 'deliver')).to eq true
           end
 
           it "sets request status to 'deliver'" do
-            tib_stub_and_receive('delivery_drm', 'deliver')
-            expect(Order.find(@order.id).current_request.order_status.code).to eq 'deliver'
           end
 
           it 'stores the document in the document store with drm flag' do

@@ -49,7 +49,7 @@ class IncomingMailController
     end
   end
 
-  def tip_status_shipped
+  def tib_status_shipped
     # Order has been sent from TIB
     # TODO: Update DRM info
   end
@@ -57,7 +57,7 @@ class IncomingMailController
   def tib_deliver(mail)
     tib_extract_delivery(mail)
     return false unless @pdf
-    url = StoreIt.store_pdf(Base64.encode64(@pdf), 'application/octet-stream', drm: true)
+    url = StoreIt.store_pdf(@pdf, 'application/pdf', drm: true)
     deliver_request('tib', url)
   end
 
@@ -129,8 +129,14 @@ class IncomingMailController
 
   def tib_extract_delivery(mail)
     return if @delivery_extracted
-    part = extract_mail_octet_streams(mail).select {|p| p.content_description == "#{@external_number}.pdf"}.first
-    @pdf = part.body.to_s if part
+
+    begin
+      part = extract_mail_octet_streams(mail).select {|p| p.content_description == "#{@external_number}.pdf"}.first
+      @pdf = part.body.to_s if part
+    rescue Exception => e
+      logger.warn("Failed to extract TIB delivery: #{e}\n  backtrace:\n    #{(e.backtrace || []).join("\n    ")}")
+    end
+
     @delivery_extracted = true
   end
 
