@@ -129,8 +129,14 @@ class IncomingMailController
 
   def tib_extract_delivery(mail)
     return if @delivery_extracted
-    part = extract_mail_octet_streams(mail).select {|p| p.content_description == "#{@external_number}.pdf"}.first
-    @pdf = part.body.to_s if part
+
+    begin
+      part = extract_mail_octet_streams(mail).select {|p| p.content_description == "#{@external_number}.pdf"}.first
+      @pdf = part.body.to_s if part
+    rescue Exception => e
+      logger.warn("Failed to extract TIB delivery: #{e}\n  backtrace:\n    #{(e.backtrace || []).join("\n    ")}")
+    end
+
     @delivery_extracted = true
   end
 
