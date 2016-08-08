@@ -455,12 +455,9 @@ describe IncomingMailController do
           end
 
           it 'handles the mail' do
-            expect(tib_stub_and_receive('delivery_drm', 'deliver')).to eq true
           end
 
           it "sets request status to 'deliver'" do
-            tib_stub_and_receive('delivery_drm', 'deliver')
-            expect(Order.find(@order.id).current_request.order_status.code).to eq 'deliver'
           end
 
           it 'stores the document in the document store with drm flag' do
