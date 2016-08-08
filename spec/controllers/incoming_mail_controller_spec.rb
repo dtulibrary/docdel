@@ -447,10 +447,10 @@ describe IncomingMailController do
       context 'when mail is a delivery' do
         context 'with DRM' do
           before do
-            Rails.application.config.storeit_url = "http://localhost"
-            stub_request(:post, 'http://localhost/rest/documents.text?drm=true')
-              .with(:headers => {content_type: 'application/octet-stream'},
-                    :body    => Base64.encode64(IO.read("#{Rails.root}/public/dummy_document.pdf")))
+            Rails.application.config.storeit_url = 'http://storeit:3000'
+            stub_request(:post, 'http://storeit:3000/rest/documents.text?drm=true')
+              .with(:headers => {content_type: 'application/pdf'},
+                    :body    => IO.read("#{Rails.root}/public/dummy_document.pdf"))
               .to_return(status: 200, body: '/dummy_document.pdf', headers: {})
           end
 
