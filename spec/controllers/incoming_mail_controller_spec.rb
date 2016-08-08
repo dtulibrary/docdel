@@ -307,6 +307,8 @@ describe IncomingMailController do
       # Setup mock Rails configuration
       #
       Rails.application.config.order_prefix = 'TEST'
+      Rails.application.config.sendit_url = 'http://sendit:3000'
+      Rails.application.config.storeit_url = 'http://storeit:3000'
 
       #
       # Setup some mocks
