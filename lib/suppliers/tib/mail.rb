@@ -57,7 +57,7 @@ class IncomingMailController
   def tib_deliver(mail)
     tib_extract_delivery(mail)
     return false unless @pdf
-    url = StoreIt.store_pdf(Base64.encode64(@pdf), 'application/octet-stream', drm: true)
+    url = StoreIt.store_pdf(@pdf, 'application/pdf', drm: true)
     deliver_request('tib', url)
   end
 
