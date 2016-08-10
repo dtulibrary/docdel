@@ -57,7 +57,7 @@ class IncomingMailController
   def tib_deliver(mail)
     tib_extract_delivery(mail)
     return false unless @pdf
-    url = StoreIt.store_pdf(@pdf, 'application/pdf', drm: true)
+    url = StoreIt.store_pdf(@pdf, 'application/pdf', drm: drm_protected_pdf?)
     deliver_request('tib', url)
   end
 
@@ -100,15 +100,6 @@ class IncomingMailController
     /results-explanation: (\S+)/.match body
     @results_explanation = $1
 
-    # TIB document format: DRM / VGW
-    /transaction-qualifier: (\S+)/.match body
-    @transqual = $1
-    
-    if @transqual
-      @drm = @transqual.upcase.match(/DRM/)
-    end
-    
-
     # Temp testing
     logger.info "======================="
     logger.info "@prefix_code     : #{@prefix_code}"
@@ -150,4 +141,17 @@ class IncomingMailController
     handle_mail?
   end
 
+  def drm_protected_pdf?
+    pdf_trailer.include?("/Encrypt")
+  end
+
+  def pdf_trailer
+    return "" if pdf_trailer_position.nil?
+
+    @pdf[pdf_trailer_position..-1]
+  end
+
+  def pdf_trailer_position
+    @pdf.index("\r\ntrailer\r\n")
+  end
 end

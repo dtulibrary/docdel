@@ -352,7 +352,7 @@ describe IncomingMailController do
         # TODO TLNI: Should the body be a pdf document? Should the document be base64 encoded?
         return :status => 200, :body => "http://storeit:3000/dummy_document.pdf", :headers => {}
       end
-      stub_request(:post, "http://storeit:3000/rest/documents.text?drm=true").to_return(storeit_lambda)
+      stub_request(:post, "http://storeit:3000/rest/documents.text?drm=false").to_return(storeit_lambda)
 
       #
       # First we test when a 'confirm' mail is received
@@ -371,7 +371,7 @@ describe IncomingMailController do
       status = 'deliver'
 
       mail = Mail.new(
-        File.read("spec/fixtures/tib/delivery_drm.eml"))
+        File.read("spec/fixtures/tib/delivery_no_drm.eml"))
       IncomingMailController.receive(mail)
 
       expect(Order.find(@order.id).current_request.order_status.code).to eq 'deliver'
