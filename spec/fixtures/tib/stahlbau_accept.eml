@@ -1,0 +1,43 @@
+Return-Path: <dodusr@docdel.tib.eu>
+X-Original-To: docdel@cvt.dk
+Delivered-To: docdel@cvt.dk
+Received: from proxy01.tib.eu (proxy01.tib.eu [194.95.114.3])	by rogeth.cvt.dk
+ (Postfix) with ESMTP id C26C98BC35	for <docdel@cvt.dk>; Wed,  3 Aug 2016
+ 11:00:45 +0200 (CEST)
+Received: from dod1.tib.eu (dod1.tib.eu [194.95.112.8])	by proxy01.tib.eu
+ (Postfix) with ESMTP id 8EA8A102CB	for <docdel@cvt.dk>; Wed,  3 Aug 2016
+ 11:00:45 +0200 (CEST)
+Received: by dod1.tib.eu (Postfix, from userid 1010)	id 884C2D2C8; Wed,  3 Aug
+ 2016 11:00:45 +0200 (CEST)
+From: <Kundenservice@tib.eu>
+To: <docdel@cvt.dk>
+Subject: Status change
+Message-ID: <20160803090045.884C2D2C8@dod1.tib.eu>
+Date: Wed, 3 Aug 2016 11:00:45 +0200
+X-cvt-dk-MailScanner-ID: C26C98BC35.AA6F1
+X-cvt-dk-MailScanner: Found to be clean
+X-cvt-dk-MailScanner-SpamCheck: not spam, SpamAssassin (not cached,
+	score=-0.9, required 5, BAYES_00 -1.90, BODY_URI_ONLY 1.00,
+	RCVD_IN_DNSWL_NONE -0.00, TVD_SPACE_RATIO 0.00)
+X-cvt-dk-MailScanner-From: dodusr@docdel.tib.eu
+X-Spam-Status: No
+Content-Type: text/plain
+MIME-Version: 1.0
+
+message-type: ANSWER
+transaction-id:
+transaction-initial-req-id-symbol: 
+transaction-group-qualifier: TIBSUBITO:DK400000000
+transaction-qualifier: 0
+transaction-sub-transaction-qualifier: 
+service-date-time: 27.04.2016 10:50:10 
+requester-id: DTV
+customer-no: TLS01208
+requester-note: 
+requester-group: USER-GROUP-t8
+requester-email-address: docdel@cvt.dk
+responder-id: 89
+responder-note: 
+results-explanation: ACCEPTED
+supplier-ordernr: E033920240
+
