@@ -76,8 +76,10 @@ module Docdel
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
-    config.sendit_url = ''
-    config.storeit_url = ''
+    config.sendit_url = 'http://sendit:3000'
+    config.user_url = ''
+    config.storeit_url = 'http://docstore:3000'
+    config.order_prefix = 'TEST'
 
     c = config.reprintsdesk = ActiveSupport::OrderedOptions.new
     c.wsdl = 'https://www.reprintsdesk.com/webservice/main.asmx?wsdl'
