@@ -14,7 +14,7 @@ class IncomingMailController
         reprintsdesk_download(mail)
       when /Cancelled Order/
         reprintsdesk_machine_cancelled(mail)
-      when /Reprints Desk article delivery/
+      when /Reprints Desk (?:article|LinkOut) delivery/
         reprintsdesk_delivery_mail(mail)
       else
         logger.info "Reprintsdesk unhandled subject "+mail.subject

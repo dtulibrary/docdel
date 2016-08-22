@@ -61,6 +61,10 @@ describe IncomingMailController do
         rd_mail_has_status('delivery', 'deliver')
       end
 
+      it "handles LinkOut Delivery" do
+        rd_mail_has_status('deliverylinkout', 'deliver')
+      end
+
       it "doesn't handle unknown subject" do
         mail = Mail.new(File.read("spec/fixtures/reprintsdesk/unknown_subject.eml"))
         expect(IncomingMailController.receive(mail)).to eq false
