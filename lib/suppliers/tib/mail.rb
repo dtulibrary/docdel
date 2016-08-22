@@ -101,7 +101,7 @@ class IncomingMailController
     @results_explanation = $1
 
     # Temp testing
-    logger.info "======================="
+    logger.info "========= TIB =========="
     logger.info "@prefix_code     : #{@prefix_code}"
     logger.info "@order_number    : #{@order_number}"
     logger.info "@external_number : #{@external_number}"
@@ -109,7 +109,7 @@ class IncomingMailController
     logger.info "@responder_note  : #{@responder_note}"
     logger.info "@results_explan  : #{@results_explanation}"
     logger.info "@customer_nr     : #{@customer_nr}"
-    
+
     @mail_body_extracted = true
   end
 
