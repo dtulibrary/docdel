@@ -74,6 +74,7 @@ class IncomingMailController
     reprintsdesk_extract_from_subject(mail.subject)
     return false unless reprintsdesk_handle_mail?
     request = @order.request('reprintsdesk', @external_number)
+    logger.info "Creating RD order #{request.inspect}"
     return true if request && request.order_status.code == 'deliver'
     false
   end
@@ -106,12 +107,10 @@ class IncomingMailController
     / #(\d+) /.match subject
     @external_number = $1
 
-    logger.info "========= RD =========="
+    logger.info "======= RD ========"
     logger.info "@prefix_code     : #{@prefix_code}"
     logger.info "@order_number    : #{@order_number}"
     logger.info "@external_number : #{@external_number}"
-    logger.info "@message_type    : #{@message_type}"
-    logger.info "@responder_note  : #{@responder_note}"
 
   end
 
