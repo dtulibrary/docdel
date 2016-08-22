@@ -105,6 +105,14 @@ class IncomingMailController
     @order_number = $2
     / #(\d+) /.match subject
     @external_number = $1
+
+    logger.info "========= RD =========="
+    logger.info "@prefix_code     : #{@prefix_code}"
+    logger.info "@order_number    : #{@order_number}"
+    logger.info "@external_number : #{@external_number}"
+    logger.info "@message_type    : #{@message_type}"
+    logger.info "@responder_note  : #{@responder_note}"
+
   end
 
   def reprintsdesk_handle_mail?
