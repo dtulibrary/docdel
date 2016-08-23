@@ -76,7 +76,9 @@ class IncomingMailController
     return false unless reprintsdesk_handle_mail?
     request = @order.request('reprintsdesk', @external_number)
     logger.info "Creating RD order #{request.inspect}"
+
     return true if request && request.order_status.code == 'deliver'
+    logger.info "No request, or request.order_status.code is not == deliver"
     false
   end
 
