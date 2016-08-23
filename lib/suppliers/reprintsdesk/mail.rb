@@ -21,7 +21,7 @@ class IncomingMailController
         false
       end
     else
-      logger.info "No case matched in mail subject"
+      logger.info "Mail not from reprintsdesk.com"
       false
     end
   end
