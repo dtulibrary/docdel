@@ -21,6 +21,7 @@ class IncomingMailController
         false
       end
     else
+      logger.info "No case matched in mail subject"
       false
     end
   end
