@@ -79,6 +79,8 @@ class IncomingMailController
 
     return true if request && request.order_status.code == 'deliver'
     logger.info "No request, or request.order_status.code is not == deliver"
+    logger.info "Status code: #{request.order_status.code}" if request
+
     false
   end
 
