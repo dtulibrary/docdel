@@ -3,6 +3,7 @@ require 'incoming_mail_controller'
 class IncomingMailController
   def supplier_mail_check_reprintsdesk(mail)
     if mail.from.grep(/reprintsdesk\.com/).count > 0
+      logger.info "======= RD ========"
       case mail.subject
       when /New Order/
         reprintsdesk_new_order(mail)
@@ -75,10 +76,8 @@ class IncomingMailController
     reprintsdesk_extract_from_subject(mail.subject)
     return false unless reprintsdesk_handle_mail?
     request = @order.request('reprintsdesk', @external_number)
-    logger.info "Creating RD order #{request.inspect}"
-
     return true if request && request.order_status.code == 'deliver'
-    logger.info "No request, or request.order_status.code is not == deliver"
+    logger.info "RD order #{request.inspect}"
     logger.info "Status code: #{request.order_status.code}" if request
 
     false
@@ -112,7 +111,6 @@ class IncomingMailController
     / #(\d+) /.match subject
     @external_number = $1
 
-    logger.info "======= RD ========"
     logger.info "@prefix_code     : #{@prefix_code}"
     logger.info "@order_number    : #{@order_number}"
     logger.info "@external_number : #{@external_number}"
