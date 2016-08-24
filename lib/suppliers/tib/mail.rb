@@ -6,17 +6,19 @@ class IncomingMailController
     # Return true if this is a TIB mail and we handled it
 
     if mail.from.grep(/@tib\.eu$/).count > 0
+      logger.info "========= TIB =========="
       case mail.subject
       when 'Status change'
         tib_handle_mail?(mail) && tib_status_change(mail)
       when /^Lieferung zu Bestellung/
         tib_handle_delivery?(mail) && tib_deliver(mail)
       else
-        # TODO: Mail from tib, but unhandled status - perhaps this should be logged?
+        logger.info "TIB unhandled subject "+mail.subject
         false
       end
     else
       # Mail not from tib
+      logger.info "Mail not from reprintsdesk.com"
       false
     end
   end
@@ -101,7 +103,6 @@ class IncomingMailController
     @results_explanation = $1
 
     # Temp testing
-    logger.info "========= TIB =========="
     logger.info "@prefix_code     : #{@prefix_code}"
     logger.info "@order_number    : #{@order_number}"
     logger.info "@external_number : #{@external_number}"
