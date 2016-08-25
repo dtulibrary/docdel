@@ -18,7 +18,7 @@ class IncomingMailController
       end
     else
       # Mail not from tib
-      logger.info "Mail not from reprintsdesk.com"
+      logger.info "Mail not from tib.eu"
       false
     end
   end

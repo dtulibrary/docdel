@@ -4,8 +4,10 @@ require 'incoming_mail_controller'
 class IncomingMailController
   def supplier_mail_check_local_scan(mail)
     if mail.from.grep(config.local_scan.handle_mails_from).count > 0
+      logger.info "======= Local Scan ========"
       local_scan_deliver(mail)
     else
+      logger.info "Mail not from Local Scan"
       false
     end
   end
