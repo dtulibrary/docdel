@@ -100,7 +100,7 @@ module Docdel
     c.fax = '*'
     c.systemmail = ''
     c.order_prefix = ''
-    c.accounts = nil
+    c.accounts = { 'default' => { 'user' => '', 'password' => '' } }
 #    c.accounts = {
 #      'group1' => {
 #        'user' => '',
