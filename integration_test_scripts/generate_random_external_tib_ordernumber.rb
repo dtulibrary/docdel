@@ -3,7 +3,7 @@ def zero_pad_integer(integer)
 end
 
 def random_order_number
-  zero_pad_integer(Random.new.rand(99999999))
+  "E" + zero_pad_integer(Random.new.rand(99999999))
 end
 
 puts random_order_number
