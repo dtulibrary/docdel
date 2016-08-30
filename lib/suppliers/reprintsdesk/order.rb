@@ -2,6 +2,9 @@ require 'time'
 
 class Order
   def request_from_reprintsdesk
+    # TODO TLNI: Mock?
+    return true if config.respond_to?(:disable_reprintsdesk_request) && config.disable_reprintsdesk_request
+
     # Find user/password
     user_type = @user['user_type'] || 'other'
     account = config.reprintsdesk.accounts[user_type] ||

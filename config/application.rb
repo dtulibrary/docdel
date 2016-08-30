@@ -133,6 +133,7 @@ module Docdel
     c.order_mail = ''
     c.from_mail = ''
     
+    config.disable_reprintsdesk_request = true
   end
 end
 
