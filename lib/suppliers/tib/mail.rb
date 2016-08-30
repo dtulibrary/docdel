@@ -53,7 +53,6 @@ class IncomingMailController
 
   def tib_status_shipped
     # Order has been sent from TIB
-    # TODO: Update DRM info
   end
 
   def tib_deliver(mail)
