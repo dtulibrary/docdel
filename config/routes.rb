@@ -8,7 +8,7 @@ Docdel::Application.routes.draw do
   post 'orders/:id/not_available' => 'orders#not_available', :as => 'order_not_available'
 
   namespace :rest do
-    resources :orders, :only => [:show, :create]
+    resources :orders, :only => [:show, :create, :update]
     get 'test' => 'orders#test' if Rails.env.development?
   end
 

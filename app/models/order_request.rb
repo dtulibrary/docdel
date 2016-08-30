@@ -28,7 +28,8 @@ class OrderRequest < ActiveRecord::Base
   def cancel
     return if order_status.code == 'cancel'
     order.reason = format_reason
-    order.do_callback('cancel')
+    order.do_callback('cancel', :supplier_order_id => external_number)
+    order.save!
     set_status('cancel')
   end
 

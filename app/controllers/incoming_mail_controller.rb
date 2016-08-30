@@ -43,9 +43,9 @@ class IncomingMailController < ActionMailer::Base
     valid_prefix?(prefix) && valid_order?(@order_number)
   end
 
-  def enrich_request_with_external_number(supplier, external_number)
+  def update_external_number(supplier, external_number)
     current_request = @order.current_request
-    return if current_request.nil? || !current_request.external_number.nil?
+    return if current_request.nil?
 
     current_request.external_number = external_number
     current_request.save!

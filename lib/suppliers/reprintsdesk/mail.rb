@@ -69,6 +69,7 @@ class IncomingMailController
   def reprintsdesk_machine_cancelled(mail)
     reprintsdesk_extract_from_body(mail)
     return false unless reprintsdesk_handle_mail?
+    update_external_number('reprintsdesk', @external_number)
     reprintsdesk_cancel
   end
 
