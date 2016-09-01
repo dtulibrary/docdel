@@ -353,7 +353,6 @@ describe IncomingMailController do
 
       storeit_lambda = lambda do |request|
         body_is_pdf_document = "%PDF".eql?(request.body[0..3])
-        # TODO TLNI: Should the body be a pdf document? Should the document be base64 encoded?
         return :status => 200, :body => "http://storeit:3000/dummy_document.pdf", :headers => {}
       end
       stub_request(:post, "http://storeit:3000/rest/documents.text?drm=false").to_return(storeit_lambda)
