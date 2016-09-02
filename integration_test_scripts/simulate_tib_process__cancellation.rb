@@ -9,13 +9,13 @@ class SimulateTibCancellationProcess
       exit 2
     end
 
-    #puts "Simulating acceptance of order (id:#{order.id})"
-    #accept_raw = File.read("spec/fixtures/tib/stahlbau_accept.eml")
-    #replace_transaction_group_qualifier(accept_raw, order)
-    #replace_supplier_ordernr(accept_raw, order_number)
-    #accept_mail = Mail.new(accept_raw)
-    #IncomingMailController.receive(accept_mail)
-    #puts "Order accepted!"
+    puts "Simulating acceptance of order (id:#{order.id})"
+    accept_raw = File.read("spec/fixtures/tib/stahlbau_accept.eml")
+    replace_transaction_group_qualifier(accept_raw, order)
+    replace_supplier_ordernr(accept_raw, order_number)
+    accept_mail = Mail.new(accept_raw)
+    IncomingMailController.receive(accept_mail)
+    puts "Order accepted!"
 
     puts "Simulating cancellation of order (id:#{order.id})"
     cancel_raw = File.read("spec/fixtures/tib/stahlbau_cancel.eml")

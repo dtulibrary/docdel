@@ -28,19 +28,20 @@ class SimulateRdCancelTibDeliverProcess
     puts "Order cancelled!"
 
     puts "Simulating acceptance of order (id:#{order.id})"
-    accept_raw = File.read("spec/fixtures/tib/stahlbau_accept.eml")
-    tib_replace_our_ordernr(accept_raw, order)
-    tib_replace_supplier_ordernr(accept_raw, tib_order_number)
-    accept_mail = Mail.new(accept_raw)
-    IncomingMailController.receive(accept_mail)
+    tib_accept_raw = File.read("spec/fixtures/tib/stahlbau_accept.eml")
+    tib_replace_our_ordernr(tib_accept_raw, order)
+    tib_replace_supplier_ordernr(tib_accept_raw, tib_order_number)
+    tib_accept_mail = Mail.new(tib_accept_raw)
+    IncomingMailController.receive(tib_accept_mail)
     puts "Order accepted!"
 
-    puts "Simulating delivery of order (id:#{order.id})"
-    deliver_raw = File.read("spec/fixtures/tib/stahlbau_deliver.eml")
-    tib_replace_supplier_ordernr(deliver_raw, tib_order_number)
-    deliver_mail = Mail.new(deliver_raw)
-    IncomingMailController.receive(deliver_mail)
-    puts "Order delivered!"
+    puts "Simulating cancellation of order (id:#{order.id})"
+    cancel_raw = File.read("spec/fixtures/tib/stahlbau_cancel.eml")
+    tib_replace_our_ordernr(cancel_raw, order)
+    tib_replace_supplier_ordernr(cancel_raw, tib_order_number)
+    cancel_mail = Mail.new(cancel_raw)
+    IncomingMailController.receive(cancel_mail)
+    puts "Order cancelled!"
   end
 
   private
