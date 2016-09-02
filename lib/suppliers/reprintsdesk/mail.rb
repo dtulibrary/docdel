@@ -33,6 +33,7 @@ class IncomingMailController
   def reprintsdesk_new_order(mail)
     reprintsdesk_extract_from_body(mail)
     return false unless reprintsdesk_handle_mail?
+    update_external_number('reprintsdesk', @external_number)
     confirm_request('reprintsdesk')
   end
 
