@@ -1,4 +1,4 @@
-class SimulateRdCancelTibDeliverProcess
+class SimulateRdCancelTibCancelProcess
   def call(our_order_id, rd_order_number, tib_order_number)
     puts "Using our order number: #{our_order_id}!"
     puts "Using RD order number: #{rd_order_number}!"
@@ -76,4 +76,4 @@ if ARGV.length < 3
   exit 2
 end
 
-SimulateRdCancelTibDeliverProcess.new.call(ARGV[0].chomp, ARGV[1].chomp, ARGV[2].chomp)
+SimulateRdCancelTibCancelProcess.new.call(ARGV[0].chomp, ARGV[1].chomp, ARGV[2].chomp)
