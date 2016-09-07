@@ -120,7 +120,7 @@ class IncomingMailController
   end
 
   def reprintsdesk_handle_mail?
-    handle_mail?(config.order_prefix)
+    handle_mail?(config.order_prefix) && (@external_number.nil? || @order.current_request.external_number.nil? || @order.current_request.external_number.eql?(@external_number))
   end
 
 end
