@@ -34,6 +34,7 @@ class IncomingMailController < ActionMailer::Base
   end
 
   def valid_order_request?(external_number)
+    return false if external_number.nil?
     order_request = OrderRequest.where(external_number: external_number)
     return false unless order_request.count > 0
     @order = order_request.first.order
