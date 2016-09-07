@@ -22,7 +22,7 @@ describe OrderRequest do
   end
 
   it "callback fails" do
-    stub_request(:get, "http://localhost/callback?status=cancel").
+    stub_request(:get, "http://localhost/callback?status=cancel&supplier_order_id=1").
       to_return(:status => 404, :body => "", :headers => {})
     FactoryGirl.create(:order_status, code: 'cancel')
     order_request = FactoryGirl.build(:order_request)

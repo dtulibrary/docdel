@@ -55,7 +55,7 @@ describe Admin::OrdersController do
 
   describe "GET #cancel" do
     it "renders the order" do
-      stub_request(:get, "http://localhost/callback?status=cancel").
+      stub_request(:get, "http://localhost/callback?status=cancel&supplier_order_id=1").
         to_return(:status => 200, :body => "", :headers => {})
       FactoryGirl.create(:order_status, code: 'cancel')
       request = FactoryGirl.create(:order_request)

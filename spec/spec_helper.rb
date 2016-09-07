@@ -38,5 +38,11 @@ RSpec.configure do |config|
   end
 end
 
+module Docdel
+  class Application < Rails::Application
+    config.disable_reprintsdesk_request = false
+  end
+end
+
 #Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 

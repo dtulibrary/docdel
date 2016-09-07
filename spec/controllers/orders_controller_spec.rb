@@ -24,7 +24,7 @@ describe OrdersController do
 
     it "with reason_id and reason_text" do
       stub_request(:get, "http://localhost/callback?reason="+
-         "Issue%20not%20available:%20Extra%20info&status=cancel").
+         "Issue%20not%20available:%20Extra%20info&status=cancel&supplier_order_id=1").
          to_return(:status => 200, :body => "", :headers => {})
       post :not_available, :id => @order_request.order.id,
         'order_requests' => { 'reason_id' => 
@@ -41,7 +41,7 @@ describe OrdersController do
 
     it "with reason_id" do
        stub_request(:get, "http://localhost/callback?reason="+
-         "Issue%20not%20available&status=cancel").
+         "Issue%20not%20available&status=cancel&supplier_order_id=1").
          to_return(:status => 200, :body => "", :headers => {})
       post :not_available, :id => @order_request.order.id,
         'order_requests' => { 'reason_id' => 
@@ -57,7 +57,7 @@ describe OrdersController do
 
     it "with reason_id and reason_text" do
       stub_request(:get, "http://localhost/callback?reason="+
-         "Extra%20info&status=cancel").
+         "Extra%20info&status=cancel&supplier_order_id=1").
          to_return(:status => 200, :body => "", :headers => {})
       post :not_available, :id => @order_request.order.id,
          'order_requests' => { 'reason_id' => ''},
