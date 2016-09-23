@@ -70,6 +70,11 @@ class IncomingMailController < ActionMailer::Base
     request ? request.deliver(url) : report_not_found
   end
 
+  def physically_deliver_request(supplier)
+    request = @order.request(supplier, @external_number)
+    request ? request.physically_deliver : report_not_found
+  end
+
   def report_not_found
     logger.info "Request #{@external_number} not found on order_number #{@order_number}"
     false

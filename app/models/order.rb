@@ -131,6 +131,12 @@ class Order < ActiveRecord::Base
       :external_system_id => ExternalSystem.find_by_code(system)).first
   end
 
+  def mark_physical_delivery
+    self.delivered_at = Time.now
+    do_callback('physically_deliver', {})
+    save!
+  end
+
   def mark_delivery(url)
     raise ArgumentError.new("Missing url") unless url
     self.delivered_at = Time.now

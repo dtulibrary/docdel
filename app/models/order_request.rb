@@ -20,6 +20,11 @@ class OrderRequest < ActiveRecord::Base
     set_status('deliver')
   end
 
+  def physically_deliver
+    order.mark_physical_delivery
+    set_status('deliver')
+  end
+
   def confirm(external_number = nil)
     order.do_callback('confirm', :supplier_order_id => external_number)
     set_status('confirm')
