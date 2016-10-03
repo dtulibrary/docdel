@@ -2,13 +2,26 @@ require 'openurl'
 require 'httparty'
 require 'time'
 
+class JoinAddressLines
+  def initialize(address)
+    @address = address
+  end
+
+  def call
+    [@address['line1'], @address['line2'], @address['line3'],
+     @address['line4'], @address['line5'], @address['line6'],
+     @address['zipcode'], @address['cityname'], @address['country']]
+    .reject { |v| v.blank? }.join("\n")
+  end
+end
+
 class LookupFailure < StandardError
 end
 
 class Order < ActiveRecord::Base
   attr_accessible :atitle, :aufirst, :aulast, :callback_url, :date,
     :delivered_at, :doi, :eissn, :email, :epage, :isbn, :issn, :issue, :pages,
-    :spage, :title, :volume, :customer_order_number
+    :spage, :title, :volume, :customer_order_number, :requester_first_name, :requester_last_name, :requester_email, :requester_address
 
   has_many :order_requests, :dependent => :destroy
   belongs_to :institute
@@ -174,6 +187,13 @@ class Order < ActiveRecord::Base
         @user['dtu']['org_units'].join(','))
       self.institute = code
     end
+
+    self.requester_email = @user['email']
+    self.requester_address = JoinAddressLines.new(@user['address']).call
+
+    self.requester_first_name = @user['first_name']
+    self.requester_last_name = @user['last_name']
+
   end
 
   def reason=(text)
@@ -201,5 +221,4 @@ class Order < ActiveRecord::Base
   def self.truncate(value)
     value.nil? ? '' : value[0,1024]
   end
-
 end

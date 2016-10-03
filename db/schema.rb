@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160627115751) do
+ActiveRecord::Schema.define(:version => 20160930093942) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -94,6 +94,10 @@ ActiveRecord::Schema.define(:version => 20160627115751) do
     t.string   "customer_order_number"
     t.integer  "institute_id"
     t.integer  "user_type_id"
+    t.string   "requester_first_name"
+    t.string   "requester_last_name"
+    t.string   "requester_email"
+    t.string   "requester_address"
   end
 
   add_index "orders", ["email"], :name => "index_orders_on_email"
