@@ -170,7 +170,7 @@ describe Rest::OrdersController do
       it "works for type1" do
         set_user_id('1')
         set_user_name('Test1')
-        set_user_response('{"user_type":"type1","dtu":{"org_units":["45"]}}')
+        set_user_response('{"address":{"line1":"A"},"user_type":"type1","dtu":{"org_units":["45"]}}')
         set_user_type('TYPE1')
         set_timecap('2013-10-15T00:00:00Z')
         with_price_lookup
@@ -185,7 +185,7 @@ describe Rest::OrdersController do
         set_user_id('1')
         set_user_name('Test')
         set_user_type('OTHER')
-        set_user_response('{"user_type": "other"}')
+        set_user_response('{"address":{"line1":"A"},"user_type":"other"}')
         set_timecap('2013-10-07T14:00:00Z')
         with_price_lookup
         with_order_request_result(1)
