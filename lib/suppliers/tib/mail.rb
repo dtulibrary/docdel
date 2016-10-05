@@ -53,7 +53,9 @@ class IncomingMailController
 
   def tib_status_shipped
     if "COPY" == @shipped_service_type || "LOAN" == @shipped_service_type
-      physically_deliver_request('tib')
+      if "POST" == @sdet_shipped_via
+        physically_deliver_request('tib')
+      end
     end
   end
 
@@ -104,6 +106,8 @@ class IncomingMailController
     @results_explanation = $1
 
     /shipped-service-type: ([^\n]+)/.match(body) { |m| @shipped_service_type = m[1] }
+
+    /sdet-shipped-via: ([^\n]+)/.match(body) { |m| @sdet_shipped_via = m[1] }
 
     # Temp testing
     logger.info "@prefix_code     : #{@prefix_code}"
