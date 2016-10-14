@@ -21,7 +21,7 @@ end
 class Order < ActiveRecord::Base
   attr_accessible :atitle, :aufirst, :aulast, :callback_url, :date,
     :delivered_at, :doi, :eissn, :email, :epage, :isbn, :issn, :issue, :pages,
-    :spage, :title, :volume, :customer_order_number, :requester_first_name, :requester_last_name, :requester_email, :requester_address
+    :spage, :title, :volume, :customer_order_number, :requester_first_name, :requester_last_name, :requester_email, :requester_address, :requester_findit_user_type
 
   has_many :order_requests, :dependent => :destroy
   belongs_to :institute
@@ -38,7 +38,6 @@ class Order < ActiveRecord::Base
 
     self.transaction do
       begin
-
         # Fix errors in the current open_url
         params[:open_url].gsub 'rft.year=', 'rft.date='
         params[:open_url].gsub 'rft.doi=', 'rft_id=info:/doi'
@@ -85,7 +84,7 @@ class Order < ActiveRecord::Base
           o.callback_url = params[:callback_url]
           o.customer_order_number = params[:dibs_order_id]
           o.email = params[:email]
-          o.user(params[:user_id])
+          o.user(params[:user_id], params[:findit_user_type])
           o.save or raise "Order not valid"
           o.path_controller = controller
           if params[:timecap_base].blank?
@@ -175,7 +174,7 @@ class Order < ActiveRecord::Base
     @path_controller = value
   end
 
-  def user(value)
+  def user(value, findit_user_type = "")
     @user = Hash.new
     return if value.blank?
     @user = Riyosha.find(value)
@@ -190,9 +189,9 @@ class Order < ActiveRecord::Base
 
     self.requester_email = @user['email']
     self.requester_address = JoinAddressLines.new(@user['address']).call
-
     self.requester_first_name = @user['first_name']
     self.requester_last_name = @user['last_name']
+    self.requester_findit_user_type = findit_user_type
 
   end
 
