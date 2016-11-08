@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20161014094853) do
+ActiveRecord::Schema.define(:version => 20161108090425) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -97,7 +97,7 @@ ActiveRecord::Schema.define(:version => 20161014094853) do
     t.string   "requester_first_name"
     t.string   "requester_last_name"
     t.string   "requester_email"
-    t.string   "requester_address"
+    t.string   "requester_address",          :limit => 1024
     t.string   "requester_findit_user_type"
   end
 
