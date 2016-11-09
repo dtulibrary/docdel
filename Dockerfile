@@ -1,4 +1,4 @@
-FROM debian:7.10
+FROM debian:8.6
 
 ENV LANG C.UTF-8
 ENV LANGUAGE C.UTF-8
