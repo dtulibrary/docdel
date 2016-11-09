@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160930093942) do
+ActiveRecord::Schema.define(:version => 20161108090425) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -72,9 +72,9 @@ ActiveRecord::Schema.define(:version => 20160930093942) do
   add_index "order_statuses", ["code"], :name => "index_order_statuses_on_code", :unique => true
 
   create_table "orders", :force => true do |t|
-    t.string   "email",                                 :null => false
-    t.string   "callback_url",                          :null => false
-    t.string   "atitle",                :limit => 1024
+    t.string   "email",                                      :null => false
+    t.string   "callback_url",                               :null => false
+    t.string   "atitle",                     :limit => 1024
     t.string   "aufirst"
     t.string   "aulast"
     t.string   "date"
@@ -87,17 +87,18 @@ ActiveRecord::Schema.define(:version => 20160930093942) do
     t.string   "issue"
     t.string   "pages"
     t.string   "spage"
-    t.string   "title",                 :limit => 1024
+    t.string   "title",                      :limit => 1024
     t.string   "volume"
-    t.datetime "created_at",                            :null => false
-    t.datetime "updated_at",                            :null => false
+    t.datetime "created_at",                                 :null => false
+    t.datetime "updated_at",                                 :null => false
     t.string   "customer_order_number"
     t.integer  "institute_id"
     t.integer  "user_type_id"
     t.string   "requester_first_name"
     t.string   "requester_last_name"
     t.string   "requester_email"
-    t.string   "requester_address"
+    t.string   "requester_address",          :limit => 1024
+    t.string   "requester_findit_user_type"
   end
 
   add_index "orders", ["email"], :name => "index_orders_on_email"
