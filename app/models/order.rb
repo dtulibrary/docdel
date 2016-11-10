@@ -4,7 +4,7 @@ require 'time'
 
 class JoinAddressLines
   def initialize(address)
-    @address = address
+    @address = address || {}
   end
 
   def call
