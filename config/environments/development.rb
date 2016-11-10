@@ -36,11 +36,3 @@ Docdel::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 end
-
-require 'debugger'
-unless defined?(Rails::Console)
-  begin
-    Debugger.start_remote
-  rescue => e
-  end
-end
