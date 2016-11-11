@@ -353,7 +353,7 @@ describe Rest::OrdersController do
       get :show, id: order1, :format => :json
       expect(assigns(:order)).to eq (order1)
       expect(response.header['Content-Type']).to include 'application/json'
-      expect(response.body).to eq order1.to_json
+      expect(response.body).to eq order1.to_json(:include => {:order_requests => {:include => [:order_status]}})
     end
   end
 
