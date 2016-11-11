@@ -4,7 +4,7 @@ class Rest::OrdersController < ApplicationController
     @order = Order.find(params[:id])
 
     respond_to do |format|
-      format.json { render :json => @order }
+      format.json { render :json => @order, :include => {:order_requests => {:include => [:order_status]}} }
     end
   end
 
